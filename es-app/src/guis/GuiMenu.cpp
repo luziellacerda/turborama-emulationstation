@@ -1009,7 +1009,7 @@ void GuiMenu::openExternalMounts(Window* mWindow, std::string configName)
 		auto turborama_external_device_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "EXTERNAL DEVICE", false);
 		std::vector<std::string> extdevoptions;
 		extdevoptions.push_back("auto");
-		  for(std::stringstream ss(Utils::Platform::getShOutput(R"(find /var/media/ -type d -maxdepth 1 -mindepth 1 -name EEROMS -prune -o -exec basename {} \; | sed "s/$/,/g")")); getline(ss, a, ','); ) {
+		  for(std::stringstream ss(Utils::Platform::getShOutput(R"(find /var/media/ -type d -maxdepth 1 -mindepth 1 -name TURBOROMS -prune -o -exec basename {} \; | sed "s/$/,/g")")); getline(ss, a, ','); ) {
             extdevoptions.push_back(a);
 	    }
 		// use script to get entries
@@ -1170,9 +1170,9 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		turborama_borders.top = 0.0f;
 		turborama_borders.bottom = 0.0f;
 
-		std::string str_ee_offsets = SystemConf::getInstance()->get(configName+"framebuffer_border");
-		if (!str_ee_offsets.empty()) {
-			std::vector<int> savedBorders = int_explode(str_ee_offsets, ' ');
+		std::string str_turborama_offsets = SystemConf::getInstance()->get(configName+"framebuffer_border");
+		if (!str_turborama_offsets.empty()) {
+			std::vector<int> savedBorders = int_explode(str_turborama_offsets, ' ');
 			if (savedBorders.size() == 4) {
 				turborama_borders.left = (float) savedBorders[0];
 				turborama_borders.top = (float) savedBorders[1];
