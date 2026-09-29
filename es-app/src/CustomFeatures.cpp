@@ -53,7 +53,7 @@ EmulatorFeatures::Features EmulatorFeatures::parseFeatures(const std::string fea
 		if (trim == "videomode") ret = ret | EmulatorFeatures::Features::videomode;
 		if (trim == "colorization") ret = ret | EmulatorFeatures::Features::colorization;
 		if (trim == "autocontrollers") ret = ret | EmulatorFeatures::Features::autocontrollers;
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		if (trim == "vertical") ret = ret | EmulatorFeatures::Features::vertical;
 		if (trim == "nativevideo") ret = ret | EmulatorFeatures::Features::nativevideo;
 		if (trim == "joybtnremap") ret = ret | EmulatorFeatures::Features::joybtnremap;
@@ -95,7 +95,7 @@ void CustomFeatures::importXmlElements(pugi::xml_node& from, const std::string& 
 				break;
 			}
 		}
-			
+
 		to.append_copy(system);
 	}
 }
@@ -263,12 +263,12 @@ bool CustomFeatures::loadEsFeaturesFile()
 				{
 					std::string coreName = Utils::String::trim(tmpCoreName);
 
-					EmulatorFeatures::Features coreFeatures = coreNode.attribute("features") ? EmulatorFeatures::parseFeatures(coreNode.attribute("features").value()) : EmulatorFeatures::Features::none;					
+					EmulatorFeatures::Features coreFeatures = coreNode.attribute("features") ? EmulatorFeatures::parseFeatures(coreNode.attribute("features").value()) : EmulatorFeatures::Features::none;
 					auto customCoreFeatures = loadCustomFeatures(coreNode);
 
 					if (customCoreFeatures.any([](auto x) { return x.value == "autosave"; })) // Watch if autosave is provided as shared
 						coreFeatures = coreFeatures | EmulatorFeatures::Features::autosave;
-						
+
 					bool coreFound = false;
 
 					for (auto it = EmulatorFeatures.begin(); it != EmulatorFeatures.end(); it++)
@@ -409,7 +409,7 @@ bool CustomFeatures::loadEsFeaturesFile()
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -477,7 +477,7 @@ CustomFeatures CustomFeatures::loadCustomFeatures(pugi::xml_node node)
 
 			continue;
 		}
-		
+
 		if (name != "feature" || !featureNode.attribute("name"))
 			continue;
 

@@ -121,7 +121,7 @@ public:
 				return true;
 			}
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
             if (config->isMappedLike("righttrigger", input))
 #else
 			if (config->isMappedLike("pageup", input))
@@ -131,7 +131,7 @@ public:
 				return true;
 			}
 			
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
             if (config->isMappedLike("lefttrigger", input))
 #else
 			if (config->isMappedLike("pagedown", input))
@@ -185,7 +185,7 @@ public:
 				return true;
 			}
 			
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 			if (config->isMappedLike("lefttrigger", input) || config->isMappedLike("righttrigger", input))
 #else
 			if (config->isMappedLike("pagedown", input) || config->isMappedLike("pageup", input))

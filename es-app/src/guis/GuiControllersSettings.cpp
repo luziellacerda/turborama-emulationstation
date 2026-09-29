@@ -134,8 +134,8 @@ GuiControllersSettings::GuiControllersSettings(Window* wnd, int autoSel) : GuiSe
 		// PAIR A BLUETOOTH CONTROLLER
 		addEntry(_("PAIR BLUETOOTH PADS AUTOMATICALLY"), false, [window] { ThreadedBluetooth::start(window); });
 
-		
-#ifdef _ENABLEEMUELEC
+
+#ifdef _ENABLETURBORAMA
 		// Bluetooth Legacy Code
 		auto enable_bt_legacy = std::make_shared<SwitchComponent>(window);
 		bool bt_legacy_Enabled = SystemConf::getInstance()->get("ee_bluetooth_legacy.enabled") == "1";
@@ -187,7 +187,7 @@ GuiControllersSettings::GuiControllersSettings(Window* wnd, int autoSel) : GuiSe
 			delete this;
 			openControllersSettings(parent, 1);
 		} });
-		
+
 	// CONTROLLER ACTIVITY
 	auto activity = std::make_shared<SwitchComponent>(mWindow);
 	activity->setState(Settings::getInstance()->getBool("ShowControllerActivity"));
@@ -541,15 +541,15 @@ void GuiControllersSettings::openControllersSpecificSettings_steamdeckgun()
 	mWindow->pushGui(s);
 }
 
-void GuiControllersSettings::clearLoadedInput() 
+void GuiControllersSettings::clearLoadedInput()
 {
-	for (int i = 0; i < mLoadedInput.size(); i++) 
+	for (int i = 0; i < mLoadedInput.size(); i++)
 		delete mLoadedInput[i];
 
 	mLoadedInput.clear();
 }
 
-GuiControllersSettings::~GuiControllersSettings() 
+GuiControllersSettings::~GuiControllersSettings()
 {
 	clearLoadedInput();
 }

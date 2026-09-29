@@ -113,9 +113,9 @@ namespace Scripting
         if (Utils::FileSystem::getExtension(script) == ".ps1")
             command = "powershell " + command;
 
-        std::string stem = Utils::FileSystem::getStem(script);       
+        std::string stem = Utils::FileSystem::getStem(script);
         if ((allowAsync && !Utils::String::endsWith(stem, "-wait")) || (eventName != "quit" && Utils::String::endsWith(stem, "-nowait")))
-        {            
+        {
             LOG(LogDebug) << "  queuing: " << command;
 
             // Start using a thread to avoid lags
@@ -130,8 +130,8 @@ namespace Scripting
             psi.waitForExit = true;
             psi.showWindow = false;
             psi.run();
-        }       
-#else            
+        }
+#else
         LOG(LogDebug) << "  executing: " << script;
 
         ProcessStartInfo psi;
@@ -178,7 +178,7 @@ namespace Scripting
         // Process single scripts. This type of scripts are called with the event name as 1st arg
         std::vector<std::string> paths =
         {
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
             Paths::getUserEmulationStationPath() + "/scripts/combined",
             Paths::getEmulationStationPath() + "/scripts/combined",
 #else

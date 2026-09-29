@@ -39,9 +39,9 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ ATARI_ST, "4937" },
 	{ ATARI_XE, "30" },
 	{ BBC_MICRO, "5013"},
-	{ COLECOVISION, "31" },	
+	{ COLECOVISION, "31" },
 	{ COMMODORE_64, "40" },
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	{ COMMODORE_VIC20, "4945" },
 #endif
 	{ COMMODORE_PET, "5008" },
@@ -92,12 +92,12 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ VIDEOPAC_ODYSSEY2, "4927" },
 	{ VECTREX, "4939" },
 	{ TRS80_COLOR_COMPUTER, "4941" },
-	{ TANDY, "4941" },	
+	{ TANDY, "4941" },
 	{ SUPERGRAFX, "34" }, // The code is TurboGrafx 16, but they manage SUPERGRAFX into this one....
-	{ AMIGACD32, "4947" },	
+	{ AMIGACD32, "4947" },
 	{ NEOGEO_CD, "4956" },
 	{ PCFX, "4930" },
-	{ POKEMINI, "4957" },	
+	{ POKEMINI, "4957" },
 	{ SATELLAVIEW, "6" },
 	{ SUFAMITURBO, "6" },
 	{ PC_88, "4933" },
@@ -148,7 +148,7 @@ const std::map<PlatformId, std::string> gamesdb_new_platformid_map{
 	{ TOMY_TUTOR, "4960" },
 	{ APF_MP_1000, "4969" },
 	{ TANDY_VIS, "4982" }
-		
+
 	/* Non existing systems
 	{ AMIGACDTV, "129" },
 	{ CAVESTORY, "135" },
@@ -212,7 +212,7 @@ void TheGamesDBScraper::generateRequests(const ScraperSearchParams& params,
 				"include=boxart&id=" +
 				HttpReq::urlEncode(gameID);
 		usingGameID = true;
-	} 
+	}
 	else
 	{
 		if (cleanName.empty())
@@ -229,7 +229,7 @@ void TheGamesDBScraper::generateRequests(const ScraperSearchParams& params,
 	{
 		// if we have the ID already, we don't need the GetGameList request
 		requests.push(std::unique_ptr<ScraperRequest>(new TheGamesDBJSONRequest(results, path)));
-	} 
+	}
 	else
 	{
 		std::string platformQueryParam;
@@ -248,7 +248,7 @@ void TheGamesDBScraper::generateRequests(const ScraperSearchParams& params,
 
 					platformQueryParam += HttpReq::urlEncode(mapIt->second);
 					first = false;
-				} 
+				}
 				else
 				{
 					LOG(LogWarning) << "TheGamesDB scraper warning - no support for platform "
@@ -539,7 +539,7 @@ namespace
 			if (!art.empty())
 				result.urls[MetaDataId::FanArt] = ScraperSearchItem(art);
 		}
-		
+
 		if (Settings::getInstance()->getBool("ScrapeBoxBack"))
 		{
 			auto art = findMedia(medias, "box-2D-back");
@@ -594,7 +594,7 @@ bool TheGamesDBJSONRequest::process(HttpReq* request, std::vector<ScraperSearchR
 	}
 
 	resources.ensureResources();
-	
+
 	for (int i = 0; i < (int)games.Size(); ++i)
 	{
 		auto& v = games[i];

@@ -100,7 +100,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 			{
 				mJumpToLetterList = std::make_shared<LetterList>(mWindow, _("JUMP TO GAME BEGINNING WITH THE LETTER"), false);
 
-#ifdef _ENABLEEMUELEC				
+#ifdef _ENABLETURBORAMA				
 				unsigned int sortId = system->getSortId();
 				std::string cursorName = (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)
 					? getGamelist()->getCursor()->getSortOrName()
@@ -160,7 +160,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 		{
 			const FileSorts::SortType& sort = FileSorts::getSortTypes().at(i);
 			mListSort->add(sort.icon + sort.description, sort.id, sort.id == currentSortId); // TODO - actually make the sort type persistent
-#ifdef _ENABLEEMUELEC			
+#ifdef _ENABLETURBORAMA			
 			if (i == (FileSorts::getSortTypes().size()-3))
 				break;
 			if (i == FileSorts::FILENAME_DESCENDING)
@@ -523,7 +523,7 @@ void GuiGamelistOptions::openMetaDataEd()
 		std::bind(&ViewController::onFileChanged, ViewController::get(), file, FILE_METADATA_CHANGED), deleteBtnFunc, file));
 }
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 char getSortLetter(int sortId, FileData* fData) {
 	if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)	
 		return toupper(fData->getSortOrName()[0]);
@@ -540,7 +540,7 @@ void GuiGamelistOptions::jumpToLetter()
 
 	if (mListSort->getSelected() != 0)
 	{
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 				int nameSorts[4] = {
 					FileSorts::FILENAME_ASCENDING,
 					FileSorts::FILENAME_DESCENDING,

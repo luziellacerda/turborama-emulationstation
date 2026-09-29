@@ -57,7 +57,7 @@ public:
 
 	bool hasFeature(const std::string& name) const;
 	bool hasGlobalFeature(const std::string& name) const;
-	
+
 private:
 	static CustomFeatures loadCustomFeatures(pugi::xml_node node);
 	static void loadAdditionnalFeatures(pugi::xml_node& srcSystems);
@@ -92,7 +92,7 @@ public:
 		autocontrollers = 262144,
 		videofilters = 524288,
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		vertical = 1048576,
 		nativevideo = 2097152,
 		hlebios = 4194304,
@@ -125,9 +125,9 @@ struct SystemFeature
 
 struct CoreData
 {
-	CoreData() 
-	{ 
-		netplay = false; 
+	CoreData()
+	{
+		netplay = false;
 		isDefault = false;
 		features = EmulatorFeatures::Features::none;
 	}
@@ -135,7 +135,7 @@ struct CoreData
 	std::string name;
 	bool netplay;
 	bool isDefault;
-	
+
 	std::string customCommandLine;
 	CustomFeatures customFeatures;
 	std::vector<std::string> incompatibleExtensions;
@@ -152,7 +152,7 @@ struct EmulatorData
 		features = EmulatorFeatures::Features::none;
 	}
 
-	std::string name;	
+	std::string name;
 	std::vector<CoreData> cores;
 
 	std::string customCommandLine;

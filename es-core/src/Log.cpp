@@ -44,7 +44,7 @@ void Log::init()
 			lvl = (LogLevel) -1; // Disabled
 	}
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	auto logPath = Paths::getLogPath() + "/es_log.txt";
 #else
 	auto logPath = Paths::getUserEmulationStationPath() + "/es_log.txt";

@@ -43,7 +43,7 @@
 #include "HttpReq.h"
 #include <thread>
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 #include <alsa/asoundlib.h>
 #endif
 
@@ -245,7 +245,7 @@ bool parseArgs(int argc, char* argv[])
 				"--draw-framerate		display the framerate\n"
 				"--no-exit			don't show the exit option in the menu\n"
 				"--no-splash			don't show the splash screen\n"
-				"--debug				more logging, show console on Windows\n"				
+				"--debug				more logging, show console on Windows\n"
 				"--windowed			not fullscreen, should be used with --resolution\n"
 				"--vsync [1/on or 0/off]		turn vsync on or off (default is on)\n"
 				"--max-vram [size]		Max VRAM to use in Mb before swapping. 0 for unlimited\n"
@@ -254,7 +254,7 @@ bool parseArgs(int argc, char* argv[])
 				"--force-disable-filters		Force the UI to ignore applied filters in gamelist\n"
 				"--home [path]		Directory to use as home path\n"
 				"--help, -h			summon a sentient, angry tuba\n\n"
-				"--monitor [index]			monitor index\n\n"				
+				"--monitor [index]			monitor index\n\n"
 				"More information available in README.md.\n";
 			return false; //exit after printing help
 		}
@@ -265,7 +265,7 @@ bool parseArgs(int argc, char* argv[])
 
 bool verifyHomeFolderExists()
 {
-	//make sure the config directory exists	
+	//make sure the config directory exists
 	std::string configDir = Paths::getUserEmulationStationPath();
 	if(!Utils::FileSystem::exists(configDir))
 	{
@@ -328,9 +328,9 @@ int setLocale(char * argv1)
 	std::locale::global(std::locale("en-US"));
 #else
 	if (Utils::FileSystem::exists("./locale/lang")) // for local builds
-		EsLocale::init("", "./locale/lang");	
+		EsLocale::init("", "./locale/lang");
 	else
-		EsLocale::init("", "/usr/share/locale");	
+		EsLocale::init("", "/usr/share/locale");
 #endif
 
 	setlocale(LC_TIME, "");
@@ -339,7 +339,7 @@ int setLocale(char * argv1)
 }
 
 
-void signalHandler(int signum) 
+void signalHandler(int signum)
 {
 	if (signum == SIGSEGV)
 		LOG(LogError) << "Interrupt signal SIGSEGV received.\n";
@@ -350,7 +350,7 @@ void signalHandler(int signum)
 	else
 		LOG(LogError) << "Interrupt signal (" << signum << ") received.\n";
 
-	// cleanup and close up stuff here  
+	// cleanup and close up stuff here
 	exit(signum);
 }
 
@@ -400,7 +400,7 @@ void playVideo()
 			{
 				if (event.type == SDL_QUIT)
 					return;
-			} 
+			}
 			while (SDL_PollEvent(&event));
 		}
 
@@ -433,22 +433,22 @@ void launchStartupGame()
 	auto gamePath = SystemConf::getInstance()->get("global.bootgame.path");
 	if (gamePath.empty() || !Utils::FileSystem::exists(gamePath))
 		return;
-	
+
 	auto command = SystemConf::getInstance()->get("global.bootgame.cmd");
 	if (!command.empty())
 	{
 		InputManager::getInstance()->init();
 		command = Utils::String::replace(command, "%CONTROLLERSCONFIG%", InputManager::getInstance()->configureEmulators());
-		Utils::Platform::ProcessStartInfo(command).run();		
-	}	
+		Utils::Platform::ProcessStartInfo(command).run();
+	}
 }
 
 #include "utils/MathExpr.h"
 
 int main(int argc, char* argv[])
-{	
+{
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 // Hacky way of waking up system ALSA before initializing sound.
 // withouth this mixer was not available at boot.
 snd_pcm_t* pcm_handle = nullptr;
@@ -462,7 +462,7 @@ int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 		LOG(LogInfo) << "ALSA Wake: PCM device closed.";
 	 }
 #endif
-	
+
 	Utils::MathExpr::performUnitTests();
 
 	// signal(SIGABRT, signalHandler);
@@ -528,7 +528,7 @@ int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 	}
 
 	//start the logger
-	Log::init();	
+	Log::init();
 
 	LOG(LogInfo) << "EmulationStation - v" << PROGRAM_VERSION_STRING << ", built " << PROGRAM_BUILT_STRING;
 
@@ -536,7 +536,7 @@ int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 	atexit(&onExit);
 
 	// Set locale
-	setLocale(argv[0]);	
+	setLocale(argv[0]);
 
 #if !WIN32
 	if(enable_startup_game) {
@@ -634,7 +634,7 @@ int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 
 	// tts
 	TextToSpeech::getInstance()->enable(Settings::getInstance()->getBool("TTS"), false);
-	
+
 	if (errorMsg == NULL)
 	{
 		if (splashScreen)
@@ -657,7 +657,7 @@ int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 		AudioManager::getInstance()->playRandomMusic();
 
 
-#ifdef WIN32	
+#ifdef WIN32
 	DWORD displayFrequency = 60;
 
 	DEVMODE lpDevMode;
@@ -682,7 +682,7 @@ int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 
 	while(running)
 	{
-#ifdef WIN32	
+#ifdef WIN32
 		int processStart = SDL_GetTicks();
 #endif
 
@@ -701,7 +701,7 @@ int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 
 				if (event.type == SDL_QUIT)
 					running = false;
-			} 
+			}
 			while(SDL_PollEvent(&event));
 
 			// check guns
@@ -740,11 +740,11 @@ int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 		if(deltaTime < 0)
 			deltaTime = 1000;
 
-		TRYCATCH("Window.update" ,window.update(deltaTime))	
+		TRYCATCH("Window.update" ,window.update(deltaTime))
 		TRYCATCH("Window.render", window.render())
 
 /*
-#ifdef WIN32		
+#ifdef WIN32
 		int processDuration = SDL_GetTicks() - processStart;
 		if (processDuration < timeLimit)
 		{
@@ -786,7 +786,7 @@ int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
 #ifdef FREEIMAGE_LIB
 	FreeImage_DeInitialise();
 #endif
-	
+
 	// Delete ViewController
 	while (window.peekGui() != nullptr)
 		delete window.peekGui();

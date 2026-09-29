@@ -38,7 +38,7 @@ namespace FileSorts
 		SYSTEM_RELEASEDATE_DESCENDING = 25,
 		RELEASEDATE_SYSTEM_ASCENDING = 26,
 		RELEASEDATE_SYSTEM_DESCENDING = 27
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		,SORTNAME_ASCENDING = 28,
 		SORTNAME_DESCENDING = 29,
 #endif
@@ -72,7 +72,7 @@ namespace FileSorts
 	const std::vector<SortType>& getSortTypes();
 
 	bool compareName(const FileData* file1, const FileData* file2);
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	bool compareSortName(const FileData* file1, const FileData* file2);
 	bool compareNames(std::string name1, std::string name2);
 #endif

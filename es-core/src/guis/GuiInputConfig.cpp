@@ -46,7 +46,7 @@
 
 void GuiInputConfig::initInputConfigStructure(InputConfig* target)
 {
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	GUI_INPUT_CONFIG_LIST =
 	{
 	{ "Up",               false, "D-PAD UP",           ":/help/dpad_up.svg" },
@@ -115,8 +115,8 @@ void GuiInputConfig::initInputConfigStructure(InputConfig* target)
 
 	if (target->getDeviceId() >= 0)
 	{
-#ifdef _ENABLEEMUELEC
-		// emuelec list order: 0=Up,1=Down,2=Left,3=Right,4=Start,5=Select,6=a,7=b,8=x,9=y,...
+#ifdef _ENABLETURBORAMA
+		// turborama list order: 0=Up,1=Down,2=Left,3=Right,4=Start,5=Select,6=a,7=b,8=x,9=y,...
 		// so the "primary button" and "dpad" indices differ from the default layout below
 		GUI_INPUT_CONFIG_LIST[6].skippable = (target->getDeviceNbButtons() <= 1) || (target->getDeviceNbButtons() == 5 && target->getDeviceNbAxes() == 0 && target->getDeviceNbHats() == 0);
 
@@ -263,8 +263,8 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 
 				mHoldingInput = false;
 
-#ifdef _ENABLEEMUELEC
-				// emuelec: if this button was held past the skip threshold but this
+#ifdef _ENABLETURBORAMA
+				// turborama: if this button was held past the skip threshold but this
 				// entry isn't skippable, reject it outright - no assignment, no advance
 				if (mHeldTime >= HOLD_TO_SKIP_MS && !GUI_INPUT_CONFIG_LIST[i].skippable)
 				{
@@ -301,8 +301,8 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 		mSubtitle2->setOpacity(skippable * 255);
 	});
 
-#ifdef _ENABLEEMUELEC
-	// emuelec: setCursorChangedCallback above isn't invoked until the cursor actually
+#ifdef _ENABLETURBORAMA
+	// turborama: setCursorChangedCallback above isn't invoked until the cursor actually
 	// moves, so without this the hint incorrectly shows on load even when the
 	// initially-focused row isn't skippable
 	mSubtitle2->setOpacity(GUI_INPUT_CONFIG_LIST[mList->getCursorId()].skippable * 255);
@@ -323,7 +323,7 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, _("OK"), "ok", [this, okFunction] { 
 		// check if the hotkey enable button is set. if not prompt the user to use select or nothing.
 		Input input;
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		if (!mTargetConfig->getInputByName("HotKeyEnable", &input)) { // batocera
 #else
 		if (!mTargetConfig->getInputByName("hotkey", &input)) { 
@@ -333,8 +333,8 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 				_("SET SELECT AS HOTKEY"), [this, okFunction] { 
 					Input input;
 					mTargetConfig->getInputByName("Select", &input);
-#ifdef _ENABLEEMUELEC
-					mTargetConfig->mapInput("HotKeyEnable", input); // emuelec
+#ifdef _ENABLETURBORAMA
+					mTargetConfig->mapInput("HotKeyEnable", input); // turborama
 #else
 					mTargetConfig->mapInput("hotkey", input); 
 #endif
@@ -343,8 +343,8 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 				_("DO NOT ASSIGN HOTKEY"), [this, okFunction] { 
 					// for a disabled hotkey enable button, set to a key with id 0,
 					// so the input configuration script can be backwards compatible.
-#ifdef _ENABLEEMUELEC
-                    mTargetConfig->mapInput("HotKeyEnable", Input(DEVICE_KEYBOARD, TYPE_KEY, 0, 1, true)); // emuelec
+#ifdef _ENABLETURBORAMA
+                    mTargetConfig->mapInput("HotKeyEnable", Input(DEVICE_KEYBOARD, TYPE_KEY, 0, 1, true)); // turborama
 #else
 					mTargetConfig->mapInput("hotkey", Input(DEVICE_KEYBOARD, TYPE_KEY, 0, 1, true)); 
 #endif
@@ -397,8 +397,8 @@ void GuiInputConfig::onSizeChanged()
 
 void GuiInputConfig::update(int deltaTime)
 {
-#ifdef _ENABLEEMUELEC
-	// emuelec: keep tracking hold time for any button (not just skippable ones)
+#ifdef _ENABLETURBORAMA
+	// turborama: keep tracking hold time for any button (not just skippable ones)
 	// so the input_handler in the constructor can reject a long-hold on a
 	// non-skippable input at release time instead of assigning it. Only
 	// skippable entries actually auto-skip/advance here though.
@@ -510,8 +510,8 @@ bool GuiInputConfig::assign(Input input, int inputId)
 	// (if it's the same as what it was before, allow it)
 	if (mTargetConfig->getMappedTo(input).size() > 0 && 
 		!mTargetConfig->isMappedTo(GUI_INPUT_CONFIG_LIST[inputId].name, input) && 
-#ifdef _ENABLEEMUELEC		
-        GUI_INPUT_CONFIG_LIST[inputId].name != "HotKeyEnable") // emuelec
+#ifdef _ENABLETURBORAMA		
+        GUI_INPUT_CONFIG_LIST[inputId].name != "HotKeyEnable") // turborama
 #else
 		GUI_INPUT_CONFIG_LIST[inputId].name != "hotkey") 
 #endif

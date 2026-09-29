@@ -27,11 +27,11 @@ static std::map<std::string, int> KnowScrapersIds =
 
 void MetaDataList::initMetadata()
 {
-	MetaDataDecl gameDecls[] = 
+	MetaDataDecl gameDecls[] =
 	{
 		// key,             type,                   default,            statistic,  name in GuiMetaDataEd,  prompt in GuiMetaDataEd
 		{ Name,             "name",        MD_STRING,              "",                 false,      _("Name"),                 _("this game's name"),			true },
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		{ SortName,         "sortname",    MD_STRING,              "",                 false,      _("sortname"),             _("this game's sort name"),	true },
 #else
 	//	{ SortName,         "sortname",    MD_STRING,              "",                 false,      _("sortname"),             _("enter game sort name"),	true },
@@ -65,14 +65,14 @@ void MetaDataList::initMetadata()
 		{ BoxBack,			"boxback",	   MD_PATH,                "",                 false,      _("Box backside"),		  _("enter path to box background"), true },
 		{ Wheel,			"wheel",	   MD_PATH,                "",                 true,       _("Wheel"),		          _("enter path to wheel"),      true },
 		{ Mix,			    "mix",	       MD_PATH,                "",                 true,       _("Mix"),                  _("enter path to mix"),		 true },
-		
+
 		{ Rating,           "rating",      MD_RATING,              "0.000000",         false,      _("Rating"),               _("enter rating"),			false },
 		{ ReleaseDate,      "releasedate", MD_DATE,                "not-a-date-time",  false,      _("Release date"),         _("enter release date"),		false },
 		{ Developer,        "developer",   MD_STRING,              "",                 false,      _("Developer"),            _("this game's developer"),	false },
 		{ Publisher,        "publisher",   MD_STRING,              "",                 false,      _("Publisher"),            _("this game's publisher"),	false },
 
 
-		{ Genre,            "genre",       MD_STRING,              "",                 false,      _("Genre"),                _("enter game genre"),		false }, 
+		{ Genre,            "genre",       MD_STRING,              "",                 false,      _("Genre"),                _("enter game genre"),		false },
 		{ Family,           "family",      MD_STRING,              "",                 false,      _("Game family"),		  _("this game's game family"),		false },
 
 		// GenreIds is not serialized
@@ -100,19 +100,19 @@ void MetaDataList::initMetadata()
 
 		{ ScraperId,        "id",		   MD_INT,                 "",				   true,       _("Screenscraper Game ID"), _("Screenscraper Game ID"),	false, true }
 	};
-	
+
 	mMetaDataDecls = std::vector<MetaDataDecl>(gameDecls, gameDecls + sizeof(gameDecls) / sizeof(gameDecls[0]));
-	
+
 	mMetaDataIndexes.clear();
 	for (int i = 0 ; i < mMetaDataDecls.size() ; i++)
 		mMetaDataIndexes[mMetaDataDecls[i].id] = i;
 
 	int maxID = mMetaDataDecls.size() + 1;
 
-	if (mDefaultGameMap != nullptr) 
+	if (mDefaultGameMap != nullptr)
 		delete[] mDefaultGameMap;
 
-	if (mGameTypeMap != nullptr) 
+	if (mGameTypeMap != nullptr)
 		delete[] mGameTypeMap;
 
 	mDefaultGameMap = new std::string[maxID];
@@ -120,7 +120,7 @@ void MetaDataList::initMetadata()
 
 	for (int i = 0; i < maxID; i++)
 		mGameTypeMap[i] = MD_STRING;
-		
+
 	for (auto iter = mMetaDataDecls.cbegin(); iter != mMetaDataDecls.cend(); iter++)
 	{
 		mDefaultGameMap[iter->id] = iter->defaultValue;
@@ -152,7 +152,7 @@ MetaDataList::MetaDataList(MetaDataListType type) : mType(type), mWasChanged(fal
 void MetaDataList::loadFromXML(MetaDataListType type, pugi::xml_node& node, SystemData* system)
 {
 	mType = type;
-	mRelativeTo = system;	
+	mRelativeTo = system;
 
 	mUnKnownElements.clear();
 	mScrapeDates.clear();
@@ -175,14 +175,14 @@ void MetaDataList::loadFromXML(MetaDataListType type, pugi::xml_node& node, Syst
 				auto scraperId = KnowScrapersIds.find(xelement.attribute("name").value());
 				if (scraperId == KnowScrapersIds.cend())
 					continue;
-				
+
 				Utils::Time::DateTime dateTime(xelement.attribute("date").value());
 				if (!dateTime.isValid())
 					continue;
-								
+
 				mScrapeDates[scraperId->second] = dateTime;
-			}		
-								
+			}
+
 			continue;
 		}
 
@@ -219,11 +219,11 @@ void MetaDataList::loadFromXML(MetaDataListType type, pugi::xml_node& node, Syst
 
 		if (mdd.type == MD_BOOL)
 			value = Utils::String::toLower(value);
-		
+
 		if (preloadMedias && mdd.type == MD_PATH && (mdd.id == MetaDataId::Image || mdd.id == MetaDataId::Thumbnail || mdd.id == MetaDataId::Marquee || mdd.id == MetaDataId::Video) &&
 			!Utils::FileSystem::exists(Utils::FileSystem::resolveRelativePath(value, relativeTo, true)))
 			continue;
-		
+
 		// Players -> remove "1-"
 		// if (type == GAME_METADATA && mdd.id == MetaDataId::Players && Utils::String::startsWith(value, "1-"))
 		// 	value = Utils::String::replace(value, "1-", "");
@@ -311,7 +311,7 @@ void MetaDataList::appendToXML(pugi::xml_node& parent, bool ignoreDefaults, cons
 				else
 					value = Utils::FileSystem::createRelativePath(value, relativeTo, true);
 			}
-						
+
 			if (mddIter->isAttribute)
 				parent.append_attribute(mddIter->key.c_str()).set_value(value.c_str());
 			else
@@ -320,11 +320,11 @@ void MetaDataList::appendToXML(pugi::xml_node& parent, bool ignoreDefaults, cons
 	}
 
 	for (std::tuple<std::string, std::string, bool> element : mUnKnownElements)
-	{	
+	{
 		bool isElement = std::get<2>(element);
 		if (isElement)
 			parent.append_child(std::get<0>(element).c_str()).text().set(std::get<1>(element).c_str());
-		else 
+		else
 			parent.append_attribute(std::get<0>(element).c_str()).set_value(std::get<1>(element).c_str());
 	}
 
@@ -376,7 +376,7 @@ void MetaDataList::set(MetaDataId id, const std::string& value)
 	if (prev != mMap.cend() && prev->second == value)
 		return;
 
-	if (mGameTypeMap[id] == MD_PATH && mRelativeTo != nullptr) // if it's a path, resolve relative paths				
+	if (mGameTypeMap[id] == MD_PATH && mRelativeTo != nullptr) // if it's a path, resolve relative paths
 		mMap[id] = Utils::FileSystem::createRelativePath(value, mRelativeTo->getStartPath(), true);
 	else
 		mMap[id] = Utils::String::trim(value);
@@ -392,7 +392,7 @@ const std::string MetaDataList::get(MetaDataId id, bool resolveRelativePaths) co
 	auto it = mMap.find(id);
 	if (it != mMap.end())
 	{
-		if (resolveRelativePaths && mGameTypeMap[id] == MD_PATH && mRelativeTo != nullptr) // if it's a path, resolve relative paths				
+		if (resolveRelativePaths && mGameTypeMap[id] == MD_PATH && mRelativeTo != nullptr) // if it's a path, resolve relative paths
 			return Utils::FileSystem::resolveRelativePath(it->second, mRelativeTo->getStartPath(), true);
 
 		return it->second;
@@ -476,7 +476,7 @@ void MetaDataList::importScrappedMetadata(const MetaDataList& source)
 			type &= ~MetaDataImportType::Types::MANUAL;
 
 		if (!Settings::getInstance()->getBool("ScrapeCartridge"))
-			type &= ~MetaDataImportType::Types::CARTRIDGE;		
+			type &= ~MetaDataImportType::Types::CARTRIDGE;
 	}
 
 	bool scapeNames = Settings::getInstance()->getBool("ScrapeNames");
@@ -509,7 +509,7 @@ void MetaDataList::importScrappedMetadata(const MetaDataList& source)
 			continue;
 
 		if (mdd.id == MetaDataId::Image && (source.get(mdd.id).empty() || (type & MetaDataImportType::Types::IMAGE) != MetaDataImportType::Types::IMAGE))
-			continue;		
+			continue;
 
 		if (mdd.id == MetaDataId::Thumbnail && (source.get(mdd.id).empty() || (type & MetaDataImportType::Types::THUMB) != MetaDataImportType::Types::THUMB))
 			continue;

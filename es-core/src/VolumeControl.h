@@ -36,7 +36,7 @@ class VolumeControl
 	IAudioEndpointVolume * endpointVolume;
 #endif
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 void applyInitialVolumeFromConfig();
 #endif
 	

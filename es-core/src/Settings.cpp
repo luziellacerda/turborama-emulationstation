@@ -55,7 +55,7 @@ void Settings::updateCachedSetting(const std::string& name)
 	UPDATE_STATIC_BOOL_SETTING(VolumePopup)
 	UPDATE_STATIC_BOOL_SETTING(VSync)
 	UPDATE_STATIC_BOOL_SETTING(PreloadMedias)
-	UPDATE_STATIC_BOOL_SETTING(IgnoreLeadingArticles)		
+	UPDATE_STATIC_BOOL_SETTING(IgnoreLeadingArticles)
 	UPDATE_STATIC_BOOL_SETTING(ShowFoldersFirst)
 	UPDATE_STATIC_INT_SETTING(ScreenSaverTime)
 
@@ -91,7 +91,7 @@ std::vector<const char*> settings_dont_save {
 	{ "ScreenOffsetY" },
 	{ "ScreenRotate" },
 	{ "MonitorID" },
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	{ "LogPath" },
 #endif
 };
@@ -124,7 +124,7 @@ void Settings::setDefaults()
 	mBoolMap["IgnoreLeadingArticles"] = Settings::_IgnoreLeadingArticles;
 	mBoolMap["ShowFoldersFirst"] = Settings::_ShowFoldersFirst;
 	mBoolMap["DrawFramerate"] = false;
-	mBoolMap["ScrollLoadMedias"] = false;	
+	mBoolMap["ScrollLoadMedias"] = false;
 	mBoolMap["ShowExit"] = true;
 	mBoolMap["ExitOnRebootRequired"] = false;
 	mBoolMap["Windowed"] = false;
@@ -149,7 +149,7 @@ void Settings::setDefaults()
     mBoolMap["UseOSK"] = true; // on screen keyboard
     mBoolMap["DrawClock"] = Settings::_DrawClock;
 	mBoolMap["ClockMode12"] = Settings::_ClockMode12;
-	mBoolMap["ShowControllerNotifications"] = true;	
+	mBoolMap["ShowControllerNotifications"] = true;
 	mBoolMap["ShowControllerActivity"] = Settings::_ShowControllerActivity;
 	mBoolMap["ShowControllerBattery"] = Settings::_ShowControllerBattery;
     mIntMap["SystemVolume"] = 95;
@@ -166,19 +166,19 @@ void Settings::setDefaults()
 	mStringMap["FolderViewMode"] = "never";
 	mStringMap["HiddenSystems"] = "";
 
-	mBoolMap["PublicWebAccess"] = false;	
+	mBoolMap["PublicWebAccess"] = false;
 	mBoolMap["FirstJoystickOnly"] = false;
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
     mBoolMap["EnableSounds"] = true;
 #else
     mBoolMap["EnableSounds"] = false;
 #endif
 	mBoolMap["ShowHelpPrompts"] = true;
 	mBoolMap["ScrapeRatings"] = true;
-	mBoolMap["ScrapeNames"] = true;	
+	mBoolMap["ScrapeNames"] = true;
 	mBoolMap["ScrapeDescription"] = true;
 	mBoolMap["ScrapePadToKey"] = true;
-	mBoolMap["ScrapeOverWrite"] = true;	
+	mBoolMap["ScrapeOverWrite"] = true;
 	mBoolMap["IgnoreGamelist"] = false;
 	mBoolMap["HideConsole"] = true;
 	mBoolMap["QuickSystemSelect"] = true;
@@ -198,9 +198,9 @@ void Settings::setDefaults()
 	mBoolMap["LoadEmptySystems"] = false;
 	mBoolMap["HideUniqueGroups"] = true;
 	mBoolMap["DrawGunCrosshair"] = true;
-	
+
 	mIntMap["RecentlyScrappedFilter"] = 3;
-	
+
 	mIntMap["ScreenSaverTime"] = Settings::_ScreenSaverTime;
 	mIntMap["ScraperResizeWidth"] = 640;
 	mIntMap["ScraperResizeHeight"] = 0;
@@ -215,8 +215,8 @@ void Settings::setDefaults()
 	// Rpi 0, 1
 	mIntMap["MaxVRAM"] = 128;
 
-#elif defined(_ENABLEEMUELEC)
-	// EmuELEC
+#elif defined(_ENABLETURBORAMA)
+	// Turborama
 	mIntMap["MaxVRAM"] = 180;
 #else
 	// Other boards
@@ -244,7 +244,7 @@ void Settings::setDefaults()
 	mBoolMap["ScreenSaverControls"] = true;
 	mStringMap["ScreenSaverGameInfo"] = "never";
 	mBoolMap["StretchVideoOnScreenSaver"] = false;
-	mStringMap["PowerSaverMode"] = "default"; 
+	mStringMap["PowerSaverMode"] = "default";
 
 	mBoolMap["StopMusicOnScreenSaver"] = true;
 
@@ -252,8 +252,8 @@ void Settings::setDefaults()
 	mIntMap["ScreenSaverSwapImageTimeout"] = 10000;
 	mBoolMap["SlideshowScreenSaverStretch"] = false;
 	mBoolMap["SlideshowScreenSaverCustomImageSource"] = false;
-#ifdef _ENABLEEMUELEC
-	mStringMap["SlideshowScreenSaverImageDir"] = "/storage/screenshots"; // emuelec
+#ifdef _ENABLETURBORAMA
+	mStringMap["SlideshowScreenSaverImageDir"] = "/storage/screenshots"; // turborama
 #endif
 	mStringMap["SlideshowScreenSaverImageFilter"] = ".png,.jpg";
 	mBoolMap["SlideshowScreenSaverRecurse"] = false;
@@ -268,8 +268,8 @@ void Settings::setDefaults()
 	mBoolMap["ShowSpinnerIconOnGames"] = true;
 
 	mBoolMap["SlideshowScreenSaverCustomVideoSource"] = false;
-#ifdef _ENABLEEMUELEC
-	mStringMap["SlideshowScreenSaverVideoDir"] = "/storage/roms/mplayer"; // emuelec
+#ifdef _ENABLETURBORAMA
+	mStringMap["SlideshowScreenSaverVideoDir"] = "/storage/roms/mplayer"; // turborama
     mStringMap["SlideshowScreenSaverVideoFilter"] = ".mp4,.avi,.mkv,.flv,.mpg,.mov";
 	mBoolMap["SlideshowScreenSaverVideoRecurse"] = true;
 #endif
@@ -300,11 +300,11 @@ void Settings::setDefaults()
 	mStringMap["OMXAudioDev"] = "both";
 	mStringMap["CollectionSystemsAuto"] = "all,favorites"; // 2players,4players,favorites,recent
 	mStringMap["CollectionSystemsCustom"] = "";
-	mBoolMap["SortAllSystems"] = true; 
+	mBoolMap["SortAllSystems"] = true;
 	mStringMap["SortSystems"] = "manufacturer";
-	
+
 	mStringMap["UseCustomCollectionsSystemEx"] = "";
-	
+
 	mBoolMap["HiddenSystemsShowGames"] = true;
 	mBoolMap["CollectionShowSystemInfo"] = true;
 	mBoolMap["FavoritesFirst"] = false;
@@ -313,7 +313,7 @@ void Settings::setDefaults()
 	mBoolMap["WebServices"] = false;
 
 	// Audio out device for volume control
-	#if defined _RPI_ || defined _ENABLEEMUELEC
+	#if defined _RPI_ || defined _ENABLETURBORAMA
 		mStringMap["AudioDevice"] = "PCM";
 	#else
 		mStringMap["AudioDevice"] = "Master";
@@ -321,7 +321,7 @@ void Settings::setDefaults()
 
 	mStringMap["AudioCard"] = "default";
 	mStringMap["UIMode"] = "Full";
-	mStringMap["UIMode_passkey"] = "aaaba"; 
+	mStringMap["UIMode_passkey"] = "aaaba";
 	mBoolMap["ForceKiosk"] = false;
 	mBoolMap["ForceKid"] = false;
 	mBoolMap["ForceDisableFilters"] = false;
@@ -367,8 +367,8 @@ void Settings::setDefaults()
 	mStringMap["INPUT P6NAME"] = "DEFAULT";
 	mStringMap["INPUT P7NAME"] = "DEFAULT";
 	mStringMap["INPUT P8NAME"] = "DEFAULT";
-#ifdef _ENABLEEMUELEC
-	mStringMap["LogPath"] = ""; /*emuelec */
+#ifdef _ENABLETURBORAMA
+	mStringMap["LogPath"] = ""; /*turborama */
 #endif
 
 	// Audio settings
@@ -382,8 +382,8 @@ void Settings::setDefaults()
 	mBoolMap["NetPlayAutomaticallyCreateLobby"] = false;
 	mBoolMap["NetPlayShowOnlyRelayServerGames"] = false;
 	mBoolMap["NetPlayShowMissingGames"] = false;
-	
-	mBoolMap["CheevosCheckIndexesAtStart"] = false;	
+
+	mBoolMap["CheevosCheckIndexesAtStart"] = false;
 
 	mBoolMap["AllImagesAsync"] = true;
 
@@ -465,7 +465,7 @@ bool Settings::saveFile()
 		auto def = mDefaultStringMap.find(iter->first);
 		if (def == mDefaultStringMap.cend() && iter->second.empty())
 			continue;
-#ifndef _ENABLEEMUELEC
+#ifndef _ENABLETURBORAMA
 
 		// Value is know and has default value, don't save it
 		if (def != mDefaultStringMap.cend() && def->second == iter->second)
@@ -513,7 +513,7 @@ void Settings::loadFile()
 		setFloat(node.attribute("name").as_string(), node.attribute("value").as_float());
 	for(pugi::xml_node node = root.child("string"); node; node = node.next_sibling("string"))
 		setString(node.attribute("name").as_string(), node.attribute("value").as_string());
-	
+
 	// Migrate old preferences
 	auto it = mBoolMap.find("UseCustomCollectionsSystem");
 	if (it != mBoolMap.cend())
@@ -600,7 +600,7 @@ SettingType Settings::getSettingType(const std::string& name)
 std::vector<std::string> Settings::getSettingsNames()
 {
 	std::vector<std::string> ret;
-	
+
 	for (auto item : mStringMap)
 		ret.push_back(item.first);
 

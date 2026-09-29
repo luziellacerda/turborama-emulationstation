@@ -59,14 +59,14 @@ public:
 	using IList<TextListData, T>::onShow;
 	using IList<TextListData, T>::onHide;
 	using IList<TextListData, T>::isShowing;
-	
+
 	TextListComponent(Window* window);
 
 	bool input(InputConfig* config, Input input) override;
 	void update(int deltaTime) override;
 	void render(const Transform4x4f& parentTrans) override;
 	void applyTheme(const std::shared_ptr<ThemeData>& theme, const std::string& view, const std::string& element, unsigned int properties) override;
-	
+
 	void onShow() override;
 	void onHide() override;
 	void setOpacity(unsigned char opacity) override;
@@ -258,12 +258,12 @@ void TextListComponent<T>::render(const Transform4x4f& parentTrans)
 	}
 
 	float opacity = getOpacity() / 255.0;
-	
+
 	float entrySize = getRowHeight();
 	int startEntry = mCameraOffset / entrySize;
 	int screenCount = mLineCount > 0 ? mLineCount : (int)(mSize.y() / entrySize);
 	int lastEntry = Math::min((int) mEntries.size(), startEntry + screenCount + 1);
-	
+
 	int listCutoff = startEntry + screenCount;
 	if (listCutoff > size())
 		listCutoff = size();
@@ -324,7 +324,7 @@ void TextListComponent<T>::render(const Transform4x4f& parentTrans)
 				}
 			}
 		}
-		
+
 		if (entry.data.itemTemplate)
 		{
 			if (!entry.data.itemTemplate->isVisible())
@@ -471,9 +471,9 @@ bool TextListComponent<T>::input(InputConfig* config, Input input)
 				listInput(-1);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 			if(config->isMappedTo("righttrigger", input))
-#else			
+#else
 			if (config->isMappedTo("pagedown", input))
 #endif
 			{
@@ -481,9 +481,9 @@ bool TextListComponent<T>::input(InputConfig* config, Input input)
 				return true;
 			}
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 			if(config->isMappedTo("lefttrigger", input))
-#else	
+#else
 			if (config->isMappedTo("pageup", input))
 #endif
 			{
@@ -492,8 +492,8 @@ bool TextListComponent<T>::input(InputConfig* config, Input input)
 			}
 		}
 		else {
-#ifdef _ENABLEEMUELEC
-			if(config->isMappedLike("down", input) || config->isMappedLike("up", input) || 
+#ifdef _ENABLETURBORAMA
+			if(config->isMappedLike("down", input) || config->isMappedLike("up", input) ||
 				config->isMappedTo("righttrigger", input) || config->isMappedTo("lefttrigger", input))
 #else
 			if (config->isMappedLike("down", input) || config->isMappedLike("up", input) ||
@@ -666,7 +666,7 @@ void TextListComponent<T>::onCursorChanged(const CursorState& state)
 				{
 					entry.data.itemTemplate->startStoryboard();
 					entry.data.itemTemplate->update(0);
-				} 
+				}
 			}
 		}
 
@@ -874,7 +874,7 @@ bool TextListComponent<T>::onMouseClick(int button, bool pressed, int x, int y)
 				float camOffset = mCameraOffset;
 				mCursor = mHotRow;
 				onCursorChanged(CURSOR_STOPPED);
-				mCameraOffset = camOffset;			
+				mCameraOffset = camOffset;
 
 				mTimeHoldingButton = 0;
 			}
@@ -955,7 +955,7 @@ void TextListComponent<T>::setOpacity(unsigned char opacity)
 template<typename T>
 void TextListComponent<T>::onShow()
 {
-	IList<TextListData, T>::onShow();	
+	IList<TextListData, T>::onShow();
 
 	if (!mItemTemplate.type.empty())
 	{

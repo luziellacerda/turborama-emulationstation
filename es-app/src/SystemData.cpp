@@ -41,8 +41,8 @@ static std::map<std::string, std::function<BindableProperty(SystemData*)>> prope
 	{ "releaseYear",		[] (SystemData* sys) { return sys->getSystemMetadata().releaseYear <= 0 ? std::string() : std::to_string(sys->getSystemMetadata().releaseYear); } },
 	{ "hardwareType",		[] (SystemData* sys) { return sys->getSystemMetadata().hardwareType; } },
 	{ "command",			[] (SystemData* sys) { return sys->getSystemEnvData()->mLaunchCommand; } },
-	{ "group",				[] (SystemData* sys) { return sys->getSystemEnvData()->mGroup; } },		
-	{ "collection",			[] (SystemData* sys) { return sys->isCollection(); } },		
+	{ "group",				[] (SystemData* sys) { return sys->getSystemEnvData()->mGroup; } },
+	{ "collection",			[] (SystemData* sys) { return sys->isCollection(); } },
 	{ "showManual",         [] (SystemData* sys) { return sys->getBoolSetting("ShowManualIcon"); } },
 	{ "showSaveStates",     [] (SystemData* sys) { return sys->getBoolSetting("ShowSaveStates"); } },
 	{ "showCheevos",        [] (SystemData* sys) { return sys->getShowCheevosIcon() && sys->getBoolSetting("ShowCheevosIcon"); } },
@@ -109,8 +109,8 @@ SystemData::SystemData(const SystemMetadata& meta, SystemEnvironmentData* envDat
 		}
 
 		if (!Settings::IgnoreGamelist())
-			parseGamelist(this, fileMap);		
-		
+			parseGamelist(this, fileMap);
+
 		if (Settings::RemoveMultiDiskContent())
 			removeMultiDiskContent(fileMap);
 	}
@@ -160,7 +160,7 @@ SystemData::~SystemData()
 }
 
 void SystemData::removeMultiDiskContent(std::unordered_map<std::string, FileData*>& fileMap)
-{	
+{
 	if (mEnvData == nullptr ||!(mEnvData->isValidExtension(".cue") || mEnvData->isValidExtension(".ccd") || mEnvData->isValidExtension(".gdi") || mEnvData->isValidExtension(".m3u")))
 		return;
 
@@ -208,13 +208,13 @@ void SystemData::removeMultiDiskContent(std::unordered_map<std::string, FileData
 	{
 		if ((*folder)->getChildren().size())
 			continue;
-		
+
 		auto it = fileMap.find((*folder)->getPath());
 		if (it != fileMap.cend())
 		{
 			fileMap.erase(it);
 			delete (*folder);
-		}		
+		}
 	}
 }
 
@@ -296,14 +296,14 @@ void SystemData::populateFolder(FolderData* folder, std::unordered_map<std::stri
 
 			if (preloadMedias && (!mHidden || Settings::HiddenSystemsShowGames()))
 			{
-				// Recurse list files in medias folder, just to let OS build filesystem cache 
+				// Recurse list files in medias folder, just to let OS build filesystem cache
 				if (fn == "media" || fn == "medias")
 				{
 					Utils::FileSystem::getDirContent(filePath, true);
 					continue;
 				}
 
-				// List files in folder, just to get OS build filesystem cache 
+				// List files in folder, just to get OS build filesystem cache
 				if (fn == "manuals" || fn == "images" || fn == "videos" || Utils::String::startsWith(fn, "downloaded_"))
 				{
 					Utils::FileSystem::getDirectoryFiles(filePath);
@@ -314,14 +314,14 @@ void SystemData::populateFolder(FolderData* folder, std::unordered_map<std::stri
 			// Don't loose time looking in downloaded_images, downloaded_videos & media folders
 			if (fn == "media" || fn == "medias" || fn == "images" || fn == "manuals" || fn == "videos" || fn == "assets" || Utils::String::startsWith(fn, "downloaded_") || Utils::String::startsWith(fn, "."))
 				continue;
-			
+
 			// Hardcoded optimisation : WiiU has so many files in content & meta directories
 			if (mMetadata.name == "wiiu" && (fn == "content" || fn == "meta"))
 				continue;
 
 			// Hardcoded optimisation : vpinball 'roms' subfolder must be excluded
 			if (mMetadata.name == "vpinball" && fn == "roms")
-				continue;			
+				continue;
 
 			FolderData* newFolder = new FolderData(filePath, this);
 			populateFolder(newFolder, fileMap);
@@ -329,7 +329,7 @@ void SystemData::populateFolder(FolderData* folder, std::unordered_map<std::stri
 			//ignore folders that do not contain games
 			if(newFolder->getChildren().size() == 0)
 				delete newFolder;
-			else 
+			else
 			{
 				const std::string& key = newFolder->getPath();
 				if (fileMap.find(key) == fileMap.end())
@@ -387,7 +387,7 @@ void SystemData::createGroupedSystems()
 	{
 		if (sys->isCollection() || sys->getSystemEnvData()->mGroup.empty())
 			continue;
-		
+
 		if (Settings::getInstance()->getBool(sys->getSystemEnvData()->mGroup + ".ungroup") || Settings::getInstance()->getBool(sys->getName() + ".ungroup"))
 			continue;
 
@@ -395,22 +395,22 @@ void SystemData::createGroupedSystems()
 		{
 			sys->getSystemEnvData()->mGroup = "";
 			continue;
-		}		
+		}
 		else if (std::find(hiddenSystems.cbegin(), hiddenSystems.cend(), sys->getName()) != hiddenSystems.cend())
 			continue;
-		
-		map[sys->getSystemEnvData()->mGroup].push_back(sys);		
+
+		map[sys->getSystemEnvData()->mGroup].push_back(sys);
 	}
 
 	for (auto item : map)
-	{	
-		// Don't group if system count is only 1 		
+	{
+		// Don't group if system count is only 1
 		if (item.second.size() == 1 && Settings::getInstance()->HideUniqueGroups())
 		{
 			item.second[0]->getSystemEnvData()->mGroup = "";
 			continue;
 		}
-		
+
 		SystemData* system = nullptr;
 		bool existingSystem = false;
 
@@ -467,7 +467,7 @@ void SystemData::createGroupedSystems()
 
 			if (!existingSystem)
 				sSystemVector.push_back(system);
-						
+
 			for (auto childSystem : item.second)
 				childSystem->getSystemEnvData()->mGroup = "";
 
@@ -483,7 +483,7 @@ void SystemData::createGroupedSystems()
 			{
 				auto folder = new FolderData(childSystem->getRootFolder()->getPath(), childSystem, false);
 				folder->setMetadata(childSystem->getRootFolder()->getMetadata());
-				
+
 				if (folder->getMetadata(MetaDataId::Desc).empty())
 				{
 					char trstring[1024];
@@ -546,7 +546,7 @@ void SystemData::createGroupedSystems()
 
 			sSystemVector.push_back(system);
 		}
-		
+
 		root->getMetadata().resetChangedFlag();
 	}
 }
@@ -588,7 +588,7 @@ bool SystemData::loadFeatures()
 		if (it != CustomFeatures::EmulatorFeatures.cend())
 		{
 			emul.features = it->second.features;
-			emul.customFeatures = it->second.customFeatures;			
+			emul.customFeatures = it->second.customFeatures;
 
 			for (auto essystem : it->second.systemFeatures)
 			{
@@ -606,7 +606,7 @@ bool SystemData::loadFeatures()
 				{
 					if (core.name != escore.name)
 						continue;
-					
+
 					core.features = core.features | escore.features;
 
 					for (auto feat : escore.customFeatures)
@@ -700,7 +700,7 @@ bool SystemData::isFeatureSupported(std::string emulatorName, std::string coreNa
 				if (coreName == core.name)
 					if ((core.features & feature) == feature)
 						return true;
-			
+
 			return (emulator.features & feature) == feature;
 		}
 	}
@@ -710,7 +710,7 @@ bool SystemData::isFeatureSupported(std::string emulatorName, std::string coreNa
 
 // Load custom additionnal config from es_systems_*.cfg files
 void SystemData::loadAdditionnalConfig(pugi::xml_node& srcSystems)
-{	
+{
 	std::vector<std::string> rootPaths = { Paths::getUserEmulationStationPath(), Paths::getEmulationStationPath() };
 	for (auto rootPath : VectorHelper::distinct(rootPaths, [](auto x) { return x; }))
 	{
@@ -1015,7 +1015,7 @@ std::map<std::string, std::string> SystemData::getKnownSystemNames()
 		std::string fullName = system.child("fullname").text().get();
 		if (fullName.empty())
 			continue;
-		
+
 		ret[name] = fullName;
 	}
 
@@ -1109,10 +1109,10 @@ SystemData* SystemData::loadSystem(pugi::xml_node system, bool fullMode)
 	envData->mLaunchCommand = cmd;
 	envData->mPlatformIds = platformIds;
 	envData->mGroup = system.child("group").text().get();
-	
+
 	// Emulators and cores
 	std::vector<EmulatorData> systemEmulators;
-	
+
 	pugi::xml_node emulatorsNode = system.child("emulators");
 	if (emulatorsNode == nullptr)
 		emulatorsNode = system;
@@ -1148,7 +1148,7 @@ SystemData* SystemData::loadSystem(pugi::xml_node system, bool fullMode)
 					core.name = coreNode.text().as_string();
 					core.netplay = coreNode.attribute("netplay") && strcmp(coreNode.attribute("netplay").value(), "true") == 0;
 					core.isDefault = coreNode.attribute("default") && strcmp(coreNode.attribute("default").value(), "true") == 0;
-					
+
 					if (coreNode.attribute("incompatible_extensions"))
 					{
 						for (auto ext : readList(coreNode.attribute("incompatible_extensions").value()))
@@ -1180,7 +1180,7 @@ SystemData* SystemData::loadSystem(pugi::xml_node system, bool fullMode)
 		LOG(LogWarning) << "System \"" << md.name << "\" has no games! Ignoring it.";
 		delete newSys;
 		return nullptr;
-	}	
+	}
 
 	if (!newSys->mIsCollectionSystem && newSys->mIsGameSystem && !md.manufacturer.empty() && !IsManufacturerSupported)
 		IsManufacturerSupported = true;
@@ -1199,7 +1199,7 @@ bool SystemData::hasDirtySystems()
 		SystemData* pData = sSystemVector.at(i);
 		if (pData->mIsCollectionSystem)
 			continue;
-		
+
 		if (hasDirtyFile(pData))
 			return true;
 	}
@@ -1266,14 +1266,14 @@ SystemData* SystemData::getNext() const
 {
 	auto it = getIterator();
 
-	do 
+	do
 	{
 		it++;
 		if (it == sSystemVector.cend())
 			it = sSystemVector.cbegin();
-	} 
+	}
 	while (!(*it)->isVisible());
-	
+
 	// as we are starting in a valid gamelistview, this will always succeed, even if we have to come full circle.
 
 	return *it;
@@ -1283,12 +1283,12 @@ SystemData* SystemData::getPrev() const
 {
 	auto it = getRevIterator();
 
-	do 
+	do
 	{
 		it++;
 		if (it == sSystemVector.crend())
 			it = sSystemVector.crbegin();
-	} 
+	}
 	while (!(*it)->isVisible());
 	// as we are starting in a valid gamelistview, this will always succeed, even if we have to come full circle.
 
@@ -1309,7 +1309,7 @@ std::string SystemData::getGamelistPath(bool forWrite) const
 
 	if (forWrite)
 		Utils::FileSystem::createDirectory(Utils::FileSystem::getParent(filePath));
-	
+
 	return filePath;
 }
 
@@ -1321,7 +1321,7 @@ std::string SystemData::getThemePath() const
 	// 3. default system theme from currently selected theme set [CURRENT_THEME_PATH]/theme.xml
 
 	// first, check game folder
-	
+
 	if (!mEnvData->mStartPath.empty())
 	{
 		std::string rootThemePath = mRootFolder->getPath() + "/theme.xml";
@@ -1392,7 +1392,7 @@ FileData* SystemData::getRandomGame()
 GameCountInfo* SystemData::getGameCountInfo()
 {
 	if (mGameCountInfo != nullptr)
-		return mGameCountInfo;	
+		return mGameCountInfo;
 
 	std::vector<FileData*> games = mRootFolder->getFilesRecursive(GAME, true);
 
@@ -1414,7 +1414,7 @@ GameCountInfo* SystemData::getGameCountInfo()
 	mGameCountInfo->playCount = 0;
 	mGameCountInfo->gamesPlayed = 0;
 	mGameCountInfo->playTime = 0;
-	
+
 	int mostPlayCount = 0;
 	long gameTime = 0;
 	std::string mostCountPlayed;
@@ -1432,7 +1432,7 @@ GameCountInfo* SystemData::getGameCountInfo()
 		{
 			mGameCountInfo->gamesPlayed++;
 			mGameCountInfo->playCount += playCount;
-			
+
 			if (playCount > mostPlayCount)
 			{
 				mostCountPlayed = game->getName();
@@ -1444,7 +1444,7 @@ GameCountInfo* SystemData::getGameCountInfo()
 		if (seconds > 0)
 		{
 			mGameCountInfo->playTime += seconds;
-			
+
 			if (seconds > gameTime)
 			{
 				mGameCountInfo->mostPlayed = game->getName();
@@ -1535,7 +1535,7 @@ void SystemData::loadTheme()
 		}
 		else
 			sysData["system.releaseYear"] = _("Unknown");
-		
+
 		for (auto property : properties)
 		{
 			auto name = "system." + property.first;
@@ -1543,7 +1543,7 @@ void SystemData::loadTheme()
 				sysData.insert(std::pair<std::string, std::string>("system." + property.first, property.second(this).toString()));
 		}
 
-		// Variables 
+		// Variables
 		/*
 		global.architecture
 		global.help					( bool )
@@ -1554,7 +1554,7 @@ void SystemData::loadTheme()
 		global.netplay.username
 		global.language
 		screen.width				( float )
-		screen.height				( float ) 
+		screen.height				( float )
 		screen.ratio
 		screen.vertical             ( bool )
 		system.cheevos				( bool )
@@ -1571,7 +1571,7 @@ void SystemData::loadTheme()
 		system.theme
 		system.command
 
-		lang					
+		lang
 		cheevos.username		-> retrocompat
 		*/
 
@@ -1664,7 +1664,7 @@ bool SystemData::isCheevosSupported()
 	if (mIsCheevosSupported < 0)
 	{
 		mIsCheevosSupported = 0;
-		
+
 		if (isGroupSystem())
 		{
 			auto groupName = getName();
@@ -1692,7 +1692,7 @@ bool SystemData::isCheevosSupported()
 				"psx", "sg-1000", "sg1000", "coleco", "colecovision", "atari7800", "wonderswan", "pc88", "saturn", "3do", "apple2", "neogeo",
 				"arcade", "mame", "nds", "arcade", "megadrive-japan", "pcenginecd", "supergrafx", "supervision", "snes-msu1", "amstradcpc",
 				"dreamcast", "psp", "jaguar", "intellivision", "vectrex", "megaduck", "arduboy", "wasm4", "ps2", "gamecube", "wii", "channelf",
-#ifdef _ENABLEEMUELEC 
+#ifdef _ENABLETURBORAMA
                 "genesis", "msx", "sfc",
 #endif
 				"o2em", "uzebox" };
@@ -1702,7 +1702,7 @@ bool SystemData::isCheevosSupported()
 
 			return mIsCheevosSupported != 0;
 		}
-		
+
 		for (auto emul : mEmulators)
 		{
 			for (auto core : emul.cores)
@@ -1724,10 +1724,10 @@ bool SystemData::isNetplayActivated()
 	return sSystemVector.any([](auto sys) { return sys->isNetplaySupported(); });
 }
 
-bool SystemData::isGroupChildSystem() 
-{ 
+bool SystemData::isGroupChildSystem()
+{
 	if (mEnvData != nullptr && !mEnvData->mGroup.empty())
-		return !Settings::getInstance()->getBool(mEnvData->mGroup + ".ungroup") && 
+		return !Settings::getInstance()->getBool(mEnvData->mGroup + ".ungroup") &&
 			   !Settings::getInstance()->getBool(getName() + ".ungroup");
 
 	return false;
@@ -1738,7 +1738,7 @@ std::unordered_set<std::string> SystemData::getAllGroupNames()
 	auto hiddenSystems = Utils::String::split(Settings::HiddenSystems(), ';');
 
 	std::unordered_set<std::string> names;
-	
+
 	for (auto sys : SystemData::sSystemVector)
 	{
 		std::string name;
@@ -1761,7 +1761,7 @@ std::unordered_set<std::string> SystemData::getGroupChildSystemNames(const std::
 	for (auto sys : SystemData::sSystemVector)
 		if (sys->mEnvData != nullptr && sys->mEnvData->mGroup == groupName)
 			names.insert(sys->getName());
-		
+
 	return names;
 }
 
@@ -1832,7 +1832,7 @@ std::string SystemData::getDefaultEmulator()
 		for (auto core : emul.cores)
 			if (core.isDefault)
 				return emul.name;
-		
+
 	auto emulators = getEmulators();
 	if (emulators.size() > 0)
 		return emulators.begin()->name;
@@ -1848,7 +1848,7 @@ std::string SystemData::getDefaultCore(const std::string emulatorName)
 
 	if (emul.empty())
 		return "";
-	
+
 	for (auto it : mEmulators)
 	{
 		if (it.name == emul)
@@ -1860,7 +1860,7 @@ std::string SystemData::getDefaultCore(const std::string emulatorName)
 			if (it.cores.size() > 0)
 				return it.cores.begin()->name;
 		}
-	}	
+	}
 
 	return "";
 }
@@ -1914,7 +1914,7 @@ bool SystemData::hasEmulatorSelection()
 }
 
 SystemData* SystemData::getSystem(const std::string name)
-{	
+{
 	for (auto sys : SystemData::sSystemVector)
 		if (Utils::String::compareIgnoreCase(sys->getName(), name) == 0)
 			return sys;
@@ -1932,7 +1932,7 @@ SystemData* SystemData::getFirstVisibleSystem()
 }
 
 std::string SystemData::getKeyboardMappingFilePath()
-{		
+{
 	return Paths::getUserKeyboardMappingsPath() + "/" + getName() + ".keys";
 }
 
@@ -2030,7 +2030,7 @@ std::string SystemData::getFolderViewMode()
 	std::string showFoldersMode = Settings::getInstance()->getString("FolderViewMode");
 
 	auto fvm = Settings::getInstance()->getString(getName() + ".FolderViewMode");
-	if (!fvm.empty() && fvm != "auto") 
+	if (!fvm.empty() && fvm != "auto")
 		showFoldersMode = fvm;
 
 	if ((fvm.empty() || fvm == "auto") && this == CollectionSystemManager::get()->getCustomCollectionsBundle())
@@ -2075,7 +2075,7 @@ int SystemData::getShowFlags()
 	auto spf = Settings::getInstance()->getString(getName() + ".ShowFlags");
 	if (spf == "" || spf == "auto")
 		return show;
-	
+
 	return Utils::String::toInteger(spf);
 }
 
@@ -2099,7 +2099,7 @@ BindableProperty BindableRandom::getProperty(const std::string& name)
 		else if (name == "titleshot")
 			type = SystemRandomPlaylist::TITLESHOT;
 		else if (name == "video")
-			type = SystemRandomPlaylist::VIDEO;		
+			type = SystemRandomPlaylist::VIDEO;
 
 		SystemRandomPlaylist rand(mSystem, type);
 
@@ -2128,7 +2128,7 @@ BindableProperty SystemData::getProperty(const std::string& name)
 		if (mBindableRandom == nullptr)
 			mBindableRandom = new BindableRandom(this);
 
-		return BindableProperty(mBindableRandom);		
+		return BindableProperty(mBindableRandom);
 	}
 
 	if (name == "image" || name == "logo")
@@ -2210,7 +2210,7 @@ BindableProperty SystemData::getProperty(const std::string& name)
 
 			char       clockBuf[256];
 			strftime(clockBuf, sizeof(clockBuf), "%x", &clockTstruct);
-			
+
 			return BindableProperty(clockBuf, BindablePropertyType::String);
 		}
 

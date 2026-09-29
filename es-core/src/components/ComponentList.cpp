@@ -7,19 +7,19 @@
 #include "components/SliderComponent.h"
 #include "components/OptionListComponent.h"
 #include "InputManager.h"
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 //I am sure this  part should be moved to another file, it is not supposed to be here
 #include "Sound.h"
 #include "SystemConf.h"
 
 static std::string getMenuNavSoundPath() {
-	
+
 	auto scrollSoundfile = SystemConf::getInstance()->get("ee_menuscrollsound");
-	
+
     if (scrollSoundfile.empty()) {
         return "/storage/.emulationstation/resources/mscroll.ogg"; // Fallback
 	} else {
-		return scrollSoundfile;	
+		return scrollSoundfile;
 	}
 }
 
@@ -39,9 +39,9 @@ ComponentList::ComponentList(Window* window) : IList<ComponentListRow, std::stri
 	mSelectorBarOffset = 0;
 	mCameraOffset = 0;
 	mFocused = false;
-	mOldCursor = -1; 
+	mOldCursor = -1;
 
-	mScrollbar.loadFromMenuTheme();	
+	mScrollbar.loadFromMenuTheme();
 }
 
 void ComponentList::addRow(const ComponentListRow& row, bool setCursorHere, bool updateSize, const std::string& userData)
@@ -88,7 +88,7 @@ void ComponentList::removeLastRowIfGroup()
 }
 
 void ComponentList::addGroup(const std::string& label, bool forceVisible)
-{	
+{
 	auto theme = ThemeData::getMenuTheme();
 	if (!forceVisible && !theme->Group.visible)
 		return;
@@ -102,7 +102,7 @@ void ComponentList::addGroup(const std::string& label, bool forceVisible)
 	else
 		group->setHorizontalAlignment((Alignment) theme->Group.alignment);
 
-	group->setBackgroundColor(theme->Group.backgroundColor); // 0x00000010	
+	group->setBackgroundColor(theme->Group.backgroundColor); // 0x00000010
 	if (theme->Group.backgroundColor != 0)
 		group->setRenderBackground(true);
 
@@ -193,14 +193,14 @@ bool ComponentList::input(InputConfig* config, Input input)
 	{
 		return listInput(input.value != 0 ? 1 : 0);
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	}else if(config->isMappedTo("lefttrigger", input))
 #else
 	}else if(config->isMappedTo("pageup", input))
 #endif
 	{
 		return listInput(input.value != 0 ? -6 : 0);
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	}else if(config->isMappedTo("righttrigger", input)){
 #else
 	}else if(config->isMappedTo("pagedown", input)){
@@ -262,8 +262,8 @@ void ComponentList::onCursorChanged(const CursorState& state)
 
 	updateHelpPrompts();
 
-#ifdef _ENABLEEMUELEC
-if (mOldCursor != mCursor) 
+#ifdef _ENABLETURBORAMA
+if (mOldCursor != mCursor)
 {
     if (!scrollSound)
     scrollSound = Sound::get(getMenuNavSoundPath());
@@ -277,8 +277,8 @@ if (mOldCursor != mCursor)
 	if (state == CURSOR_STOPPED && mOldCursor != mCursor)
 		saySelectedLine();
 
-#ifdef _ENABLEEMUELEC
-   mOldCursor = mCursor; 
+#ifdef _ENABLETURBORAMA
+   mOldCursor = mCursor;
 #endif
 
 
@@ -290,7 +290,7 @@ void ComponentList::saySelectedLine()
 {
 	int n = 0;
 
-	if (!(mCursor >= 0 && mCursor < mEntries.size())) 
+	if (!(mCursor >= 0 && mCursor < mEntries.size()))
 		return;
 
 	mOldCursor = mCursor;
@@ -428,10 +428,10 @@ void ComponentList::render(const Transform4x4f& parentTrans)
 			}
 
 			for (auto& element : entry.data.elements)
-			{				
+			{
 				if (Settings::DebugMouse() && i == mHotRow)
 					element.component->setColor(0xFFFF00FF);
-				else 
+				else
 				if (entry.data.group)
 					element.component->setColor(menuTheme->Group.color);
 				else
@@ -441,14 +441,14 @@ void ComponentList::render(const Transform4x4f& parentTrans)
 					else
 						element.component->setColor(textColor);
 				}
-					
+
 				if (element.component->isKindOf<TextComponent>())
 					drawAfterCursor.push_back(element.component.get());
 				else
 					element.component->render(trans);
 			}
 		}
-		
+
 		y += rowHeight;
 		if (y - mCameraOffset > mSize.y())
 			break;
@@ -459,7 +459,7 @@ void ComponentList::render(const Transform4x4f& parentTrans)
 
 	// draw separators
 	if (separatorColor != 0 ||  menuTheme->Group.separatorColor != 0)
-	{		
+	{
 		Renderer::setMatrix(trans);
 
 		bool prevIsGroup = false;
@@ -546,7 +546,7 @@ void ComponentList::updateElementPosition(const ComponentListRow& row, float yOf
 	for(unsigned int i = 0; i < row.elements.size(); i++)
 	{
 		const auto comp = row.elements.at(i).component;
-		
+
 		// center vertically
 		comp->setPosition(x, (rowHeight - comp->getSize().y()) / 2 + yOffset);
 		x += comp->getSize().x();
@@ -630,7 +630,7 @@ bool ComponentList::hitTest(int x, int y, Transform4x4f& parentTransform, std::v
 	bool ret = false;
 
 	mHotRow = -1;
-		
+
 	auto rect = Renderer::getScreenRect(trans, getSize(), true);
 	if (x != -1 && y != -1 && rect.contains(x, y))
 	{
@@ -705,7 +705,7 @@ bool ComponentList::onMouseClick(int button, bool pressed, int x, int y)
 			mIsDragging = false;
 
 			if (!dragging && row == mHotRow && mCursor == row)
-				InputManager::getInstance()->sendMouseClick(mWindow, 1);				
+				InputManager::getInstance()->sendMouseClick(mWindow, 1);
 		}
 
 		return true;
@@ -744,7 +744,7 @@ void ComponentList::onMouseMove(int x, int y)
 bool ComponentList::onMouseWheel(int delta)
 {
 	int newCursor = mCursor - delta;
-	
+
 	if (newCursor < 0)
 		newCursor = 0;
 

@@ -45,7 +45,7 @@
 
 static std::map<std::string, std::string> coreList =
 {
-#if WIN32 || _ENABLEEMUELEC
+#if WIN32 || _ENABLETURBORAMA
 	{ "2048", "2048" },
 	{ "81", "81" },
 	{ "Atari800", "atari800" },
@@ -85,7 +85,7 @@ static std::map<std::string, std::string> coreList =
 	{ "Beetle SuperGrafx", "mednafen_supergrafx" },
 	{ "Beetle VB", "mednafen_vb" },
 	{ "Beetle PSX", "mednafen_psx" },
-	{ "Beetle PSX HW", "mednafen_psx_hw" },	
+	{ "Beetle PSX HW", "mednafen_psx_hw" },
 	{ "Beetle WonderSwan", "mednafen_wswan" },
 	{ "Mesen-S", "mesen-s" },
 	{ "mGBA", "mgba" },
@@ -162,14 +162,14 @@ static std::map<std::string, std::string> coreList =
 };
 
 GuiNetPlay::GuiNetPlay(Window* window)
-	: GuiComponent(window), 
+	: GuiComponent(window),
 	mBusyAnim(window),
 	mBackground(window, ":/frame.png"),
 	mGrid(window, Vector2i(1, 3)),
 	mList(nullptr),
 	mLanLobbySocket(-1),
 	mLanLobbySocketTimeout(0)
-{	
+{
 	addChild(&mBackground);
 	addChild(&mGrid);
 
@@ -187,7 +187,7 @@ GuiNetPlay::GuiNetPlay(Window* window)
 
 	mTitle = std::make_shared<TextComponent>(mWindow, _("CONNECT TO NETPLAY"), theme->Title.font, theme->Title.color, ALIGN_CENTER);
 	mSubtitle = std::make_shared<TextComponent>(mWindow, _("Select a game lobby to join"), theme->TextSmall.font, theme->TextSmall.color, ALIGN_CENTER);
-	
+
 	mHeaderGrid->setEntry(mTitle, Vector2i(0, 1), false, true);
 	mHeaderGrid->setEntry(mSubtitle, Vector2i(0, 3), false, true);
 
@@ -204,7 +204,7 @@ GuiNetPlay::GuiNetPlay(Window* window)
 	mButtonGrid = makeButtonGrid(mWindow, buttons);
 	mGrid.setEntry(mButtonGrid, Vector2i(0, 2), true, false);
 
-	mGrid.setUnhandledInputCallback([this](InputConfig* config, Input input) -> bool 
+	mGrid.setUnhandledInputCallback([this](InputConfig* config, Input input) -> bool
 	{
 		if (config->isMappedLike("down", input)) {
 			mGrid.setCursorTo(mList);
@@ -256,9 +256,9 @@ void GuiNetPlay::onSizeChanged()
 	GuiComponent::onSizeChanged();
 
 	mBackground.fitTo(mSize, Vector3f::Zero(), Vector2f(-32, -32));
-	
+
 	mGrid.setSize(mSize);
-	
+
 	const float titleHeight = mTitle->getFont()->getLetterHeight();
 	const float subtitleHeight = mSubtitle->getFont()->getLetterHeight();
 	const float titleSubtitleSpacing = mSize.y() * 0.03f;
@@ -292,7 +292,7 @@ void GuiNetPlay::startRequest()
 void GuiNetPlay::update(int deltaTime)
 {
 	GuiComponent::update(deltaTime);
-		
+
 	if (mLanLobbySocketTimeout < 20000) // allow receiving answers from the LAN for 20 seconds
 	{
 		mLanLobbySocketTimeout += deltaTime;
@@ -322,7 +322,7 @@ void GuiNetPlay::update(int deltaTime)
 }
 
 #if WIN32
-static std::vector<std::string> getBroadcastAddresses() 
+static std::vector<std::string> getBroadcastAddresses()
 {
 	std::vector<std::string> ret;
 
@@ -332,34 +332,34 @@ static std::vector<std::string> getBroadcastAddresses()
 
 	pAddresses = (IP_ADAPTER_ADDRESSES*)malloc(outBufLen);
 	if (pAddresses == nullptr)
-		return ret;	
+		return ret;
 
 	dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
-	if (dwRetVal != NO_ERROR) 
+	if (dwRetVal != NO_ERROR)
 	{
 		free(pAddresses);
 		return ret;
 	}
-	
-	for (pCurrAddress = pAddresses; pCurrAddress != nullptr; pCurrAddress = pCurrAddress->Next) 
+
+	for (pCurrAddress = pAddresses; pCurrAddress != nullptr; pCurrAddress = pCurrAddress->Next)
 	{
-		if (pCurrAddress->OperStatus == IfOperStatusUp && pCurrAddress->FirstUnicastAddress) 
+		if (pCurrAddress->OperStatus == IfOperStatusUp && pCurrAddress->FirstUnicastAddress)
 		{
 			sockaddr_in* sa = (sockaddr_in*)pCurrAddress->FirstUnicastAddress->Address.lpSockaddr;
 			sockaddr_in* mask = (sockaddr_in*)pCurrAddress->FirstUnicastAddress->OnLinkPrefixLength;
 
 			if (sa->sin_family != AF_INET)
 				continue;
-			
+
 			uint32_t ip = sa->sin_addr.s_addr;
 			uint32_t subnetMask = htonl(~((1 << (32 - pCurrAddress->FirstUnicastAddress->OnLinkPrefixLength)) - 1));
 			uint32_t broadcast = ip | ~subnetMask;
 
 			struct in_addr broadcastInAddr;
 			broadcastInAddr.s_addr = broadcast;
-				
+
 			std::string broadcastAddr = inet_ntoa(broadcastInAddr);
-			ret.push_back(broadcastAddr);							
+			ret.push_back(broadcastAddr);
 		}
 	}
 
@@ -370,7 +370,7 @@ static std::vector<std::string> getBroadcastAddresses()
 		if (it != ret.cend())
 			ret.erase(it);
 	}
-	
+
 	free(pAddresses);
 	return ret;
 }
@@ -395,7 +395,7 @@ void GuiNetPlay::lanLobbyRequest()
 
 		int broadcastEnable = 1;
 		setsockopt(mLanLobbySocket, SOL_SOCKET, SO_BROADCAST, (const char*)&broadcastEnable, sizeof(broadcastEnable));
-	
+
 		int on = 1;
 		setsockopt(mLanLobbySocket, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on));
 
@@ -405,7 +405,7 @@ void GuiNetPlay::lanLobbyRequest()
 		bindAddr.sin_port = htons(0);
 		bindAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-		if (bind(mLanLobbySocket, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) < 0) 
+		if (bind(mLanLobbySocket, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) < 0)
 		{
 			closesocket(mLanLobbySocket);
 			WSACleanup();
@@ -413,13 +413,13 @@ void GuiNetPlay::lanLobbyRequest()
 		}
 
 		u_long mode = 1;
-		if (ioctlsocket(mLanLobbySocket, FIONBIO, &mode) != 0) 
-		{		
+		if (ioctlsocket(mLanLobbySocket, FIONBIO, &mode) != 0)
+		{
 			closesocket(mLanLobbySocket);
 			WSACleanup();
 			return;
 		}
-#else 
+#else
 		mLanLobbySocket = socket(AF_INET, SOCK_DGRAM, 0);
 		if (mLanLobbySocket < 0)
 			return;
@@ -440,8 +440,8 @@ void GuiNetPlay::lanLobbyRequest()
 		struct sockaddr_in broadcastAddr;
 		memset(&broadcastAddr, 0, sizeof(broadcastAddr));
 		broadcastAddr.sin_family = AF_INET;
-		broadcastAddr.sin_port = htons(port);		
-		broadcastAddr.sin_addr.s_addr = inet_addr(address.c_str());		
+		broadcastAddr.sin_port = htons(port);
+		broadcastAddr.sin_addr.s_addr = inet_addr(address.c_str());
 
 		sendto(mLanLobbySocket, (const char*)&query_magic, sizeof(query_magic), 0, (struct sockaddr*)&broadcastAddr, sizeof(broadcastAddr));
 	}
@@ -453,7 +453,7 @@ void GuiNetPlay::lanLobbyRequest()
 	broadcastAddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 
 	sendto(mLanLobbySocket, &query_magic, sizeof(query_magic), 0, (struct sockaddr*)&broadcastAddr, sizeof(broadcastAddr));
-#endif	
+#endif
 }
 
 bool GuiNetPlay::input(InputConfig* config, Input input)
@@ -494,7 +494,7 @@ FileData* GuiNetPlay::getFileData(std::string gameInfo, bool crc, std::string co
 		lowCore = Utils::String::toLower(coreInfo->second);
 	else
 		lowCore = Utils::String::toLower(Utils::String::replace(coreName, " ", "_"));
-	
+
 	std::string normalizedName = normalizeName(gameInfo);
 	std::string normalizedNameNoSpace = Utils::String::replace(normalizedName, " ", "");
 
@@ -600,12 +600,12 @@ public:
 
 		if (entry.fileData != nullptr && !entry.coreExists)
 			subInfo = subInfo + "   " + _U("\uf071  ") + _("UNAVAILABLE CORE");
-		
+
 		mDetails = std::make_shared<TextComponent>(mWindow, subInfo.c_str(), theme->TextSmall.font, theme->Text.color);
 		mDetails->setOpacity(192);
-		
+
 		if (entry.has_password || entry.has_spectate_password)
-		{					
+		{
 			if (!entry.has_spectate_password)
 				mLockInfo = std::make_shared<TextComponent>(mWindow, std::string(_U("\uf06E")).c_str(), Font::get(FONT_SIZE_MEDIUM, FONT_PATH_REGULAR), theme->Text.color);
 			else
@@ -619,15 +619,15 @@ public:
 		setEntry(mText, Vector2i(2, 0), false, true);
 		setEntry(mSubstring, Vector2i(2, 1), false, true);
 		setEntry(mDetails, Vector2i(2, 2), false, true);
-		
+
 		if (mLockInfo != nullptr)
-			setEntry(mLockInfo, Vector2i(3, 0), false, true, Vector2i(1, 3));		
-		
+			setEntry(mLockInfo, Vector2i(3, 0), false, true, Vector2i(1, 3));
+
 		float rowHeight = mText->getSize().y() * 1.1f + mSubstring->getSize().y() + mDetails->getSize().y();
 		float imageColWidth = rowHeight * 1.15f;
 
 		float sw = (float)Math::min((int)Renderer::getScreenHeight(), (int)(Renderer::getScreenWidth() * 0.90f));
-		
+
 		mImage->setOrigin(0.5f, 0.5f);
 		mImage->setMaxSize(imageColWidth, rowHeight);
 		mImage->setPadding(Vector4f(4.0f));
@@ -682,7 +682,7 @@ private:
 	std::shared_ptr<TextComponent>  mDetails;
 	std::shared_ptr<TextComponent>	mLockInfo;
 
-	LobbyAppEntry mEntry;	
+	LobbyAppEntry mEntry;
 };
 
 bool GuiNetPlay::populateList()
@@ -779,7 +779,7 @@ bool GuiNetPlay::populateFromJson(const std::string json)
 
 	if (doc.HasParseError())
 	{
-		std::string err = std::string("GuiNetPlay - Error parsing JSON. \n\t");		
+		std::string err = std::string("GuiNetPlay - Error parsing JSON. \n\t");
 		LOG(LogError) << err;
 		return false;
 	}
@@ -798,7 +798,7 @@ bool GuiNetPlay::populateFromJson(const std::string json)
 		//if (fields.HasMember("has_password") && fields["has_password"].IsBool() && fields["has_password"].GetBool())
 	//		continue;
 
-		LobbyAppEntry game;	
+		LobbyAppEntry game;
 		game.isCrcValid = false;
 
 		if (fields.HasMember("host_method") && fields["host_method"].IsInt())
@@ -865,14 +865,14 @@ bool GuiNetPlay::populateFromJson(const std::string json)
 			game.game_name = fields["game_name"].GetString();
 
 		if (fields.HasMember("has_spectate_password") && fields["has_spectate_password"].IsBool())
-			game.has_spectate_password = fields["has_spectate_password"].GetBool();		
+			game.has_spectate_password = fields["has_spectate_password"].GetBool();
 
 		if (fields.HasMember("mitm_port") && fields["mitm_port"].IsInt())
 			game.mitm_port = fields["mitm_port"].GetInt();
 
 		if (fields.HasMember("mitm_session") && fields["mitm_session"].IsString())
 			game.mitm_session = fields["mitm_session"].GetString();
-		
+
 		if (fields.HasMember("fixed") && fields["fixed"].IsBool())
 			game.fixed = fields["fixed"].GetBool();
 
@@ -885,7 +885,7 @@ bool GuiNetPlay::populateFromJson(const std::string json)
 		game.coreExists = coreExists(file, game.core_name);
 
 		entries.push_back(std::move(game));
-	}	
+	}
 
 
 	std::sort(entries.begin(), entries.end(), [](const LobbyAppEntry& a, const LobbyAppEntry& b) {
@@ -975,7 +975,7 @@ bool GuiNetPlay::populateFromLan()
 	return true;
 }
 
-void GuiNetPlay::render(const Transform4x4f &parentTrans) 
+void GuiNetPlay::render(const Transform4x4f &parentTrans)
 {
 	GuiComponent::render(parentTrans);
 
@@ -999,13 +999,13 @@ void GuiNetPlay::launchGame(LobbyAppEntry entry)
 		options.ip = entry.ip;
 		options.port = entry.port;
 	}
-	
+
 	auto coreInfo = coreList.find(entry.core_name);
 	if (coreInfo != coreList.cend())
 		options.core = coreInfo->second;
-	else 	
+	else
 		options.core = Utils::String::toLower(Utils::String::replace(entry.core_name, " ", "_"));
-	
+
 	auto theme = ThemeData::getMenuTheme();
 	std::shared_ptr<Font> font = theme->Text.font;
 	unsigned int color = theme->Text.color;
@@ -1013,11 +1013,11 @@ void GuiNetPlay::launchGame(LobbyAppEntry entry)
 	GuiSettings* msgBox = new GuiSettings(mWindow, _("CONNECT TO NETPLAY"));
 	msgBox->setSubTitle(entry.game_name);
 	msgBox->setTag("popup");
-	
+
 	std::shared_ptr<TextComponent> ed = nullptr;
 
 	msgBox->addEntry(_U("\uF144 ") + _("JOIN GAME"), false, [this, msgBox, entry, options, ed]
-	{		
+	{
 		LaunchGameOptions opts = options;
 		ViewController::get()->launch(entry.fileData, opts);
 
@@ -1036,7 +1036,7 @@ void GuiNetPlay::launchGame(LobbyAppEntry entry)
 		msgBox->close();
 		delete pthis;
 	});
-	
+
 	mWindow->pushGui(msgBox);
 }
 

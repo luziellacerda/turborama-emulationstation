@@ -30,7 +30,7 @@ public:
 private:
 	static void deleteGame(FileData* file);
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	static void hideGame(FileData* file, bool hide);
 	static void createMultidisc(FileData* file);
 #endif

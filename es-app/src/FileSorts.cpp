@@ -4,7 +4,7 @@
 #include "utils/StringUtil.h"
 #include "LocaleES.h"
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	#include <climits>
 #endif
 
@@ -73,13 +73,13 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(SYSTEM_RELEASEDATE_DESCENDING, &compareSystemReleaseYear, false, _("SYSTEM, RELEASE YEAR, DESCENDING"), _U("\uF161 ")));
 		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_ASCENDING, &compareReleaseYearSystem, true, _("RELEASE YEAR, SYSTEM, ASCENDING"), _U("\uF160 ")));
 		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_DESCENDING, &compareReleaseYearSystem, false, _("RELEASE YEAR, SYSTEM, DESCENDING"), _U("\uF161 ")));
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareSortName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
 		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareSortName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
 #endif
 	}
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	int _digitPrefixLength(const std::string s)
 	{
 		int l = s.size();

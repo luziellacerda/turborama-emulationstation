@@ -26,7 +26,7 @@
 #include "SaveStateRepository.h"
 #include "guis/GuiSaveState.h"
 #include "SystemConf.h"
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 #include "guis/GuiFileBrowser.h"
 #include "utils/FileSystemUtil.h"
 #include "utils/StringUtil.h"
@@ -71,7 +71,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 	mHasAdvancedGameOptions = false;
 
 	mGame = game;
-	mSystem = game->getSystem();	
+	mSystem = game->getSystem();
 
 	auto logo = game->getMarqueePath();
 	if (Utils::FileSystem::exists(logo))
@@ -80,7 +80,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 		image->setIsLinear(true);
 		image->setImage(logo);
 		mMenu.setSubTitle("fake");
-		mMenu.setTitleImage(image, true);		
+		mMenu.setTitleImage(image, true);
 	}
 
 	addChild(&mMenu);
@@ -113,7 +113,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 				GuiImageViewer::showPdf(window, game->getMetadata(MetaDataId::Magazine));
 				close();
 			});
-		}		
+		}
 
 		if (hasMap)
 		{
@@ -134,7 +134,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 				close();
 			});
 		}
-		
+
 		if (hasAlternateMedias)
 		{
 			mMenu.addEntry(_("VIEW GAME MEDIA"), false, [window, game, this]
@@ -179,8 +179,8 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 	if (game->getType() == GAME)
 	{
 		mMenu.addGroup(_("GAME"));
-		
-#ifdef _ENABLEEMUELEC
+
+#ifdef _ENABLETURBORAMA
 		mMenu.addEntry(_("SET GAME SPECIFIC SPLASH MEDIA"), false, [this, game]
 		{
 			const std::string gamePath = game->getPath();
@@ -255,7 +255,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 				(GuiFileBrowser::FileTypes)(GuiFileBrowser::IMAGES | GuiFileBrowser::VIDEO), onFileSelected,
 				_("SELECT MEDIA FILE")));
 		});
-		
+
 #endif
 
 		if (SaveStateRepository::isEnabled(game))
@@ -268,7 +268,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 					options.saveStateInfo = state;
 					ViewController::get()->launch(game, options);
 				}));
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 					guiSaveStateLoad(mWindow, game);
 #endif
 
@@ -357,7 +357,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 
 
 			});
-#ifdef _ENABLEEMUELEC			
+#ifdef _ENABLETURBORAMA
 			if (!isImageViewer) {
 				if (game->getMetadata(MetaDataId::Hidden) == "false")
 				{
@@ -378,7 +378,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 #endif
 		}
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	std::regex str_expr (".*(disc\\s*\\d)[^\\d]{0,1}.*", std::regex_constants::icase);
 	if (std::regex_match(game->getName(),str_expr))
 		mMenu.addEntry(isImageViewer ? _("CREATE MULTIDISC") : _("CREATE MULTIDISC"), false, [this, game]
@@ -430,7 +430,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 
 					GuiSettings* msgBox = new GuiSettings(mWindow, _("ADD TO CUSTOM COLLECTION..."));
 					msgBox->setTag("popup");
-					
+
 					for (auto customCollection : CollectionSystemManager::get()->getCustomCollectionSystems())
 					{
 						if (customCollection.second.filteredIndex != nullptr || !customCollection.second.isEnabled)
@@ -439,7 +439,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 						std::string collectionName = customCollection.first;
 						if (CollectionSystemManager::get()->inInCustomCollection(game, collectionName))
 							continue;
-						
+
 						msgBox->addEntry(Utils::String::toUpper(collectionName), false, [pThis, window, msgBox, collectionName, game]
 						{
 							auto parent = pThis;
@@ -481,7 +481,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 
 	bool fromPlaceholder = game->isPlaceHolder();
 	if (isImageViewer)
-		fromPlaceholder = true; 
+		fromPlaceholder = true;
 	else if (game->getType() == FOLDER && ((FolderData*)game)->isVirtualStorage())
 		fromPlaceholder = true;
 	else if (game->getType() == FOLDER && mSystem->isCollection()) // >getName() == CollectionSystemManager::get()->getCustomCollectionsBundle()->getName())
@@ -490,7 +490,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 	if (!fromPlaceholder && !isCustomCollection && UIModeController::getInstance()->isUIModeFull())
 	{
 		mMenu.addGroup(_("OPTIONS"));
-		
+
 		mMenu.addEntry(_("SCRAPE"), false, [this, game]
 		{
 			ScraperSearchParams scraperParams;
@@ -500,7 +500,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 			GuiGameScraper* scr = new GuiGameScraper(mWindow, scraperParams, [game, scraperParams](const ScraperSearchResult& result)
 			{
 				game->importP2k(result.p2k);
-				game->getMetadata().importScrappedMetadata(result.mdl);	
+				game->getMetadata().importScrappedMetadata(result.mdl);
 				game->detectLanguageAndRegion(true);
 				game->getMetadata().setScrapeDate(result.scraper);
 
@@ -517,15 +517,15 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 			if (game->hasKeyboardMapping())
 			{
 				mMenu.addEntry(_("EDIT PADTOKEY PROFILE"), false, [this, game]
-				{ 
-					GuiMenu::editKeyboardMappings(mWindow, game, true); 
+				{
+					GuiMenu::editKeyboardMappings(mWindow, game, true);
 					close();
 				});
 			}
 			else if (game->isFeatureSupported(EmulatorFeatures::Features::padTokeyboard))
 			{
 				mMenu.addEntry(_("CREATE PADTOKEY PROFILE"), false, [this, game]
-				{ 
+				{
 					GuiMenu::editKeyboardMappings(mWindow, game, true);
 					close();
 				});
@@ -559,14 +559,14 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 	else if (game->hasKeyboardMapping())
 	{
 		mMenu.addEntry(_("VIEW PAD TO KEYBOARD INFORMATION"), false, [this, game]
-		{ 
+		{
 			GuiMenu::editKeyboardMappings(mWindow, game, false);
 			close();
 		});
 	}
 
 	if (Renderer::ScreenSettings::fullScreenMenus())
-	{	
+	{
 		mMenu.addButton(_("BACK"), _("go back"), [this] { close(); });
 
 		mMenu.setMaxHeight(Renderer::getScreenHeight() * 0.85f);
@@ -640,7 +640,7 @@ void GuiGameOptions::deleteGame(FileData* file)
 	}
 }
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 
 void GuiGameOptions::hideGame(FileData* file, bool hide)
 {
@@ -656,7 +656,7 @@ void GuiGameOptions::hideGame(FileData* file, bool hide)
 		sys = sys->getParentGroupSystem();
 
 	sys->getRootFolder()->getMetadata().setDirty();
-	
+
 	CollectionSystemManager::get()->deleteCollectionFiles(sourceFile);
 
 	auto view = ViewController::get()->getGameListView(sys, false);
@@ -672,7 +672,7 @@ void GuiGameOptions::createMultidisc(FileData* file)
 	auto sourceFile = file->getSourceFileData();
 
 	std::string args = "createMultidisc \""+sourceFile->getPath()+"\"";
-	args="(/usr/bin/emuelec-utils "+args+")";
+	args="(/usr/bin/turborama-utils "+args+")";
 	LOG(LogInfo) << "createMultidisc:" << args;
 	std::stringstream ss(Utils::Platform::getShOutput(args));
 	std::string newFileName;
@@ -767,7 +767,7 @@ std::vector<HelpPrompt> GuiGameOptions::getHelpPrompts()
 
 	if (mHasAdvancedGameOptions)
 	{
-		prompts.push_back(HelpPrompt("x", _("ADVANCED GAME OPTIONS"), [&] 
+		prompts.push_back(HelpPrompt("x", _("ADVANCED GAME OPTIONS"), [&]
 		{
 			GuiMenu::popGameConfigurationGui(mWindow, mGame);
 			close();
@@ -804,16 +804,16 @@ void GuiGameOptions::deleteCollection()
 				ViewController::get()->goToStart();
 				ViewController::get()->reloadAll(mWindow);
 
-				mWindow->closeSplashScreen();			
+				mWindow->closeSplashScreen();
 			}
 			delete this;
-		}, 
-		_("NO"), [this] 
+		},
+		_("NO"), [this]
 		{
 			delete this;
 		}));
 
-	
+
 }
 
 void GuiGameOptions::close()

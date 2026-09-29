@@ -25,7 +25,7 @@
 #include "Splash.h"
 #include "PowerSaver.h"
 #include "renderers/Renderer.h"
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 #include "utils/FileSystemUtil.h"
 #endif
 
@@ -35,12 +35,12 @@
 
 Window::Window() : mNormalizeNextUpdate(false), mFrameTimeElapsed(0), mFrameCountElapsed(0), mAverageDeltaTime(10),
   mAllowSleep(true), mSleeping(false), mTimeSinceLastInput(0), mScreenSaver(NULL), mRenderScreenSaver(false), mClockElapsed(0), mMouseCapture(nullptr), mMenuBackgroundShaderTextureCache(-1)
-{			
+{
 	mTransitionOffset = 0;
 
 	mHelp = new HelpComponent(this);
 	mBackgroundOverlay = new ImageComponent(this);
-	mBackgroundOverlay->setImage(":/scroll_gradient.png"); 
+	mBackgroundOverlay->setImage(":/scroll_gradient.png");
 
 	mSplash = nullptr;
 	mLastShowCursor = -2;
@@ -69,7 +69,7 @@ void Window::pushGui(GuiComponent* gui)
 	if (mGuiStack.size() > 0)
 	{
 		auto& top = mGuiStack.back();
-		top->topWindow(false);		
+		top->topWindow(false);
 	}
 
 	hitTest(-1, -1);
@@ -89,7 +89,7 @@ void Window::removeGui(GuiComponent* gui)
 	for(auto i = mGuiStack.cbegin(); i != mGuiStack.cend(); i++)
 	{
 		if(*i == gui)
-		{						
+		{
 			gui->onHide();
 			i = mGuiStack.erase(i);
 
@@ -124,7 +124,7 @@ bool Window::init(bool initRenderer, bool initInputManager)
 			return false;
 		}
 	}
-	else 
+	else
 		Renderer::activateWindow();
 
 	if (initInputManager)
@@ -159,7 +159,7 @@ bool Window::init(bool initRenderer, bool initInputManager)
 
 	if (mBatteryIndicator == nullptr)
 		mBatteryIndicator = std::make_shared<BatteryIndicatorComponent>(this);
-	
+
 	if (mVolumeInfo == nullptr)
 		mVolumeInfo = std::make_shared<VolumeInfoComponent>(this);
 	else
@@ -215,12 +215,12 @@ void Window::input(InputConfig* config, Input input)
 {
 	if (config == nullptr)
 		return;
-	
+
 	if (config->getDeviceIndex() >= 0 && Settings::getInstance()->getBool("FirstJoystickOnly"))
 	{
 		// Find first player controller info
 		auto playerDevices = InputManager::getInstance()->lastKnownPlayersDeviceIndexes();
-		auto playerDevice = playerDevices.find(0); 
+		auto playerDevice = playerDevices.find(0);
 		if (playerDevice != playerDevices.cend())
 		{
 			if (config->getDeviceIndex() != playerDevice->second.index)
@@ -230,23 +230,23 @@ void Window::input(InputConfig* config, Input input)
 			return;
 	}
 
-	if (mScreenSaver) 
+	if (mScreenSaver)
 	{
 		if (mScreenSaver->isScreenSaverActive() && Settings::getInstance()->getBool("ScreenSaverControls") &&
-			((Settings::getInstance()->getString("ScreenSaverBehavior") == "slideshow") || 			
+			((Settings::getInstance()->getString("ScreenSaverBehavior") == "slideshow") ||
 			(Settings::getInstance()->getString("ScreenSaverBehavior") == "random video")))
 		{
 			if (config->isMappedLike("right", input) || config->isMappedTo("select", input))
 			{
 				if (input.value != 0) // handle screensaver control
 					mScreenSaver->nextVideo();
-					
+
 				mTimeSinceLastInput = 0;
 				return;
 			}
 			else if (config->isMappedTo("start", input) && input.value != 0 && mScreenSaver->getCurrentGame() != nullptr)
 			{
-				// launch game!				
+				// launch game!
 				cancelScreenSaver();
 				mScreenSaver->launchGame();
 				// to force handling the wake up process
@@ -317,12 +317,12 @@ void Window::processNotificationMessages()
 
 	if (mNotificationMessages.empty())
 		return;
-	
+
 	NotificationMessage msg = mNotificationMessages.back();
 	mNotificationMessages.pop_back();
 
 	LOG(LogDebug) << "Notification message :" << msg.first.c_str();
-	
+
 	if (mNotificationPopups.size() == 0)
 		PowerSaver::pause();
 
@@ -421,12 +421,12 @@ void Window::processSongTitleNotifications()
 				}
 
 				lock.unlock();
-				displayNotificationMessage(_U("\uF028  ") + songName); // _("Now playing: ") + 
+				displayNotificationMessage(_U("\uF028  ") + songName); // _("Now playing: ") +
 			}
 		}
 
 		AudioManager::getInstance()->resetSongNameChangedFlag();
-	}	
+	}
 }
 
 void Window::update(int deltaTime)
@@ -480,15 +480,15 @@ void Window::update(int deltaTime)
 
 			ss << "\nFont VRAM: " << fontVramUsageMb << " Tex VRAM: " << textureVramUsageMb << " Known Tex: " << textureTotalUsageMb << " Max VRAM: " << max_texture;
 
-			mFrameDataText = std::unique_ptr<TextCache>(mDefaultFonts.at(0)->buildTextCache(ss.str(), Vector2f(50.f, 50.f), 0xFFFF40FF, 0.0f, ALIGN_LEFT, 1.2f));			
+			mFrameDataText = std::unique_ptr<TextCache>(mDefaultFonts.at(0)->buildTextCache(ss.str(), Vector2f(50.f, 50.f), 0xFFFF40FF, 0.0f, ALIGN_LEFT, 1.2f));
 		}
 
 		mFrameTimeElapsed = 0;
 		mFrameCountElapsed = 0;
 	}
 
-	/* draw the clock */ 
-	if (Settings::DrawClock() && mClock) 
+	/* draw the clock */
+	if (Settings::DrawClock() && mClock)
 	{
 		mClockElapsed -= deltaTime;
 		if (mClockElapsed <= 0)
@@ -496,8 +496,8 @@ void Window::update(int deltaTime)
 			time_t     clockNow = time(0);
 			struct tm  clockTstruct = *localtime(&clockNow);
 
-			if (clockTstruct.tm_year > 100) 
-			{ 
+			if (clockTstruct.tm_year > 100)
+			{
 				// Display the clock only if year is more than 1900+100 ; rpi have no internal clock and out of the networks, the date time information has no value
 				// Visit http://en.cppreference.com/w/cpp/chrono/c/strftime for more information about date/time format
 
@@ -523,7 +523,7 @@ void Window::update(int deltaTime)
 	if (mScreenSaver)
 		mScreenSaver->update(deltaTime);
 
-	// update pads 
+	// update pads
 	if (mControllerActivity)
 		mControllerActivity->update(deltaTime);
 
@@ -543,8 +543,8 @@ void Window::renderSindenBorders()
 	bool drawGunBorders = false;
 
 	for (auto gun : InputManager::getInstance()->getGuns())
-		if (gun->needBorders()) 
-			drawGunBorders = true;		
+		if (gun->needBorders())
+			drawGunBorders = true;
 
 	// normal (default) : draw borders when required
 	// hidden : the border are not displayed (assume that there are provided by an other way like bezels)
@@ -668,7 +668,7 @@ void Window::render()
 	Transform4x4f transform = Transform4x4f::Identity();
 
 	mRenderedHelpPrompts = false;
-	
+
 	// draw only bottom and top of GuiStack (if they are different)
 	if (mGuiStack.size())
 	{
@@ -709,10 +709,10 @@ void Window::render()
 				top->render(transform);
 			}
 		}
-		else  
+		else
 			resetMenuBackgroundShader();
 	}
-	else 
+	else
 		resetMenuBackgroundShader();
 
 	renderSindenBorders();
@@ -735,11 +735,11 @@ void Window::render()
 		mDefaultFonts.at(1)->renderTextCache(mFrameDataText.get());
 		Renderer::setMatrix(transform);
 
-		mFrameDataText->setColor(0xFFFF40FF);		
+		mFrameDataText->setColor(0xFFFF40FF);
 		mDefaultFonts.at(1)->renderTextCache(mFrameDataText.get());
 	}
 
-	// clock 
+	// clock
 	if (Settings::DrawClock() && mClock && (mGuiStack.size() < 2 || !Renderer::ScreenSettings::fullScreenMenus()))
 		mClock->render(transform);
 
@@ -845,7 +845,7 @@ void Window::render()
 
 				Renderer::drawTriangleStrips(&vertices[0], 4);
 			}
-		}	
+		}
 
 #if WIN32
 		if (hasMousePointer)
@@ -882,17 +882,17 @@ void Window::render()
 						// Check if the cursor is within the client area
 						if (!PtInRect(&clientRect, cursorPos))
 							continue;
-					}					
+					}
 
 					int pointerSize = (Renderer::isVerticalScreen() ? Renderer::getScreenWidth() : Renderer::getScreenHeight()) / 38;
-					
+
 					Vector2i sz = ImageIO::adjustPictureSize(mMouseCursorTexture->getSize(), Vector2i(pointerSize, pointerSize));
 
 					Vector2f topLeft = { gun->x(), gun->y() };
 					Vector2f bottomRight = { gun->x() + sz.x(), gun->y() + sz.y() };
 
 					auto aimColor = 0xFFFFFFFF;
-					
+
 					if (gun->isLButtonDown() || gun->isRButtonDown())
 						aimColor = 0xC0FAFAFF;
 
@@ -954,7 +954,7 @@ void Window::renderSplashScreen(std::string text, float percent, float opacity)
 		mSplash = std::make_shared<Splash>(this, getCustomSplashScreenImage());
 
 	mSplash->update(text, percent);
-	mSplash->render(opacity);	
+	mSplash->render(opacity);
 }
 
 void Window::renderSplashScreen(float opacity, bool swapBuffers)
@@ -1083,7 +1083,7 @@ bool Window::cancelScreenSaver()
 	mTimeSinceLastInput = 0;
 
 	if (mScreenSaver && mRenderScreenSaver)
-	{		
+	{
 		mScreenSaver->stopScreenSaver();
 		mRenderScreenSaver = false;
 		mScreenSaver->resetCounts();
@@ -1121,7 +1121,7 @@ AsyncNotificationComponent* Window::createAsyncNotificationComponent(bool action
 
 	AsyncNotificationComponent* pc = new AsyncNotificationComponent(this, actionLine);
 	mAsyncNotificationComponent.push_back(pc);
-	
+
 	if (mAsyncNotificationComponent.size() == 1)
 		PowerSaver::pause();
 
@@ -1138,7 +1138,7 @@ void Window::renderAsyncNotifications(const Transform4x4f& trans)
 
 	bool first = true;
 	for (auto child : mAsyncNotificationComponent)
-	{		
+	{
 		float posX = Renderer::getScreenWidth()*0.99f - child->getSize().x();
 
 		float offset = child->getSize().y() + PADDING_H;
@@ -1149,7 +1149,7 @@ void Window::renderAsyncNotifications(const Transform4x4f& trans)
 			// cubic ease in
 			fadingOut = fadingOut - 1;
 			fadingOut = Math::lerp(0, 1, fadingOut*fadingOut*fadingOut + 1);
-						
+
 			if (child->isClosing())
 			{
 				child->setPosition(posX, posY - (offset * fadingOut), 0);
@@ -1157,16 +1157,16 @@ void Window::renderAsyncNotifications(const Transform4x4f& trans)
 
 				auto sz = child->getSize();
 				Renderer::pushClipRect(Vector2i(
-					(int)trans.translation()[0] + posX - PADDING_H, 
-					(int)trans.translation()[1] + (first ? 0 : posY)), 
+					(int)trans.translation()[0] + posX - PADDING_H,
+					(int)trans.translation()[1] + (first ? 0 : posY)),
 					Vector2i(
-					(int)sz.x() + 2 * PADDING_H, 
+					(int)sz.x() + 2 * PADDING_H,
 					(int)sz.y() + (first ? posY : 0)));
 			}
-			else 
+			else
 				child->setPosition(posX + (child->getSize().x() * (1.0 - fadingOut)), posY, 0);
 		}
-		else 
+		else
 			child->setPosition(posX, posY, 0);
 
 		child->render(trans);
@@ -1220,7 +1220,7 @@ void Window::unregisterPostedFunctions(void* data)
 }
 
 void Window::postToUiThread(const std::function<void()>& func, void* data)
-{	
+{
 	std::unique_lock<std::mutex> lock(mNotificationMessagesLock);
 
 	PostedFunction pf;
@@ -1259,7 +1259,7 @@ void Window::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 
 	mScreenExtras.clear();
 	mScreenExtras = ThemeData::makeExtras(theme, "screen", this);
-	
+
 	std::stable_sort(mScreenExtras.begin(), mScreenExtras.end(), [](GuiComponent* a, GuiComponent* b) { return b->getZIndex() > a->getZIndex(); });
 
 	if (mBackgroundOverlay)
@@ -1268,12 +1268,12 @@ void Window::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 	if (mClock)
 	{
 		mClock->setFont(Font::get(FONT_SIZE_SMALL));
-		mClock->setColor(0x777777FF);		
+		mClock->setColor(0x777777FF);
 		mClock->setOrigin(Vector2f::Zero());
 		mClock->setHorizontalAlignment(ALIGN_RIGHT);
 		mClock->setVerticalAlignment(ALIGN_TOP);
-		
-		// if clock element does not exist in screen view -> <view name="screen"><text name="clock"> 
+
+		// if clock element does not exist in screen view -> <view name="screen"><text name="clock">
 		// skin it from system.helpsystem -> <view name="system"><helpsystem name="help"> )
 		if (!theme->getElement("screen", "clock", "text"))
 		{
@@ -1284,7 +1284,7 @@ void Window::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 			if (elem && (elem->has("fontPath") || elem->has("fontSize")))
 				mClock->setFont(Font::getFromTheme(elem, ThemeFlags::ALL, Font::get(FONT_SIZE_MEDIUM)));
 		}
-		
+
 		mClock->setPosition(Renderer::getScreenWidth()*0.94, Renderer::getScreenHeight()*0.9965 - mClock->getFont()->getHeight());
 		mClock->setSize(Renderer::getScreenWidth()*0.05, 0);
 
@@ -1296,7 +1296,7 @@ void Window::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 
 	if (mBatteryIndicator)
 		mBatteryIndicator->applyTheme(theme, "screen", "batteryIndicator", ThemeFlags::ALL);
-	
+
 	mVolumeInfo = std::make_shared<VolumeInfoComponent>(this);
 }
 
@@ -1315,11 +1315,11 @@ void Window::setGunCalibrationState(bool isCalibrating)
 			mCalibrationText->setSize(Renderer::getScreenWidth(), Renderer::getScreenHeight() / 2.1f);
 			mCalibrationText->setColor(0xFFFFFFFF);
 			mCalibrationText->setGlowSize(1);
-			mCalibrationText->setGlowColor(0x00000040);			
+			mCalibrationText->setGlowColor(0x00000040);
 		}
 	}
 	else
-		mCalibrationText = nullptr;	
+		mCalibrationText = nullptr;
 }
 
 std::vector<GuiComponent*> Window::hitTest(int x, int y)
@@ -1421,7 +1421,7 @@ bool Window::processMouseButton(int button, bool down, int x, int y)
 	auto ctrls = hitTest(point.x(), point.y());
 	std::reverse(ctrls.begin(), ctrls.end());
 
-	for (auto ctrl : ctrls)		
+	for (auto ctrl : ctrls)
 		if (ctrl->onMouseClick(button, down, point.x(), point.y()))
 			return true;
 

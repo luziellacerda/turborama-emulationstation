@@ -3548,7 +3548,7 @@ msgstr ""
 msgid "DANGER ZONE!"
 msgstr ""
 
-msgid "You are about to set EmuELEC resolution to"
+msgid "You are about to set Turborama resolution to"
 msgstr ""
 
 msgid "Emulationstation will restart"
@@ -3587,7 +3587,7 @@ msgid ""
 "BACKUP CURRENT CONFIG AND RESTART?"
 msgstr ""
 
-msgid "BACKUP EMUELEC CONFIGS"
+msgid "BACKUP TURBORAMA CONFIGS"
 msgstr ""
 
 msgid ""
@@ -3596,7 +3596,7 @@ msgid ""
 "RESET SCRIPTS AND BINARIES TO DEFAULT AND RESTART?"
 msgstr ""
 
-msgid "RESET EMUELEC SCRIPTS AND BINARIES TO DEFAULT"
+msgid "RESET TURBORAMA SCRIPTS AND BINARIES TO DEFAULT"
 msgstr ""
 
 msgid ""
@@ -3608,7 +3608,7 @@ msgstr ""
 msgid "RESET SYSTEM TO DEFAULT CONFIG"
 msgstr ""
 
-msgid "You are about to set EmuELEC Language to:"
+msgid "You are about to set Turborama Language to:"
 msgstr ""
 
 msgid "ENABLED"

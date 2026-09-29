@@ -37,7 +37,7 @@ enum NetPlayMode
 {
 	DISABLED,
 	CLIENT,
-	SERVER,	
+	SERVER,
 	SPECTATOR
 };
 
@@ -50,12 +50,12 @@ struct GetFileContext
 
 struct LaunchGameOptions
 {
-	LaunchGameOptions() 
-	{ 
-		netPlayMode = NetPlayMode::DISABLED; 
+	LaunchGameOptions()
+	{
+		netPlayMode = NetPlayMode::DISABLED;
 		port = 0;
-		saveStateInfo = nullptr; 
-		isSaveStateInfoTemporary = false; 		  
+		saveStateInfo = nullptr;
+		isSaveStateInfoTemporary = false;
 	}
 
 	int netPlayMode;
@@ -82,13 +82,13 @@ public:
 	static FileData* GetRunningGame() { return mRunningGame; }
 
 	virtual const std::string& getName();
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
   virtual const std::string& getSortName();
 	virtual const std::string getSortOrName();
 #endif
 
 	inline FileType getType() const { return mType; }
-	
+
 	inline FolderData* getParent() const { return mParent; }
 	inline void setParent(FolderData* parent) { mParent = parent; }
 
@@ -122,7 +122,7 @@ public:
 
 	const std::string getConfigurationName();
 
-	inline bool isPlaceHolder() { return mType == PLACEHOLDER; };	
+	inline bool isPlaceHolder() { return mType == PLACEHOLDER; };
 
 	virtual std::string getKey();
 	const bool isArcadeAsset();
@@ -148,12 +148,12 @@ public:
 	bool		launchGame(Window* window, LaunchGameOptions options = LaunchGameOptions());
 
 	static void resetSettings();
-	
+
 	virtual const MetaDataList& getMetadata() const { return mMetadata; }
 	virtual MetaDataList& getMetadata() { return mMetadata; }
 
-	void setMetadata(MetaDataList value) { getMetadata() = value; } 
-	
+	void setMetadata(MetaDataList value) { getMetadata() = value; }
+
 	std::string getMetadata(MetaDataId key) const { return getMetadata().get(key); }
 	void setMetadata(MetaDataId key, const std::string& value) { return getMetadata().set(key, value); }
 
@@ -195,7 +195,7 @@ private:
 	std::string getMessageFromExitCode(int exitCode);
 	MetaDataList mMetadata;
 
-protected:	
+protected:
 	std::string  findLocalArt(const std::string& type = "", std::vector<std::string> exts = { ".png", ".jpg" });
 
 	static FileData* mRunningGame;
@@ -205,7 +205,7 @@ protected:
 	FileType mType;
 	SystemData* mSystem;
 	std::string* mDisplayName;
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	std::string* mSortName;
 #endif
 };
@@ -215,7 +215,7 @@ class CollectionFileData : public FileData
 public:
 	CollectionFileData(FileData* file, SystemData* system);
 	~CollectionFileData();
-	const std::string& getName();	
+	const std::string& getName();
 	FileData* getSourceFileData();
 	std::string getKey();
 	virtual const std::string getPath() const;
@@ -243,7 +243,7 @@ public:
 
 	inline bool isVirtualStorage() { return !mOwnsChildrens; }
 	inline bool isVirtualFolderDisplay() { return mIsDisplayableAsVirtualFolder && !mOwnsChildrens; }
-	
+
 	void enableVirtualFolderDisplay(bool value) { mIsDisplayableAsVirtualFolder = value; };
 	bool isVirtualFolderDisplayEnabled() { return mIsDisplayableAsVirtualFolder; };
 

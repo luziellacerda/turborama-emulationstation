@@ -225,7 +225,7 @@ bool InputConfig::isMappedTo(const std::string& name, Input input, bool reversed
 
 bool InputConfig::isMappedLike(const std::string& name, Input input)
 {
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 if(name == "left")
 	{
 		return isMappedTo("left", input) || isMappedTo("leftanalogleft", input) || isMappedTo("rightanalogleft", input);
@@ -418,7 +418,7 @@ void InputConfig::AssignActionButtons()
 	BUTTON_BACK = invertButtons ? BBUTTON : ABUTTON;
 #endif
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	BUTTON_OK = invertButtons ? BBUTTON : ABUTTON;
 	BUTTON_BACK = invertButtons ? ABUTTON : BBUTTON;
 #endif

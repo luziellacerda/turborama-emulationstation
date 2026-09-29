@@ -84,7 +84,7 @@ void GridGameListView::setCursor(FileData* cursor)
 
 std::string GridGameListView::getQuickSystemSelectRightButton()
 {
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	return "rightshoulder"; //rightshoulder
 #else
 	return "r2"; //rightshoulder
@@ -93,7 +93,7 @@ std::string GridGameListView::getQuickSystemSelectRightButton()
 
 std::string GridGameListView::getQuickSystemSelectLeftButton()
 {
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	return "leftshoulder"; //leftshoulder
 #else
 	return "l2"; //leftshoulder

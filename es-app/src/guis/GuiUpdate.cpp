@@ -20,8 +20,8 @@ public:
 
 		mWndNotification = mWindow->createAsyncNotificationComponent();
 
-#ifdef _ENABLEEMUELEC
-		mWndNotification->updateTitle(_U("\uF019 ") + _("UPDATING EMUELEC"));
+#ifdef _ENABLETURBORAMA
+		mWndNotification->updateTitle(_U("\uF019 ") + _("UPDATING TURBORAMA"));
 #else
 		auto label = Utils::String::format(_("UPDATING %s").c_str(), ApiSystem::getInstance()->getApplicationName().c_str());
 		mWndNotification->updateTitle(_U("\uF019 ") + label);

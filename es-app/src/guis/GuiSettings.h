@@ -11,7 +11,7 @@ class SwitchComponent;
 class GuiSettings : public GuiComponent
 {
 public:
-	GuiSettings(Window* window, 
+	GuiSettings(Window* window,
 		const std::string& title,
 		const std::string& customButton = "",
 		const std::function<void(GuiSettings*)>& func = nullptr,
@@ -24,9 +24,9 @@ public:
 	void save();
 	void close();
 
-	inline void setUpdateType(ComponentListFlags::UpdateType updateType) 
-	{ 		
-		mMenu.setUpdateType(updateType); 
+	inline void setUpdateType(ComponentListFlags::UpdateType updateType)
+	{
+		mMenu.setUpdateType(updateType);
 	}
 
 	inline void clear()
@@ -34,16 +34,16 @@ public:
 		mMenu.clear();
 	}
 
-	inline void addRow(const ComponentListRow& row) 
-	{ 
-		mMenu.addRow(row); 
+	inline void addRow(const ComponentListRow& row)
+	{
+		mMenu.addRow(row);
 	}
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	// Old call remains compatible
 	inline void addWithLabel(const std::string& label, const std::shared_ptr<GuiComponent>& comp, bool setCursorHere = false)
 	{
-		addWithLabel(label, comp, nullptr, "", setCursorHere); 
+		addWithLabel(label, comp, nullptr, "", setCursorHere);
 	}
 
 	// New overload with icon and optional callback
@@ -54,52 +54,52 @@ public:
 	    bool setCursorHere = false)
 	{
 	    mMenu.addWithLabel(label, comp, callback, iconName, setCursorHere);
-	}	
+	}
 #else
-	inline void addWithLabel(const std::string& label, const std::shared_ptr<GuiComponent>& comp, bool setCursorHere = false) 
-	{ 
-		mMenu.addWithLabel(label, comp, nullptr, "", setCursorHere); 
+	inline void addWithLabel(const std::string& label, const std::shared_ptr<GuiComponent>& comp, bool setCursorHere = false)
+	{
+		mMenu.addWithLabel(label, comp, nullptr, "", setCursorHere);
 	}
 #endif
 
-	inline void addWithDescription(const std::string& label, const std::string& description, const std::shared_ptr<GuiComponent>& comp, bool setCursorHere = false) 
-	{ 
-		mMenu.addWithDescription(label, description, comp, nullptr, "", setCursorHere, true); 
+	inline void addWithDescription(const std::string& label, const std::string& description, const std::shared_ptr<GuiComponent>& comp, bool setCursorHere = false)
+	{
+		mMenu.addWithDescription(label, description, comp, nullptr, "", setCursorHere, true);
 	}
 
-	inline void addWithDescription(const std::string& label, const std::string& description, const std::shared_ptr<GuiComponent>& comp, const std::function<void()>& func, const std::string iconName = "", bool setCursorHere = false, /*bool invert_when_selected = true,*/ bool multiLine = false) 
-	{ 
-		mMenu.addWithDescription(label, description, comp, func, iconName, setCursorHere, multiLine); 
+	inline void addWithDescription(const std::string& label, const std::string& description, const std::shared_ptr<GuiComponent>& comp, const std::function<void()>& func, const std::string iconName = "", bool setCursorHere = false, /*bool invert_when_selected = true,*/ bool multiLine = false)
+	{
+		mMenu.addWithDescription(label, description, comp, func, iconName, setCursorHere, multiLine);
 	}
 
-	inline void addSaveFunc(const std::function<void()>& func) 
-	{ 
-		mSaveFuncs.push_back(func); 
+	inline void addSaveFunc(const std::function<void()>& func)
+	{
+		mSaveFuncs.push_back(func);
 	}
 
-	inline void addEntry(const std::string name, bool add_arrow = false, const std::function<void()>& func = nullptr, const std::string iconName = "", bool onButtonRelease = false, bool setCursorHere = false) 
-	{ 
-		mMenu.addEntry(name, add_arrow, func, iconName, setCursorHere, onButtonRelease); 
+	inline void addEntry(const std::string name, bool add_arrow = false, const std::function<void()>& func = nullptr, const std::string iconName = "", bool onButtonRelease = false, bool setCursorHere = false)
+	{
+		mMenu.addEntry(name, add_arrow, func, iconName, setCursorHere, onButtonRelease);
 	}
 
-	inline void addGroup(const std::string& label) 
-	{ 
-		mMenu.addGroup(label); 
+	inline void addGroup(const std::string& label)
+	{
+		mMenu.addGroup(label);
 	}
 
-	inline void removeLastRowIfGroup() 
-	{ 
-		mMenu.removeLastRowIfGroup(); 
+	inline void removeLastRowIfGroup()
+	{
+		mMenu.removeLastRowIfGroup();
 	}
 
 	inline void updateSize()
 	{
 		mMenu.updateSize();
 	}
-	
+
 	void addInputTextRow(const std::string& title, const std::string& settingsID, bool password, bool storeInSettings = false, const std::function<void(Window*, std::string/*title*/, std::string /*value*/, const std::function<void(std::string)>& onsave)>& customEditor = nullptr);
 	void addFileBrowser(const std::string& title, const std::string& settingsID, GuiFileBrowser::FileTypes type, bool storeInSettings = false);
-	
+
 	std::shared_ptr<SwitchComponent> addSwitch(const std::string& title, const std::string& settingsID, bool storeInSettings, const std::function<void()>& onChanged = nullptr) { return addSwitch(title, "", settingsID, storeInSettings, onChanged); }
 	std::shared_ptr<SwitchComponent> addSwitch(const std::string& title, const std::string& description, const std::string& settingsID, bool storeInSettings, const std::function<void()>& onChanged);
 
@@ -118,7 +118,7 @@ public:
 
 	inline void onFinalize(const std::function<void()>& func) { mOnFinalizeFunc = func; };
 
-	bool getVariable(const std::string name) 
+	bool getVariable(const std::string name)
 	{
 		if (mVariableMap.find(name) == mVariableMap.cend())
 			return false;
@@ -136,7 +136,7 @@ public:
 	bool checkNetwork();
 
 	virtual bool onMouseClick(int button, bool pressed, int x, int y);
-	
+
 	// Tabs
 	void addTab(const std::string label, const std::string value = "", bool setCursorHere = false) { mMenu.addTab(label, value, setCursorHere); }
 	void setOnTabIndexChanged(const std::function<void()>& callback);
@@ -144,7 +144,7 @@ public:
 
 	void clearSaveFuncs() { mSaveFuncs.clear(); }
 
-protected:		
+protected:
 	virtual void OnTabChanged(int newIndex) { };
 
 	MenuComponent mMenu;

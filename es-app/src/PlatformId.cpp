@@ -28,7 +28,7 @@ namespace PlatformIds
 		{ "bbc",					BBC_MICRO},
 		{ "colecovision",			COLECOVISION },
 		{ "c64",					COMMODORE_64 },
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		{ "vic20",				COMMODORE_VIC20 },
 		{ "c16",				COMMODORE_PLUS4 },
 #endif
@@ -156,11 +156,11 @@ namespace PlatformIds
 		{ "supervision",			WATARA_SUPERVISION },
 
 		{ "model3",					MODEL3 },
-			
+
 		{ "imageviewer",			IMAGEVIEWER },
-			
+
 		{ "scv",					SUPER_CASSETTE_VISION },
-		{ "easyrpg",				EASYRPG },			
+		{ "easyrpg",				EASYRPG },
 		{ "pet",					COMMODORE_PET },
 		{ "cpet",					COMMODORE_PET },
 		{ "cplus4",					COMMODORE_PLUS4 },
@@ -171,23 +171,23 @@ namespace PlatformIds
 		{ "ngage",					NOKIA_NGAGE },
 		{ "astrocde",				ASTROCADE },
 		{ "astrocade",				ASTROCADE },
-		{ "archimedes",				ARCHIMEDES },			
+		{ "archimedes",				ARCHIMEDES },
 		{ "adam",					ADAM },
 
 		{ "fmtowns",				FMTOWNS },
-		{ "cdi",					PHILIPS_CDI },			
+		{ "cdi",					PHILIPS_CDI },
 		{ "fm7",					FUJITSU_FM7 },
 		{ "pv1000",					CASIO_PV1000 },
 		{ "loopy",					CASIO_LOOPY },
 		{ "gamecom",				TIGER_GAMECOM },
-		{ "advision",				ENTEX_ADVENTURE_VISION },			
+		{ "advision",				ENTEX_ADVENTURE_VISION },
 		{ "arcadia",				EMERSON_ARCADIA_2001 },
 		{ "lcdgames",				LCD_GAMES },
-		{ "crvision",				VTECH_CREATIVISION },			
-		{ "creativision",			VTECH_CREATIVISION },			
+		{ "crvision",				VTECH_CREATIVISION },
+		{ "creativision",			VTECH_CREATIVISION },
 		{ "vsmile",					VTECH_VSMILE },
 		{ "arduboy",				ARDUBOY },
-						
+
 		{ "snes-msu1",				SUPER_NINTENDO_MSU1 },
 
 		{ "gamate",					GAMATE },
@@ -197,11 +197,11 @@ namespace PlatformIds
 		{ "tutor",					TOMY_TUTOR },
 		{ "apfm1000",				APF_MP_1000 },
 		{ "camplynx",				CAMPUTER_LYNX },
-		{ "gamepock",				EPOCH_GAMEPOCKET },	
+		{ "gamepock",				EPOCH_GAMEPOCKET },
 		{ "wasm4",					WASM4 },
 		{ "vircon32",				VIRCON32 },
 		{ "vis",					TANDY_VIS },
-			
+
 		{ "pcarcade",				TEKNOPARROT },
 		{ "teknoparrot",			TEKNOPARROT },
 
@@ -229,7 +229,7 @@ namespace PlatformIds
 
 		return "unknown";
 	}
-	
+
 	std::map<unsigned short, std::pair<std::string, std::string>> ArcadeSystems
 	{
 		{ 6,   { "cps1", "CPS-1" } },
@@ -237,7 +237,7 @@ namespace PlatformIds
 		{ 8,   { "cps3", "CPS-3" } },
 		{ 35,  { "aae", "Another Arcade Emulator" } },
 		{ 47,  { "cave", "Cave" } },
-		{ 49,  { "daphne", "Daphne" } },		
+		{ 49,  { "daphne", "Daphne" } },
 		{ 53,  { "atomiswave", "Atomiswave" } },
 		{ 54,  { "model2", "Sega Model 2" } },
 		{ 55,  { "model3", "Sega Model 3" } },
@@ -251,7 +251,7 @@ namespace PlatformIds
 		{ 148, { "seta", "Seta" } },
 		{ 150, { "midway", "Midway" } },
 		{ 151, { "capcom", "Capcom" } },
-		{ 152, { "eighting", "Eighting/Raizing" } },		
+		{ 152, { "eighting", "Eighting/Raizing" } },
 		{ 153, { "tecmo", "Tecmo" } },
 		{ 154, { "snk", "SNK" } },
 		{ 155, { "namco", "Namco" } },
@@ -282,7 +282,7 @@ namespace PlatformIds
 		{ 183, { "coleco", "Coleco" } },
 		{ 184, { "playchoice", "PlayChoice" } },
 		{ 185, { "atlus", "Atlus" } },
-		{ 186, { "banpresto", "Banpresto" } },		
+		{ 186, { "banpresto", "Banpresto" } },
 		{ 187, { "semicom", "SemiCom" } },
 		{ 188, { "universal", "Universal" } },
 		{ 189, { "mitchell", "Mitchell" } },

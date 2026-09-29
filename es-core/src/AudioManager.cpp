@@ -18,7 +18,7 @@
 #include <vector>
 #include <string>
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 #include "utils/Platform.h"
 #endif
 #ifdef WIN32
@@ -65,7 +65,7 @@ void AudioManager::init()
 {
 	if (mInitialized)
 		return;
-	
+
 	mSongNameChanged = false;
 	mPlayingSystemThemeSong = "none";
 	std::deque<std::string> mLastPlayed;
@@ -117,9 +117,9 @@ void AudioManager::deinit()
 	Mix_HookMusicFinished(nullptr);
 	Mix_HaltMusic();
 
-#ifdef _ENABLEEMUELEC	
+#ifdef _ENABLETURBORAMA
 	LOG(LogInfo) << "Attempting to close SDL AUDIO";
-    Utils::Platform::ProcessStartInfo("/usr/bin/emuelec-utils audio alsa").run();	
+    Utils::Platform::ProcessStartInfo("/usr/bin/turborama-utils audio alsa").run();
 #endif
 
 	//completely tear down SDL audio. else SDL hogs audio resources and emulators might fail to start...
@@ -196,12 +196,12 @@ void AudioManager::addLastPlayed(const std::string& newSong, int totalMusic)
 		// Number of songs is too small to bother with
 		return;
 	}
-	
+
 	while (mLastPlayed.size() > historySize) {
 		mLastPlayed.pop_back();
 	}
 	mLastPlayed.push_front(newSong);
-	
+
 	LOG(LogDebug) << "Adding " << newSong << " to last played, " << mLastPlayed.size() << " in history";
 }
 
@@ -349,7 +349,7 @@ void AudioManager::stopMusic(bool fadeOut)
 
 std::string AudioManager::getCurrentSongPath() const
 {
-    return mCurrentMusicPath;  
+    return mCurrentMusicPath;
 }
 
 // Fast string hash in order to use strings in switch/case
@@ -418,7 +418,7 @@ void AudioManager::playSong(const std::string& song)
 				break;
 			default:
 				LOG(LogError) << "Error AudioManager unexpected case while loading mofile " << song;
-				setSongName(Utils::FileSystem::getStem(song.c_str()));				
+				setSongName(Utils::FileSystem::getStem(song.c_str()));
 				return;
 		}
 
@@ -429,7 +429,7 @@ void AudioManager::playSong(const std::string& song)
 				LOG(LogError) << "Error AudioManager seeking " << song;
 			else if (fread(&info, sizeof(info), 1, file) != 1)
 				LOG(LogError) << "Error AudioManager reading " << song;
-			else  
+			else
 			{
 				info.title[title_break] = '\0';
 
@@ -493,7 +493,7 @@ void AudioManager::playSong(const std::string& song)
 		free_tag(tag);
 	}
 
-	// Then, if no v2, let's try with an ID3 v1 tag	
+	// Then, if no v2, let's try with an ID3 v1 tag
 	struct {
 		char tag[3];	// i.e. "TAG"
 		char title[30];
@@ -511,11 +511,11 @@ void AudioManager::playSong(const std::string& song)
 			LOG(LogError) << "Error AudioManager seeking " << song;
 		else if (fread(&info, sizeof(info), 1, file) != 1)
 			LOG(LogError) << "Error AudioManager reading " << song;
-		else if (strncmp(info.tag, "TAG", 3) == 0) 
+		else if (strncmp(info.tag, "TAG", 3) == 0)
 		{
 			std::string songTitle(info.title, 30);
 			songTitle = " - " + songTitle.substr(0, 30);
-			if (info.artist != NULL) 
+			if (info.artist != NULL)
 			{
 				std::string songArtist(info.artist, 30);
 				songTitle += " - " + songArtist.substr(0, 30);
@@ -568,11 +568,11 @@ void AudioManager::changePlaylist(const std::shared_ptr<ThemeData>& theme, bool 
 		if (!bgSound.empty())
 		{
 			mPlayingSystemThemeSong = bgSound;
-			playMusic(bgSound);			
+			playMusic(bgSound);
 			return;
 		}
 	}
-	
+
 	if (force || !mPlayingSystemThemeSong.empty() || Settings::getInstance()->getBool("audio.persystem"))
 		playRandomMusic(false);
 }
@@ -581,7 +581,7 @@ void AudioManager::setVideoPlaying(bool state)
 {
 	if (sInstance == nullptr || !sInstance->mInitialized || !Settings::BackgroundMusic())
 		return;
-	
+
 	if (state && (!Settings::getInstance()->getBool("VideoLowersMusic") || !Settings::getInstance()->getBool("VideoAudio")))
 	{
 		sInstance->mVideoPlaying = false;
@@ -620,7 +620,7 @@ void AudioManager::update(int deltaTime)
 		minVol = 1;
 
 	if (sInstance->mVideoPlaying && sInstance->mMusicVolume != minVol)
-	{		
+	{
 		if (sInstance->mMusicVolume > minVol)
 		{
 			sInstance->mMusicVolume -= deltaVol;

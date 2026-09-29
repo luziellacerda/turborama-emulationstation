@@ -30,12 +30,12 @@ CarouselComponent::CarouselComponent(Window* window) :
 	mWasRendered = false;
 	mCamOffset = 0;
 	mScreensaverActive = false;
-	mDisable = false;		
+	mDisable = false;
 	mLastCursor = 0;
-		
+
 	mPressedPoint = Vector2i(-1, -1);
 	mPressedCursor = -1;
-	
+
 	setSize((float)Renderer::getScreenWidth(), (float)Renderer::getScreenHeight());
 
 	mType = CarouselType::VERTICAL;
@@ -47,12 +47,12 @@ CarouselComponent::CarouselComponent(Window* window) :
 	mLogoSize.x() = 0.25f * mSize.x();
 	mLogoSize.y() = 0.155f * mSize.y();
 	mLogoPos = Vector2f(-1, -1);
-	mMaxLogoCount = 3;	
+	mMaxLogoCount = 3;
 	mScrollSound = "";
 	mDefaultTransition = "";
 	mTransitionSpeed = 500;
 	mMinLogoOpacity = 0.5f;
-	mScaledSpacing = 0.0f;	
+	mScaledSpacing = 0.0f;
 	mImageSource = CarouselImageSource::THUMBNAIL;
 
 	mAnyLogoHasScaleStoryboard = false;
@@ -80,9 +80,9 @@ int CarouselComponent::moveCursorFast(bool forward)
 		return value;
 
 	value += count;
-	if (value < 0) 
+	if (value < 0)
 		value += sz;
-	if (value >= sz) 
+	if (value >= sz)
 		value -= sz;
 
 	return value;
@@ -91,7 +91,7 @@ int CarouselComponent::moveCursorFast(bool forward)
 bool CarouselComponent::input(InputConfig* config, Input input)
 {
 	if(input.value != 0)
-	{	
+	{
 		switch (mType)
 		{
 		case CarouselType::VERTICAL:
@@ -106,17 +106,17 @@ bool CarouselComponent::input(InputConfig* config, Input input)
 				listInput(1);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 			if (config->isMappedTo("righttrigger", input))
 #else
 			if (config->isMappedTo("pagedown", input))
 #endif
 			{
 				int cursor = moveCursorFast(true);
-				listInput(cursor - mCursor);				
+				listInput(cursor - mCursor);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 			if (config->isMappedTo("lefttrigger", input))
 #else
 			if (config->isMappedTo("pageup", input))
@@ -142,7 +142,7 @@ bool CarouselComponent::input(InputConfig* config, Input input)
 				listInput(1);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 			if (config->isMappedTo("righttrigger", input))
 #else
 			if (config->isMappedTo("pagedown", input))
@@ -152,7 +152,7 @@ bool CarouselComponent::input(InputConfig* config, Input input)
 				listInput(cursor - mCursor);
 				return true;
 			}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 			if (config->isMappedTo("lefttrigger", input))
 #else
 			if (config->isMappedTo("pageup", input))
@@ -164,7 +164,7 @@ bool CarouselComponent::input(InputConfig* config, Input input)
 			}
 
 			break;
-		}		
+		}
 	}
 	else
 	{
@@ -172,7 +172,7 @@ bool CarouselComponent::input(InputConfig* config, Input input)
 			config->isMappedLike("right", input) ||
 			config->isMappedLike("up", input) ||
 			config->isMappedLike("down", input) ||
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 			config->isMappedLike("righttrigger", input) ||
 			config->isMappedLike("pageup", input) ||
 #else
@@ -188,15 +188,15 @@ bool CarouselComponent::input(InputConfig* config, Input input)
 }
 
 void CarouselComponent::update(int deltaTime)
-{		
+{
 	for (int i = 0; i < mEntries.size(); i++)
 	{
 		const std::shared_ptr<GuiComponent> &comp = mEntries.at(i).data.logo;
 		if (comp != nullptr)
 			comp->update(deltaTime);
 	}
-	
-	listUpdate(deltaTime);	
+
+	listUpdate(deltaTime);
 
 	GuiComponent::update(deltaTime);
 }
@@ -246,7 +246,7 @@ void CarouselComponent::onCursorChanged(const CursorState& state)
 		Sound::get(mScrollSound)->play();
 
 	int oldCursor = mLastCursor;
-	
+
 	bool oldCursorHasStoryboard = false;
 
 	if (oldCursor >= 0 && oldCursor < mEntries.size())
@@ -307,28 +307,28 @@ void CarouselComponent::onCursorChanged(const CursorState& state)
 
 			this->mCamOffset = move_carousel ? f : endPos;
 		}, mTransitionSpeed);
-	} 
-	else if (transition_style == "slide") 
+	}
+	else if (transition_style == "slide")
 	{
 		anim = new LambdaAnimation([this, startPos, endPos, posMax, move_carousel](float t)
-		{			
+		{
 			float f = Math::lerp(startPos, endPos, Math::easeOutQuint(t));
 			if (f < 0) f += posMax;
 			if (f >= posMax) f -= posMax;
 
-			this->mCamOffset = move_carousel ? f : endPos;			
+			this->mCamOffset = move_carousel ? f : endPos;
 
 		}, mTransitionSpeed);
-	} 
+	}
 	else // instant
-	{		
+	{
 		anim = new LambdaAnimation([this, startPos, endPos, posMax, move_carousel ](float t)
 		{
 			float f = Math::lerp(startPos, endPos, Math::easeOutQuint(t));
-			if (f < 0) f += posMax; 
+			if (f < 0) f += posMax;
 			if (f >= posMax) f -= posMax;
 
-			this->mCamOffset = move_carousel ? f : endPos;			
+			this->mCamOffset = move_carousel ? f : endPos;
 
 		}, move_carousel ? mTransitionSpeed : 1);
 	}
@@ -391,7 +391,7 @@ void CarouselComponent::setDefaultBackground(unsigned int color, unsigned int co
 void CarouselComponent::renderCarousel(const Transform4x4f& trans)
 {
 	Transform4x4f carouselTrans = trans;
-	
+
 	Renderer::setMatrix(carouselTrans);
 
 	if (mColor != 0 || mColorEnd != 0)
@@ -496,7 +496,7 @@ void CarouselComponent::renderCarousel(const Transform4x4f& trans)
 		scale /= mLogoScale;
 
 		int opref = (Math::clamp(mMinLogoOpacity, 0, 1) * 255);
-		
+
 		int opacity = (int)Math::round(opref + ((0xFF - opref) * (1.0f - fabs(distance))));
 		opacity = Math::max((int)opref, opacity);
 
@@ -508,13 +508,13 @@ void CarouselComponent::renderCarousel(const Transform4x4f& trans)
 			comp->setRotationDegrees(mLogoRotation * distance);
 			comp->setRotationOrigin(mLogoRotationOrigin);
 		}
-		
+
 		if (!mAnyLogoHasOpacityStoryboard)
 			comp->setOpacity((unsigned char)opacity);
 
 		if (!mAnyLogoHasScaleStoryboard)
 			comp->setScale(scale);
-		
+
 		comp->render(logoTrans);
 	};
 
@@ -525,20 +525,20 @@ void CarouselComponent::renderCarousel(const Transform4x4f& trans)
 		int index = i % (int)mEntries.size();
 		if (index < 0)
 			index += (int)mEntries.size();
-	
+
 		if (index == mCursor)
 			activePositions.push_back(i);
 		else
 			renderLogo(i);
 	}
-	
+
 	for (auto activePos : activePositions)
 		renderLogo(activePos);
 }
 
 void CarouselComponent::getCarouselFromTheme(const ThemeData::ThemeElement* elem)
 {
-	Vector2f size = mThemeViewName == "gamecarousel" ? 
+	Vector2f size = mThemeViewName == "gamecarousel" ?
 		mSize :
 		Vector2f(Renderer::getScreenWidth(), Renderer::getScreenHeight());
 
@@ -597,9 +597,9 @@ void CarouselComponent::getCarouselFromTheme(const ThemeData::ThemeElement* elem
 
 	if (elem->has("minLogoOpacity"))
 		mMinLogoOpacity = elem->get<float>("minLogoOpacity");
-	
+
 	if (elem->has("scaledLogoSpacing"))
-		mScaledSpacing = elem->get<float>("scaledLogoSpacing");	
+		mScaledSpacing = elem->get<float>("scaledLogoSpacing");
 
 	if (elem->has("imageSource"))
 	{
@@ -629,7 +629,7 @@ void CarouselComponent::getCarouselFromTheme(const ThemeData::ThemeElement* elem
 
 void CarouselComponent::onShow()
 {
-	GuiComponent::onShow();		
+	GuiComponent::onShow();
 
 	if (!mWasRendered)
 	{
@@ -679,7 +679,7 @@ void CarouselComponent::onShow()
 
 void CarouselComponent::onHide()
 {
-	GuiComponent::onHide();	
+	GuiComponent::onHide();
 
 	for (int i = 0; i < mEntries.size(); i++)
 	{
@@ -760,7 +760,7 @@ void CarouselComponent::ensureLogo(IList<CarouselComponentData, IBindable*>::Ent
 			if (mImageSource == CarouselImageSource::IMAGE) // If it's of type image, it's probably the systemview
 				logo->setIsLinear(true);
 
-			logo->applyTheme(mTheme, mThemeViewName, mThemeLogoName, ThemeFlags::COLOR | ThemeFlags::ALIGNMENT | ThemeFlags::VISIBLE); //  ThemeFlags::PATH | 
+			logo->applyTheme(mTheme, mThemeViewName, mThemeLogoName, ThemeFlags::COLOR | ThemeFlags::ALIGNMENT | ThemeFlags::VISIBLE); //  ThemeFlags::PATH |
 			logo->setImage(marqueePath, false, MaxSizeInfo(mLogoSize * mLogoScale), false);
 
 			if (mImageSource == CarouselImageSource::IMAGE && mSize.x() != mLogoSize.x() && mSize.y() != mLogoSize.y())
@@ -768,7 +768,7 @@ void CarouselComponent::ensureLogo(IList<CarouselComponentData, IBindable*>::Ent
 
 			entry.data.logo = std::shared_ptr<GuiComponent>(logo);
 		}
-		else // no logo in theme; use text 
+		else // no logo in theme; use text
 		{
 			TextComponent* text = new TextComponent(mWindow, entry.name, Renderer::isSmallScreen() ? Font::get(FONT_SIZE_MEDIUM) : Font::get(FONT_SIZE_LARGE), 0x000000FF, ALIGN_CENTER);
 			text->setScaleOrigin(0.0f);
@@ -833,7 +833,7 @@ void CarouselComponent::add(const std::string& name, IBindable* obj, bool preloa
 {
 	typename IList<CarouselComponentData, IBindable*>::Entry entry;
 	entry.name = name;
-	entry.object = obj;	
+	entry.object = obj;
 	entry.data.logo = nullptr;
 
 	static_cast<IList<CarouselComponentData, IBindable*>*>(this)->add(entry);
@@ -858,7 +858,7 @@ bool CarouselComponent::onMouseClick(int button, bool pressed, int x, int y)
 {
 	if (button != 1)
 		return false;
-	
+
 	if (pressed)
 	{
 		mPressedPoint = Vector2i(x, y);
@@ -1049,8 +1049,8 @@ void CarouselItemTemplate::updateBindings(IBindable* bindable)
 			bindables.push_back(bindable);
 
 			currentParent = bindable;
-		}		
-	
+		}
+
 		GridTemplateBinding localBinding(this, mName, currentParent);
 		GuiComponent::updateBindings(&localBinding);
 
@@ -1066,7 +1066,7 @@ void CarouselItemTemplate::updateBindings(IBindable* bindable)
 
 void CarouselItemTemplate::loadFromString(const std::string& xml, std::map<std::string, std::string>* map)
 {
-	std::map<std::string, std::string> defMap;	
+	std::map<std::string, std::string> defMap;
 	std::map<std::string, std::string>* mapPtr = map ? map : &defMap;
 
 	std::string dataXML = R"=====(
@@ -1074,15 +1074,15 @@ void CarouselItemTemplate::loadFromString(const std::string& xml, std::map<std::
 				<formatVersion>7</formatVersion>
 				<view name="basic">
 					<container name="default" extra="true">
-			)=====" + 
-			xml + 
+			)=====" +
+			xml +
 			R"=====(</container>
 				</view>
 			</theme>
 			)=====";
 
 	auto theme = ThemeData::getMenuTheme();
-	
+
 	(*mapPtr)["menu.text.color"] = Utils::String::toHexString(theme->Text.color);
 	(*mapPtr)["menu.text.selectedcolor"] = Utils::String::toHexString(theme->Text.selectedColor);
 	(*mapPtr)["menu.text.font.path"] = theme->Text.font->getPath();

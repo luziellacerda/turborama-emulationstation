@@ -2,7 +2,7 @@
 #include "Log.h"
 #include "LocaleES.h"
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 #include "Scripting.h"
 #endif
 
@@ -249,7 +249,7 @@ void TextToSpeech::say(const std::string text, bool expand, const std::string la
 	if (expand == false && espeak_IsPlaying() == 1)
 		espeak_Cancel();
 	
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 // workaround for espeak not working :( 
     Scripting::fireEvent("say", text.c_str());
 #endif

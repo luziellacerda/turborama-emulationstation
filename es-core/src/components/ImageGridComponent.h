@@ -532,7 +532,7 @@ bool ImageGridComponent<T>::input(InputConfig* config, Input input)
 			dir[0 ^ idx] = -1;
 		else if (config->isMappedLike("right", input))
 			dir[0 ^ idx] = 1;
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		else  if (config->isMappedTo("lefttrigger", input))
 #else
 		else  if (config->isMappedTo("pageup", input))
@@ -543,7 +543,7 @@ bool ImageGridComponent<T>::input(InputConfig* config, Input input)
 			else
 				dir[0 ^ idx] = -dimScrollable;
 		}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		else if (config->isMappedTo("righttrigger", input))
 #else
 		else if (config->isMappedTo("pagedown", input))
@@ -567,7 +567,7 @@ bool ImageGridComponent<T>::input(InputConfig* config, Input input)
 	}
 	else
 	{
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		if (config->isMappedLike("up", input) || config->isMappedLike("down", input) ||
 			config->isMappedLike("left", input) || config->isMappedLike("right", input) ||
 			config->isMappedTo("righttrigger", input) || config->isMappedTo("lefttrigger", input))

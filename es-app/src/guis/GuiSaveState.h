@@ -10,7 +10,7 @@
 #include "components/TextComponent.h"
 #include "SaveState.h"
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	#include "CloudSaves.h"
 #endif
 
@@ -38,7 +38,7 @@ public:
 	bool hitTest(int x, int y, Transform4x4f& parentTransform, std::vector<GuiComponent*>* pResult = nullptr) override;
 	bool onMouseClick(int button, bool pressed, int x, int y);
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	void loadGridAndCenter() {
 		loadGrid();
 		centerWindow();

@@ -185,8 +185,8 @@ namespace Utils
 #ifdef WIN32 // windows
 			return system("shutdown -s -t 0");
 #else // osx / linux
-#ifdef _ENABLEEMUELEC
-      system("/usr/bin/emuelec-utils small-cores enable");
+#ifdef _ENABLETURBORAMA
+      system("/usr/bin/turborama-utils small-cores enable");
 			return system("systemctl poweroff");
 #else
 			return system("shutdown -h now");
@@ -199,9 +199,9 @@ namespace Utils
 #ifdef WIN32 // windows
 			return system("shutdown -r -t 0");
 #else // osx / linux
-#ifdef _ENABLEEMUELEC
-            system("/usr/bin/emuelec-utils small-cores enable");
-			return system("systemctl reboot");	
+#ifdef _ENABLETURBORAMA
+            system("/usr/bin/turborama-utils small-cores enable");
+			return system("systemctl reboot");
 #else
 			return system("shutdown -r now");
 #endif
@@ -566,8 +566,8 @@ namespace Utils
 		}
 #endif
 
-#ifdef _ENABLEEMUELEC
-/* < emuelec */
+#ifdef _ENABLETURBORAMA
+/* < turborama */
 std::string getShOutput(const std::string& mStr)
 {
     std::string result, file;
@@ -583,7 +583,7 @@ std::string getShOutput(const std::string& mStr)
     pclose(pipe);
     return result;
 }
-/* emuelec >*/
+/* turborama >*/
 #endif
 
 		std::string getArchString()

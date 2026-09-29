@@ -95,7 +95,7 @@ GuiSaveState::GuiSaveState(Window* window, FileData* game, const std::function<v
 	mGrid->applyTheme(mTheme, "grid", "gamegrid", 0);
 	mGrid->setCursorChangedCallback([&](const CursorState& /*state*/) { updateHelpPrompts(); });
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	if (!CloudSaves::getInstance().isSupported(game)) {
 		loadGrid();
 		centerWindow();
@@ -128,7 +128,7 @@ void GuiSaveState::loadGrid()
 			return file1->slot < file2->slot; 
 		});
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	if (CloudSaves::getInstance().isSupported(mGame)) {
 		auto tmpItem = SaveStateItem(mRepository->getEmptySaveState());
 		tmpItem.saveState->slot = -3;
@@ -228,7 +228,7 @@ bool GuiSaveState::input(InputConfig* config, Input input)
 		{
 			const SaveStateItem& item = mGrid->getSelected();
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 			if (item.saveState->slot == -3) {
 				CloudSaves::getInstance().save(mWindow, mGame);
 				return false;

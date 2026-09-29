@@ -10,7 +10,7 @@
 #include "SaveStateRepository.h"
 #include "CollectionSystemManager.h"
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	#include "SystemConf.h"
 #endif
 
@@ -84,7 +84,7 @@ GameNameFormatter::GameNameFormatter(SystemData* system)
 
 	mShowYear =
 		mSortId == FileSorts::RELEASEDATE_ASCENDING ||
-#ifdef _ENABLEEMUELEC			
+#ifdef _ENABLETURBORAMA
 		mSortId == FileSorts::RELEASEDATE_DESCENDING ||
 #else
 		mSortId == FileSorts::RELEASEDATE_ASCENDING ||
@@ -127,7 +127,7 @@ std::string valueOrDefault(const std::string value, const std::string defaultVal
 std::string GameNameFormatter::getDisplayName(FileData* fd, bool showFolderIcon)
 {
 	std::string name = fd->getName();
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	std::string hideSortNames = SystemConf::getInstance()->get(fd->getSystem()->getName() + ".hideSortNames");
 	if (hideSortNames.empty()) {
 		if ((mSortId == FileSorts::SORTNAME_ASCENDING || mSortId == FileSorts::SORTNAME_DESCENDING) && !fd->getSortName().empty())
@@ -192,7 +192,7 @@ std::string GameNameFormatter::getDisplayName(FileData* fd, bool showFolderIcon)
 			std::string timeText;
 			if (h > 0)
 				timeText = Utils::String::format("%02d:%02d:%02d", h, m, s);
-			else 
+			else
 				timeText = Utils::String::format("%02d:%02d", m, s);
 
 			name = name + " [" + timeText + "]";

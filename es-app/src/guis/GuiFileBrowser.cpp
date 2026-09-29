@@ -14,7 +14,7 @@
 #include "SystemConf.h"
 #include "Paths.h"
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 #include "components/ImageComponent.h"
 #include "components/BusyComponent.h"
 #include "resources/TextureResource.h"
@@ -32,7 +32,7 @@
 #define VIDEO_ICON		_U("\uF03D ")
 #define DOCUMENT_ICON	_U("\uF02D ")
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 #define AUDIO_ICON _U("\uF028 ")
 #endif
 
@@ -48,7 +48,7 @@ GuiFileBrowser::GuiFileBrowser(Window* window, const std::string startPath, cons
 
 	addChild(&mMenu);
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
        mPreview = std::make_shared<ImageComponent>(window);
        mPreview->setVisible(false);
        mPreview->setAllowFading(false);
@@ -101,7 +101,7 @@ GuiFileBrowser::GuiFileBrowser(Window* window, const std::string startPath, cons
 	{
 		mMenu.addButton(_("RESET"), "back", [&]
 		{
-			onOk("");			
+			onOk("");
 		});
 	}
 
@@ -119,7 +119,7 @@ GuiFileBrowser::GuiFileBrowser(Window* window, const std::string startPath, cons
 		navigateTo(startPath);
 }
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 GuiFileBrowser::~GuiFileBrowser()
 {
        clearVideoPreview();
@@ -244,7 +244,7 @@ void GuiFileBrowser::navigateTo(const std::string path)
 			if ((mTypes & FileTypes::VIDEO) == FileTypes::VIDEO)
 				if (ext == ".mp4" || ext == ".avi" || ext == ".mkv" || ext == ".webm")
 					icon = VIDEO_ICON;
-#ifdef _ENABLEEMUELEC				
+#ifdef _ENABLETURBORAMA
 			if ((mTypes & FileTypes::AUDIO) == FileTypes::AUDIO)
 				if (ext == ".ogg" || ext == ".mp3" || ext == ".wav")
 					icon = AUDIO_ICON;
@@ -261,15 +261,15 @@ void GuiFileBrowser::navigateTo(const std::string path)
 
 			bool isSelected = (mSelectedFile == file.path);
 
-			mMenu.addEntry(icon + Utils::FileSystem::getFileName(file.path), false, 
-				[this, file]() { onOk(file.path); }, 
+			mMenu.addEntry(icon + Utils::FileSystem::getFileName(file.path), false,
+				[this, file]() { onOk(file.path); },
 				"", isSelected, false, file.path, false);
 		}
 	}
 
-	centerWindow();	
+	centerWindow();
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
         if (mMenu.size() > 0 && mMenu.getList()->getCursorChangedCallback())
                 mMenu.getList()->getCursorChangedCallback()(CURSOR_STOPPED);
 #endif
@@ -279,10 +279,10 @@ void GuiFileBrowser::navigateTo(const std::string path)
 void GuiFileBrowser::centerWindow()
 {
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 
 /* CLEANUP NEEDED! this is very cumbersome!
-	CLEANUP NEEDED! this is very cumbersome!	
+	CLEANUP NEEDED! this is very cumbersome!
 	CLEANUP NEEDED! this is very cumbersome!
 	CLEANUP NEEDED! this is very cumbersome!
 	CLEANUP NEEDED! this is very cumbersome!
@@ -390,26 +390,26 @@ bool GuiFileBrowser::input(InputConfig* config, Input input)
 	}
 
 	if (config->isMappedTo("start", input) && input.value != 0)
-	{		
+	{
 		if (mMenu.size() && mOkCallback != nullptr)
 		{
 			auto path = mMenu.getSelected();
 
 			if (mTypes == FileTypes::DIRECTORY && path.empty())
-				onOk(mCurrentPath);				
+				onOk(mCurrentPath);
 			else if (!path.empty() && (mTypes == FileTypes::DIRECTORY || !Utils::FileSystem::isDirectory(path)))
 				onOk(path);
 		}
 
-		return true;		
+		return true;
 	}
 
 	if (config->isMappedTo("x", input) && input.value && mOkCallback != nullptr)
 	{
-		onOk("");		
+		onOk("");
 		return true;
 	}
-	
+
 	if (config->isMappedTo("select", input))
 	{
 		navigateTo(Paths::getScreenShotPath());
@@ -422,7 +422,7 @@ bool GuiFileBrowser::input(InputConfig* config, Input input)
 std::vector<HelpPrompt> GuiFileBrowser::getHelpPrompts()
 {
 	std::vector<HelpPrompt> prompts = mMenu.getHelpPrompts();
-	
+
 	if (mOkCallback != nullptr)
 		prompts.push_back(HelpPrompt("x", _("RESET")));
 

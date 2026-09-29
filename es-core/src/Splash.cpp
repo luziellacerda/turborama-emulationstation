@@ -11,7 +11,7 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 	mBackground(window),
 	mText(window),
 	mInactiveProgressbar(window),
-	mActiveProgressbar(window)	
+	mActiveProgressbar(window)
 {
 	mBackgroundColor = 0x000000FF;
 	mRoundCorners = 0.01;
@@ -40,7 +40,7 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 
 		try { theme->loadFile("splash", sysData, themeFilePath); }
 		catch(...) { }
-		
+
 		useOldSplashLayout = false;
 	}
 
@@ -58,7 +58,7 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 	bool linearSmooth = false;
 	if (backGroundImageTheme && backGroundImageTheme->has("linearSmooth"))
 		linearSmooth = backGroundImageTheme->get<bool>("linearSmooth");
-	
+
 	if (fullScreenBackGround && !useOldSplashLayout)
 	{
 		mBackground.setOrigin(0.5, 0.5);
@@ -97,7 +97,7 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 	else
 		mText.setColor(0xFFFFFFFF);
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		mText.setColor(0x514687D0);
 #endif
 	mText.setHorizontalAlignment(ALIGN_CENTER);
@@ -130,9 +130,9 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 		mText.applyTheme(theme, "splash", "label", ThemeFlags::ALL ^ (ThemeFlags::TEXT));
 	else if (fullScreenBackGround)
 	{
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		mText.setGlowColor(0x00000010);
-		mText.setGlowSize(1);	
+		mText.setGlowSize(1);
 #else
 		mText.setGlowColor(0x00000020);
 		mText.setGlowSize(2);
@@ -187,7 +187,7 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 	{
 		mActiveProgressbar.setColorShift(0xDF1010FF);
 		mActiveProgressbar.setColorShiftEnd(0x4F0000FF);
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		mActiveProgressbar.setColorShift(0xA8A2D0FF);
 		mActiveProgressbar.setColorShiftEnd(0x514687FF);
 #endif
@@ -211,7 +211,7 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 
 		mText.setExtraType(ExtraType::EXTRA); // Enable binding
 		BindingManager::updateBindings(&mText, bindable);
-		
+
 		for (auto extra : mExtras)
 			BindingManager::updateBindings(extra, bindable);
 	}
@@ -234,7 +234,7 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 		removeReloadable(&mBackground);
 
 		for (auto extra : mExtras)
-		{			
+		{
 			removeReloadable(extra);
 			for (auto im : extra->enumerateExtraChildrens())
 				removeReloadable(im);

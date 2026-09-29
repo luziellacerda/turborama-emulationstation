@@ -19,7 +19,7 @@ Paths* Paths::_instance = nullptr;
 
 
 Paths::Paths()
-{	
+{
 
 #ifdef BATOCERA
 	LOG(LogInfo) << "BATOCERA is defined";
@@ -66,44 +66,44 @@ Paths::Paths()
 	mTimeZonesPath = "/usr/share/zoneinfo/";
 	mRetroachivementSounds = "/usr/share/libretro/assets/sounds";
 	mUserRetroachivementSounds = "/userdata/sounds/retroachievements";
-	
+
 	mSystemConfFilePath = "/userdata/system/batocera.conf";
 	mUserManualPath = "/usr/share/batocera/doc/notice.pdf";
 	mVersionInfoPath = "/usr/share/batocera/batocera.version";
 	mKodiPath = "/usr/bin/kodi";
 #endif
 
-/* EmuElec sample locations.
-#ifdef _ENABLEEMUELEC
+/* Turborama sample locations.
+#ifdef _ENABLETURBORAMA
 	mRootPath = "/storage/roms"; // ?
 	mEmulationStationPath = Utils::FileSystem::getExePath();
 	mUserEmulationStationPath = Utils::FileSystem::getCanonicalPath(Utils::FileSystem::getHomePath() + "/.emulationstation");
-	mLogPath = "/storage/.config/emuelec/logs";
+	mLogPath = "/storage/.config/turborama/logs";
 	mThemesPath = mEmulationStationPath + "/themes";
-	mUserThemesPath = "/emuelec/themes";
+	mUserThemesPath = "/turborama/themes";
 	mMusicPath = "/storage/roms/BGM";
-	mUserMusicPath = "/storage/.config/emuelec/BGM";
+	mUserMusicPath = "/storage/.config/turborama/BGM";
 	mDecorationsPath = "/storage/roms/bezels";
 	mUserDecorationsPath = "/tmp/overlays/bezels";
 	mVersionInfoPath = "/usr/config/EE_VERSION";
-	mSystemConfFilePath = "/storage/.config/emuelec/configs/emuelec.conf";
+	mSystemConfFilePath = "/storage/.config/turborama/configs/turborama.conf";
 #endif
 */
 
-// EmuElec real paths
-#ifdef _ENABLEEMUELEC
+// Turborama real paths
+#ifdef _ENABLETURBORAMA
 	mRootPath = "/storage";
 	mEmulationStationPath = getExePath();
 	mUserEmulationStationPath = Utils::FileSystem::getCanonicalPath(getHomePath() + "/.emulationstation");
-	mLogPath = "/emuelec/logs";
+	mLogPath = "/turborama/logs";
 	mThemesPath = mEmulationStationPath + "/themes";
-	mUserThemesPath = "/emuelec/themes";
+	mUserThemesPath = "/turborama/themes";
 	mMusicPath = "/storage/roms/BGM";
-	mUserMusicPath = "/emuelec/BGM";
+	mUserMusicPath = "/turborama/BGM";
 	mDecorationsPath = "/storage/roms/bezels";
 	mUserDecorationsPath = "/tmp/overlays/bezels";
 	mVersionInfoPath = "/usr/config/EE_VERSION";
-	mSystemConfFilePath = "/emuelec/configs/emuelec.conf";
+	mSystemConfFilePath = "/turborama/configs/turborama.conf";
 	mScreenShotsPath = "/storage/roms/screenshots";
 	mSaveStatesPath = "/storage/roms/savestates";
 	mTimeZonesPath = "/usr/share/zoneinfo/";
@@ -132,7 +132,7 @@ void Paths::loadCustomConfiguration(bool overridesOnly)
 		{ "kodi", &mKodiPath }
 	};
 
-	std::map<std::string, std::string*> folders = 
+	std::map<std::string, std::string*> folders =
 	{
 		// Folders
 		{ "root", &mRootPath },
@@ -169,7 +169,7 @@ void Paths::loadCustomConfiguration(bool overridesOnly)
 
 	if (!Utils::FileSystem::exists(path))
 		return;
-		
+
 	std::string relativeTo = Utils::FileSystem::getParent(path);
 
 	if (!overridesOnly)
@@ -302,7 +302,7 @@ std::string& Paths::getHomePath()
 #endif
 
 	// HOME has different usages in Linux & Windows
-	// On Windows,  "HOME" is not a system variable but a user's environment variable that can be defined by users in batch files. 
+	// On Windows,  "HOME" is not a system variable but a user's environment variable that can be defined by users in batch files.
 	// If defined : The environment variable has priority over all
 	char* envHome = getenv("HOME");
 	if (envHome)

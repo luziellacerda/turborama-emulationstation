@@ -115,7 +115,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 	addChild(&mGrid);
 
 	mTitle = std::make_shared<TextComponent>(mWindow, Utils::String::toUpper(title), theme->Title.font, theme->Title.color, ALIGN_CENTER);
-	
+
 	mKeyboardGrid = std::make_shared<ComponentGrid>(mWindow, Vector2i(kbUs[0].size(), kbUs.size() / BUTTON_LAYER_SIZE));
 
 	mText = std::make_shared<TextEditComponent>(mWindow);
@@ -134,7 +134,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 
 	// Keyboard
 	// Case for if multiline is enabled, then don't create the keyboard.
-	// if (!mMultiLine) 
+	// if (!mMultiLine)
 	{
 		std::vector<std::vector<const char*>>* layout = &kbUs;
 
@@ -152,7 +152,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 			layout = &kbKr;
 
 		for (unsigned int i = 0; i < layout->size() / BUTTON_LAYER_SIZE; i++)
-		{			
+		{
 			std::vector<std::shared_ptr<ButtonComponent>> buttons;
 			for (unsigned int j = 0; j < (*layout)[i].size(); j++)
 			{
@@ -206,7 +206,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 				if (lower == "SHIFT")
 				{
 					// Special case for shift key
-					mShiftButton = std::make_shared<ButtonComponent>(mWindow, _U("\uF176"), _("SHIFTS FOR UPPER,LOWER, AND SPECIAL"), [this] { shiftKeys(); }, false);					
+					mShiftButton = std::make_shared<ButtonComponent>(mWindow, _U("\uF176"), _("SHIFTS FOR UPPER,LOWER, AND SPECIAL"), [this] { shiftKeys(); }, false);
 					button = mShiftButton;
 				}
 				else if (lower == "ALT")
@@ -229,7 +229,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 					else
 						break;
 				}
-				
+
 				int rowSpan = 1;
 				for (unsigned int cs = (BUTTON_LAYER_SIZE * i) + BUTTON_LAYER_SIZE; cs < layout->size(); cs += BUTTON_LAYER_SIZE)
 				{
@@ -243,7 +243,7 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 
 				buttonList.push_back(buttons);
 			}
-		}		
+		}
 		// END KEYBOARD IF
 	}
 
@@ -257,20 +257,20 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 
 	mText->setSize(0, textHeight);
 
-	mGrid.setUnhandledInputCallback([this](InputConfig* config, Input input) -> bool 
-	{		
-		if (config->isMappedLike("down", input)) 
+	mGrid.setUnhandledInputCallback([this](InputConfig* config, Input input) -> bool
+	{
+		if (config->isMappedLike("down", input))
 		{
 			mGrid.setCursorTo(mText);
 			return true;
 		}
-		else if (config->isMappedLike("up", input)) 
+		else if (config->isMappedLike("up", input))
 		{
 			mGrid.setCursorTo(mKeyboardGrid);
 			return true;
 		}
 		else if (config->isMappedLike("left", input))
-		{		
+		{
 			if (mGrid.getSelectedComponent() == mKeyboardGrid)
 			{
 				Vector2i curCursor = mKeyboardGrid->getCursor();
@@ -291,9 +291,9 @@ GuiTextEditPopupKeyboard::GuiTextEditPopupKeyboard(Window* window, const std::st
 		return false;
 	});
 
-	
+
 	// If multiline, set all diminsions back to default, else draw size for keyboard.
-	if (mMultiLine) 
+	if (mMultiLine)
 	{
 		if (Renderer::ScreenSettings::fullScreenMenus())
 			setSize(OSK_WIDTH, Renderer::getScreenHeight());
@@ -329,7 +329,7 @@ void GuiTextEditPopupKeyboard::onSizeChanged()
 	auto sz = mKeyboardGrid->getSize();
 
 	mKeyboardGrid->setSize(mSize.x() - OSK_PADDINGX - OSK_PADDINGX, sz.y() - OSK_PADDINGY); // Small margin between buttons
-	mKeyboardGrid->setPosition(OSK_PADDINGX, pos.y());	
+	mKeyboardGrid->setPosition(OSK_PADDINGX, pos.y());
 }
 
 bool GuiTextEditPopupKeyboard::input(InputConfig* config, Input input)
@@ -360,7 +360,7 @@ bool GuiTextEditPopupKeyboard::input(InputConfig* config, Input input)
 		return true;
 	}
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 	// For deleting a chara (Left Top Button)
 	if (config->isMappedTo("lefttrigger", input) && input.value) {
 		mText->startEditing();
@@ -388,7 +388,7 @@ bool GuiTextEditPopupKeyboard::input(InputConfig* config, Input input)
 	}
 
 	// For Adding a space (Right Top Button)
-	if (config->isMappedTo("pagedown", input) && input.value) 
+	if (config->isMappedTo("pagedown", input) && input.value)
 	{
 		bool editing = mText->isEditing();
 		if (!editing)
@@ -400,14 +400,14 @@ bool GuiTextEditPopupKeyboard::input(InputConfig* config, Input input)
 			mText->stopEditing();
 	}
 
-#endif 
+#endif
 	// For Shifting (Y)
-	if (config->isMappedTo("y", input) && input.value) 
+	if (config->isMappedTo("y", input) && input.value)
 		shiftKeys();
 
 	if (config->isMappedTo("x", input) && input.value && mOkCallback != nullptr)
 	{
-		mOkCallback(""); 
+		mOkCallback("");
 		delete this;
 		return true;
 	}
@@ -449,7 +449,7 @@ void GuiTextEditPopupKeyboard::updateKeyboardButtons()
 }
 
 // Shifts the keys when user hits the shift button.
-void GuiTextEditPopupKeyboard::shiftKeys() 
+void GuiTextEditPopupKeyboard::shiftKeys()
 {
 	toggleKeyState(mShift, mShiftButton);
 }
@@ -480,9 +480,9 @@ std::vector<HelpPrompt> GuiTextEditPopupKeyboard::getHelpPrompts()
 std::shared_ptr<ButtonComponent> GuiTextEditPopupKeyboard::makeButton(const std::string& key, const std::string& shiftedKey, const std::string& altedKey, const std::string& altedShiftedKey)
 {
 	std::shared_ptr<ButtonComponent> button = std::make_shared<ButtonComponent>(mWindow, key, key, [this, key, shiftedKey, altedKey, altedShiftedKey]
-	{						
+	{
 		if (key == _U("\uF058") || key.find("OK") != std::string::npos)
-		{	
+		{
 			if (mMultiLine && (mShift || mAlt))
 			{
 				mText->startEditing(); mText->textInput("\r\n"); mText->stopEditing();
@@ -506,7 +506,7 @@ std::shared_ptr<ButtonComponent> GuiTextEditPopupKeyboard::makeButton(const std:
 		}
 		else if (key == _("RESET"))
 		{
-			mOkCallback(""); 
+			mOkCallback("");
 			delete this;
 			return;
 		}
@@ -542,7 +542,7 @@ std::shared_ptr<ButtonComponent> GuiTextEditPopupKeyboard::makeButton(const std:
 		if (Utils::String::isKorean(text) && mShift)
 			shiftKeys();
 	}, false);
-	
+
 	KeyboardButton kb(button, key, shiftedKey, altedKey, altedShiftedKey);
 	keyboardButtons.push_back(kb);
 	return button;

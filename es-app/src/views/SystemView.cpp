@@ -123,7 +123,7 @@ void SystemView::reloadTheme(SystemData* system)
 			logo->applyTheme(theme, "system", "logo", ThemeFlags::COLOR | ThemeFlags::ALIGNMENT | ThemeFlags::VISIBLE);
 	}
 
-	loadExtras(system);	
+	loadExtras(system);
 }
 
 void SystemView::loadExtras(SystemData* system)
@@ -137,7 +137,7 @@ void SystemView::loadExtras(SystemData* system)
 
 		it->backgroundExtras.clear();
 	}
-	
+
 	size_t vram = Settings::getInstance()->getInt("MaxVRAM") * 1024 * 1024;
 	size_t size = TextureResource::getTotalMemUsage();
 
@@ -155,10 +155,10 @@ void SystemView::loadExtras(SystemData* system)
 
 			continue;
 		}
-		
+
 		if (extra->isKindOf<ImageComponent>())
 		{
-			// Preload image if there's enough VRAM space				
+			// Preload image if there's enough VRAM space
 			auto tex = ((ImageComponent*)extra)->getTexture();
 			if (tex && !tex->isLoaded())
 			{
@@ -213,7 +213,7 @@ void SystemView::populate()
 	TextureLoader::paused = true;
 
 	clearEntries();
-	
+
 	for (auto system : SystemData::sSystemVector)
 	{
 		const std::shared_ptr<ThemeData>& theme = system->getTheme();
@@ -415,7 +415,7 @@ bool SystemView::input(InputConfig* config, Input input)
 					mCarousel.moveSelectionBy(1);
 					return true;
 				}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 				if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("down", input)) || config->isMappedTo("righttrigger", input))
 #else
 				if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("down", input)) || config->isMappedTo("pagedown", input))
@@ -425,12 +425,12 @@ bool SystemView::input(InputConfig* config, Input input)
 					mCarousel.moveSelectionBy(cursor - mCursor);
 					return true;
 				}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 				if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("up", input)) || config->isMappedTo("lefttrigger", input))
 #else
 				if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("up", input)) || config->isMappedTo("pageup", input))
 #endif
-				
+
 				{
 					int cursor = moveCursorFast(false);
 					mCarousel.moveSelectionBy(cursor - mCursor);
@@ -449,7 +449,7 @@ bool SystemView::input(InputConfig* config, Input input)
 					mCarousel.moveSelectionBy(1);
 					return true;
 				}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 				if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("right", input)) || config->isMappedTo("righttrigger", input))
 #else
 				if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("right", input)) || config->isMappedTo("pagedown", input))
@@ -459,7 +459,7 @@ bool SystemView::input(InputConfig* config, Input input)
 					mCarousel.moveSelectionBy(cursor - mCursor);
 					return true;
 				}
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 				if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("left", input)) || config->isMappedTo("lefttrigger", input))
 #else
 				if ((Settings::getInstance()->getBool("QuickSystemSelect") && config->isMappedLike("left", input)) || config->isMappedTo("pageup", input))
@@ -477,7 +477,7 @@ bool SystemView::input(InputConfig* config, Input input)
 				config->isMappedLike("right", input) ||
 				config->isMappedLike("up", input) ||
 				config->isMappedLike("down", input) ||
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 				config->isMappedLike("righttrigger", input) ||
 				config->isMappedLike("lefttrigger", input) ||
 #else
@@ -902,21 +902,21 @@ void SystemView::render(const Transform4x4f& parentTrans)
 	auto carouselZindex = mCarousel.getZIndex();
 	auto systemInfoZIndex = mSystemInfo.getZIndex();
 	auto minMax = std::minmax(carouselZindex, systemInfoZIndex);
-	
+
 	renderExtras(trans, INT16_MIN, minMax.first);
 
 	for (auto sb : mStaticBackgrounds)
 		sb->render(trans);
 
 	if (mCarousel.getZIndex() > mSystemInfo.getZIndex())
-		renderInfoBar(trans);	
+		renderInfoBar(trans);
 	else
 		renderCarousel(trans);
 
 	renderExtras(trans, minMax.first, minMax.second);
 
 	if (mCarousel.getZIndex() > mSystemInfo.getZIndex())
-		renderCarousel(trans);	
+		renderCarousel(trans);
 	else
 		renderInfoBar(trans);
 
@@ -934,13 +934,13 @@ std::vector<HelpPrompt> SystemView::getHelpPrompts()
 	if (netPlay)
 	{
 		prompts.push_back(HelpPrompt("x", _("NETPLAY"), [&] { showNetplay(); }));
-		prompts.push_back(HelpPrompt("y", _("SEARCH") + std::string("/") + _("RANDOM"), [&] { showQuickSearch(); })); // QUICK 
+		prompts.push_back(HelpPrompt("y", _("SEARCH") + std::string("/") + _("RANDOM"), [&] { showQuickSearch(); })); // QUICK
 	}
 	else
 	{
 		prompts.push_back(HelpPrompt("x", _("RANDOM")));
 		if (SystemData::getSystem("all") != nullptr)
-			prompts.push_back(HelpPrompt("y", _("SEARCH"), [&] { showQuickSearch(); })); // QUICK 
+			prompts.push_back(HelpPrompt("y", _("SEARCH"), [&] { showQuickSearch(); })); // QUICK
 	}
 
 	if (SystemData::IsManufacturerSupported)
@@ -960,7 +960,7 @@ HelpStyle SystemView::getHelpStyle()
 	int mCursor = mCarousel.getCursorIndex();
 
 	HelpStyle style;
-	
+
 	if (mEntries.size())
 		style.applyTheme(mEntries.at(mCursor).object->getTheme(), "system");
 
@@ -989,7 +989,7 @@ void  SystemView::getViewElements(const std::shared_ptr<ThemeData>& theme)
 			textListNative->setCursorChangedCallback([this](CursorState state) { onCursorChanged(state); });
 			mCarousel.attach(textListNative);
 		}
-		
+
 		getDefaultElements();
 		mCarousel.applyTheme(theme, "system", "textlist", ThemeFlags::ALL);
 	}
@@ -1003,7 +1003,7 @@ void  SystemView::getViewElements(const std::shared_ptr<ThemeData>& theme)
 				auto imageGridNative = new ImageGridComponent<SystemData*>(mWindow);
 				imageGridNative->setThemeName("system");
 				imageGridNative->setCursorChangedCallback([this](CursorState state) { onCursorChanged(state); });
-				mCarousel.attach(imageGridNative);				
+				mCarousel.attach(imageGridNative);
 			}
 
 			getDefaultElements();
@@ -1018,10 +1018,10 @@ void  SystemView::getViewElements(const std::shared_ptr<ThemeData>& theme)
 				carouselNative->setDefaultBackground(0xFFFFFFD8, 0xFFFFFFD8, true);
 				carouselNative->setThemedContext("logo", "logoText", "systemcarousel", "carousel", CarouselType::HORIZONTAL, CarouselImageSource::IMAGE);
 				carouselNative->setCursorChangedCallback([this](CursorState state) { onCursorChanged(state); });
-				
+
 				mCarousel.attach(carouselNative);
 			}
-						
+
 			getDefaultElements();
 
 			mCarousel.applyTheme(theme, "system", "systemcarousel", ThemeFlags::ALL);
@@ -1037,7 +1037,7 @@ void  SystemView::getViewElements(const std::shared_ptr<ThemeData>& theme)
 	mExtraTransitionType = carousel ? carousel->getDefaultTransition() : "fade";
 	mExtraTransitionSpeed = carousel ? carousel->getTransitionSpeed() : 350.0f;
 	mExtraTransitionHorizontal = carousel ? carousel->isHorizontalCarousel() : false;
-	
+
 	auto view = theme->getView("system");
 	if (view != nullptr)
 	{
@@ -1088,7 +1088,7 @@ void  SystemView::getViewElements(const std::shared_ptr<ThemeData>& theme)
 
 //  Render system carousel
 void SystemView::renderCarousel(const Transform4x4f& trans)
-{	
+{
 	mCarousel.render(trans);
 }
 
@@ -1110,7 +1110,7 @@ void SystemView::setExtraRequired(SystemViewData& data, bool required)
 		}
 	};
 
-	// Disable unloading for textures that will have to display 
+	// Disable unloading for textures that will have to display
 	for (GuiComponent* extra : data.backgroundExtras)
 		setTexture(extra, [required](std::shared_ptr<TextureResource> x) { x->setRequired(required); });
 }
@@ -1205,8 +1205,8 @@ void SystemView::renderExtras(const Transform4x4f& trans, float lower, float upp
 
 	if (mExtrasFadeOpacity && mExtrasFadeOldCursor >= 0 && mExtrasFadeOldCursor < mEntries.size() && mExtrasFadeOldCursor != mCursor)
 	{
-		// ExtrasFadeOpacity : Collect images paths & text values		
-		// paths & values must have only the elements that are not common 
+		// ExtrasFadeOpacity : Collect images paths & text values
+		// paths & values must have only the elements that are not common
 		if (mCursor >= 0 && mCursor < mEntries.size())
 		{
 			for (GuiComponent* extra : mEntries.at(mCursor).backgroundExtras)
@@ -1584,7 +1584,7 @@ bool SystemView::hitTest(int x, int y, Transform4x4f& parentTransform, std::vect
 		ret |= extra->hitTest(x, y, trans, pResult);
 
 	ret |= mCarousel.hitTest(x, y, trans, pResult);
-	
+
 	return ret;
 }
 

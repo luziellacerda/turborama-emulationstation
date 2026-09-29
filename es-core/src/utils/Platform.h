@@ -35,7 +35,7 @@ namespace Utils
 
 			int run() const;
 
-			std::string command;			
+			std::string command;
 			bool waitForExit;
 			bool showWindow;
 			Window* window;
@@ -71,8 +71,8 @@ namespace Utils
 #if WIN32
 		bool isWindows11();
 #endif
-        #ifdef _ENABLEEMUELEC
-            std::string getShOutput(const std::string& mStr); /* < emuelec */
+        #ifdef _ENABLETURBORAMA
+            std::string getShOutput(const std::string& mStr); /* < turborama */
         #endif
 	}
 }

@@ -31,7 +31,7 @@ namespace Renderer
 	};
 
 	static SDL_GLContext	sdlContext       = nullptr;
-	
+
 	static Transform4x4f	projectionMatrix = Transform4x4f::Identity();
 	static Transform4x4f	worldViewMatrix  = Transform4x4f::Identity();
 	static Transform4x4f	mvpMatrix		 = Transform4x4f::Identity();
@@ -45,14 +45,14 @@ namespace Renderer
 	static std::map<unsigned int, TextureInfo*> _textures;
 
 	static unsigned int		boundTexture = 0;
-	static unsigned int		mShaderTexture = 0;	
+	static unsigned int		mShaderTexture = 0;
 
 	extern std::string SHADER_VERSION_STRING;
 
 //////////////////////////////////////////////////////////////////////////
 
 	static ShaderProgram* currentProgram = nullptr;
-	
+
 	static void useProgram(ShaderProgram* program)
 	{
 		if (program == currentProgram)
@@ -62,12 +62,12 @@ namespace Renderer
 
 			return;
 		}
-		
+
 		if (program == nullptr && currentProgram != nullptr)
 			currentProgram->unSelect();
 
 		currentProgram = program;
-		
+
 		if (currentProgram != nullptr)
 		{
 			currentProgram->select();
@@ -95,7 +95,7 @@ namespace Renderer
 
 		_customShaders[shaderFile] = customShader;
 
-		return customShader;	
+		return customShader;
 	}
 
 
@@ -201,7 +201,7 @@ namespace Renderer
 	{
 #if defined(USE_OPENGLES_20)
 		SHADER_VERSION_STRING = "#version 100\n";
-#else 
+#else
 		SHADER_VERSION_STRING = "#version 120\n";
 
 		std::string shaders = Utils::String::trim(glGetString(GL_SHADING_LANGUAGE_VERSION) ? (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION) : "");
@@ -241,12 +241,12 @@ namespace Renderer
 			precision mediump float;
 			#endif
 
-			varying   vec4  v_col;   
+			varying   vec4  v_col;
 
-			void main(void)          
-			{                        
+			void main(void)
+			{
 			    gl_FragColor = v_col;
-			}                        
+			}
 			)=====";
 
 		// Compile each shader, link them to make a full program
@@ -254,7 +254,7 @@ namespace Renderer
 		auto fragmentShaderColorNoTexture = Shader::createShader(GL_FRAGMENT_SHADER, fragmentSourceNoTexture);
 
 		shaderProgramColorNoTexture.createShaderProgram(vertexShaderNoTexture, fragmentShaderColorNoTexture);
-		
+
 		// vertex shader (texture)
 		std::string vertexSourceTexture =
 			SHADER_VERSION_STRING +
@@ -267,12 +267,12 @@ namespace Renderer
 			varying   vec4 v_col;
 			varying   vec2 v_pos;
 
-			void main(void)                                    
-			{                                                  
+			void main(void)
+			{
 			    gl_Position = MVPMatrix * vec4(VertexCoord.xy, 0.0, 1.0);
-			    v_tex       = TexCoord;                           
-			    v_col       = COLOR;  
-				v_pos       = VertexCoord;                         
+			    v_tex       = TexCoord;
+			    v_col       = COLOR;
+				v_pos       = VertexCoord;
 			}
 			)=====";
 
@@ -283,7 +283,7 @@ namespace Renderer
 			#ifdef GL_ES
 			precision mediump float;
 			precision mediump sampler2D;
-			#endif		
+			#endif
 
 			varying   vec4      v_col;
 			varying   vec2      v_tex;
@@ -295,10 +295,10 @@ namespace Renderer
 			uniform   float		saturation;
 			uniform   float     es_cornerRadius;
 
-			void main(void)                                    
-			{                                                  
+			void main(void)
+			{
 			    vec4 clr = texture2D(u_tex, v_tex);
-		
+
 			    if (saturation != 1.0) {
 			    	vec3 gray = vec3(dot(clr.rgb, vec3(0.34, 0.55, 0.11)));
 			    	vec3 blend = mix(gray, clr.rgb, saturation);
@@ -311,18 +311,18 @@ namespace Renderer
 					vec2 middle = vec2(abs(outputSize.x), abs(outputSize.y)) / 2.0;
 					vec2 center = abs(v_pos - outputOffset - middle);
 					vec2 q = center - middle + es_cornerRadius;
-					float distance = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - es_cornerRadius;	
+					float distance = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - es_cornerRadius;
 
 					if (distance > 0.0) {
 						discard;
-					} 
+					}
 					else if (pos.x >= 1.0 && pos.y >= 1.0 && pos.x <= outputSize.x - 1.0 && pos.y <= outputSize.y - 1.0)
 					{
 						float pixelValue = 1.0 - smoothstep(-0.75, 0.5, distance);
-						clr.a *= pixelValue;						
+						clr.a *= pixelValue;
 					}
 				}
-			
+
 			    gl_FragColor = clr * v_col;
 			}
 			)=====";
@@ -331,7 +331,7 @@ namespace Renderer
 		auto vertexShaderTexture = Shader::createShader(GL_VERTEX_SHADER, vertexSourceTexture);
 		auto fragmentShaderColorTexture = Shader::createShader(GL_FRAGMENT_SHADER, fragmentSourceTexture);
 		shaderProgramColorTexture.createShaderProgram(vertexShaderTexture, fragmentShaderColorTexture);
-		
+
 		// fragment shader (alpha texture)
 		std::string fragmentSourceAlpha =
 			SHADER_VERSION_STRING +
@@ -339,16 +339,16 @@ namespace Renderer
 			#ifdef GL_ES
 			precision mediump float;
 			precision mediump sampler2D;
-			#endif		
+			#endif
 
 			varying   vec4      v_col;
 			varying   vec2      v_tex;
 			uniform   sampler2D u_tex;
 
-			void main(void)           
-			{                         
+			void main(void)
+			{
 			    vec4 a = vec4(1.0, 1.0, 1.0, texture2D(u_tex, v_tex).a);
-			    gl_FragColor = a * v_col; 
+			    gl_FragColor = a * v_col;
 			}
 			)=====";
 
@@ -357,7 +357,7 @@ namespace Renderer
 		auto fragmentShaderAlpha = Shader::createShader(GL_FRAGMENT_SHADER, fragmentSourceAlpha);
 
 		shaderProgramAlpha.createShaderProgram(vertexShaderAlpha, fragmentShaderAlpha);
-		
+
 		useProgram(nullptr);
 
 	} // setupDefaultShaders
@@ -416,7 +416,7 @@ namespace Renderer
 	#endif
 
 	static int getAvailableVideoMemory()
-	{	
+	{
 		/*
 		const std::string extensions = glGetString(GL_EXTENSIONS) ? (const char*)glGetString(GL_EXTENSIONS) : "";
 		if (extensions.find("GL_NVX_gpu_memory_info") != std::string::npos)
@@ -507,7 +507,7 @@ namespace Renderer
 	{
 #if OPENGL_EXTENSIONS
 		return "OPENGL 3.0 / GLSL";
-#else 
+#else
 		return "OPENGL ES 2.0";
 #endif
 	}
@@ -547,7 +547,7 @@ namespace Renderer
 	void GLES20Renderer::createContext()
 	{
 		sdlContext = SDL_GL_CreateContext(getSDLWindow());
-		
+
 #if OPENGL_EXTENSIONS
 		if (sdlContext == nullptr)
 		{
@@ -572,7 +572,7 @@ namespace Renderer
 		const std::string version    = glGetString(GL_VERSION)    ? (const char*)glGetString(GL_VERSION)    : "";
 		const std::string extensions = glGetString(GL_EXTENSIONS) ? (const char*)glGetString(GL_EXTENSIONS) : "";
 		const std::string shaders    = glGetString(GL_SHADING_LANGUAGE_VERSION) ? (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION) : "";
-		
+
 		LOG(LogInfo) << "GL vendor:   " << vendor;
 		LOG(LogInfo) << "GL renderer: " << renderer;
 		LOG(LogInfo) << "GL version:  " << version;
@@ -598,7 +598,7 @@ namespace Renderer
 
 		GL_CHECK_ERROR(glPixelStorei(GL_PACK_ALIGNMENT, 1));
 		GL_CHECK_ERROR(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
-		
+
 	} // createContext
 
 //////////////////////////////////////////////////////////////////////////
@@ -665,7 +665,7 @@ namespace Renderer
 			LOG(LogError) << "CreateTexture error: glGenTextures failed ";
 			return 0;
 		}
-		
+
 		bindTexture(0);
 		bindTexture(texture);
 
@@ -675,7 +675,7 @@ namespace Renderer
 		GL_CHECK_ERROR(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		GL_CHECK_ERROR(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _linear ? GL_LINEAR : GL_NEAREST));
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		// Regular GL_ALPHA textures are black + alpha in shaders
 		// Create a GL_LUMINANCE_ALPHA texture instead so its white + alpha
 		if (type == GL_LUMINANCE_ALPHA && _data == nullptr)
@@ -731,11 +731,11 @@ namespace Renderer
 #else
 		// Regular GL_ALPHA textures are black + alpha in shaders
 		// Create a GL_LUMINANCE_ALPHA texture instead so its white + alpha
-		
+
 		if (type == GL_LUMINANCE_ALPHA)
 		{
 			uint8_t* la_data = new uint8_t[_width * _height * 2];
-						
+
 			if (_data == nullptr)
 				memset(la_data, 0, _width * _height * 2);
 			else
@@ -747,7 +747,7 @@ namespace Renderer
 
 			glTexImage2D(GL_TEXTURE_2D, 0, type, _width, _height, 0, type, GL_UNSIGNED_BYTE, la_data);
 			delete[] la_data;
-		}		
+		}
 		else if (type == GL_ALPHA && _data == nullptr)
 		{
 			uint8_t* la_data = new uint8_t[_width * _height];
@@ -799,10 +799,10 @@ namespace Renderer
 				delete it->second;
 				it->second = nullptr;
 			}
-				
+
 			_textures.erase(it);
 		}
-		
+
 		GL_CHECK_ERROR(glDeleteTextures(1, &_texture));
 
 	} // destroyTexture
@@ -825,7 +825,7 @@ namespace Renderer
 			if (a_data)
 			{
 				for(uint32_t i=0; i<(_width * _height); ++i)
-					la_data[(i * 2) + 1] = a_data[i];				
+					la_data[(i * 2) + 1] = a_data[i];
 			}
 
 			GL_CHECK_ERROR(glTexSubImage2D(GL_TEXTURE_2D, 0, _x, _y, _width, _height, type, GL_UNSIGNED_BYTE, la_data));
@@ -946,7 +946,7 @@ namespace Renderer
 
 			GL_CHECK_ERROR(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * outer.size(), outer.data(), GL_DYNAMIC_DRAW));
 			GL_CHECK_ERROR(glDrawArrays(GL_TRIANGLE_FAN, 0, outer.size()));
-			
+
 			disableStencil();
 		}
 
@@ -977,7 +977,7 @@ namespace Renderer
 
 				useProgram(shader);
 
-				// Update Shader Uniforms				
+				// Update Shader Uniforms
 				shader->setSaturation(_vertices->saturation);
 				shader->setCornerRadius(_vertices->cornerRadius);
 				shader->setResolution();
@@ -988,7 +988,7 @@ namespace Renderer
 					shader->setInputSize(it->second->size);
 					shader->setTextureSize(it->second->size);
 				}
-				
+
 				if (_numVertices > 0)
 				{
 					Vector2f vec = _vertices[_numVertices - 1].pos;
@@ -1002,7 +1002,7 @@ namespace Renderer
 					if (_vertices[_numVertices - 1].tex.y() == 1 && _vertices[0].tex.y() == 0)
 						vec.y() = -vec.y();
 
-					shader->setOutputSize(vec);						
+					shader->setOutputSize(vec);
 					shader->setOutputOffset(_vertices[0].pos);
 				}
 
@@ -1099,7 +1099,7 @@ namespace Renderer
 	{
 		useProgram(nullptr);
 
-#ifdef WIN32		
+#ifdef WIN32
 		glFlush();
 		Sleep(0);
 #endif
@@ -1108,9 +1108,9 @@ namespace Renderer
 	} // swapBuffers
 
 //////////////////////////////////////////////////////////////////////////
-	
+
 	void GLES20Renderer::drawTriangleFan(const Vertex* _vertices, const unsigned int _numVertices, const Blend::Factor _srcBlendFactor, const Blend::Factor _dstBlendFactor)
-	{		
+	{
 		// Pass buffer data
 		GL_CHECK_ERROR(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _numVertices, _vertices, GL_DYNAMIC_DRAW));
 
@@ -1141,7 +1141,7 @@ namespace Renderer
 		else
 		{
 			GL_CHECK_ERROR(glDisable(GL_BLEND));
-			GL_CHECK_ERROR(glDrawArrays(GL_TRIANGLE_FAN, 0, _numVertices));			
+			GL_CHECK_ERROR(glDrawArrays(GL_TRIANGLE_FAN, 0, _numVertices));
 		}
 	}
 
@@ -1189,7 +1189,7 @@ namespace Renderer
 				size_t size = tex.second->size.x() * tex.second->size.y() * (tex.second->type == GL_ALPHA ? 1 : 4);
 				total += size;
 			}
-		}	
+		}
 
 		return total;
 	}
@@ -1199,7 +1199,7 @@ namespace Renderer
 		ShaderProgram* customShader = getShaderProgram(shader.c_str());
 		if (customShader == nullptr)
 			customShader = &shaderProgramColorTexture;
-			
+
 		return customShader->supportsCornerRadius();
 	}
 
@@ -1223,7 +1223,7 @@ namespace Renderer
 			return;
 
 		float textureScale = 1.0f;
-		
+
 		// Special hack for single-pass blur shader -> Texture downscaling
 		if (path == ":/shaders/blur.glsl" && data == nullptr)
 		{
@@ -1241,7 +1241,7 @@ namespace Renderer
 
 		int x = _x; int y = _y; int w = _w; int h = _h;
 
-		if (y < 0) 
+		if (y < 0)
 		{
 			h += y; y = 0;
 			if (h <= 0)
@@ -1251,7 +1251,7 @@ namespace Renderer
 		if (x < 0)
 		{
 			w += x; x = 0;
-			if (w <= 0) 
+			if (w <= 0)
 				return;
 		}
 
@@ -1259,7 +1259,7 @@ namespace Renderer
 		int th = h / textureScale;
 
 		unsigned int nTextureID = 0;
-		
+
 		if (data != nullptr && (shaderBatch->size() - 1) % 2 == 1)
 		{
 			// It's the texture that will be returned into *data, so we can't cache it and we need to create a new one
@@ -1279,11 +1279,11 @@ namespace Renderer
 
 					bindTexture(mShaderTexture);
 					glTexImage2D(GL_TEXTURE_2D, 0, convertTextureType(Renderer::Texture::RGBA), tw, th, 0, convertTextureType(Renderer::Texture::RGBA), GL_UNSIGNED_BYTE, nullptr);
-				}				
+				}
 			}
 
 			nTextureID = mShaderTexture;
-		}		
+		}
 
 		if (nTextureID > 0)
 		{
@@ -1310,7 +1310,7 @@ namespace Renderer
 			setMatrix(Transform4x4f::Identity());
 
 			Vertex vertices[4];
-				
+
 			if (shaderBatch->size() == 1 && data == nullptr)
 			{
 				vertices[0] = { { (float)x    , (float)y       }, { 0.0f, 1.0f }, 0xFFFFFFFF };
@@ -1327,13 +1327,13 @@ namespace Renderer
 				}
 			}
 			else
-			{			
+			{
 				vertices[0] = { { (float)0    , (float)height - h }, { 0.0f, 1.0f }, 0xFFFFFFFF };
 				vertices[1] = { { (float)0    , (float)height },     { 0.0f, 0.0f }, 0xFFFFFFFF };
 				vertices[2] = { { (float)0 + w, (float)height - h }, { 1.0f, 1.0f }, 0xFFFFFFFF };
 				vertices[3] = { { (float)0 + w, (float)height  },    { 1.0f, 0.0f }, 0xFFFFFFFF };
 			}
-			
+
 			// round vertices
 			for (int i = 0; i < 4; ++i)
 				vertices[i].pos.round();
@@ -1370,7 +1370,7 @@ namespace Renderer
 
 					if (i == shaderBatch->size() - 1 && data == nullptr)
 					{
-						// This is the last shader in the batch. 
+						// This is the last shader in the batch.
 						vertices[0] = { { (float)x    , (float)y       }, { 0.0f, 1.0f }, 0xFFFFFFFF };
 						vertices[1] = { { (float)x    , (float)y + h   }, { 0.0f, 0.0f }, 0xFFFFFFFF };
 						vertices[2] = { { (float)x + w, (float)y       }, { 1.0f, 1.0f }, 0xFFFFFFFF };
@@ -1419,13 +1419,13 @@ namespace Renderer
 			}
 
 			if (data != nullptr)
-			{				
+			{
 				GL_CHECK_ERROR(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0)); // Detach
 				GL_CHECK_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
 				bool takeFirst = (shaderBatch->size() - 1) % 2 == 1;
 				*data = takeFirst ? nTextureID : nTexture2;
-				
+
 				if (takeFirst || nTextureID != mShaderTexture)
 					destroyTexture(takeFirst ? nTexture2 : nTextureID);
 			}
@@ -1447,10 +1447,10 @@ namespace Renderer
 
 			if (nFrameBuffer2 != -1)
 				GL_CHECK_ERROR(glDeleteFramebuffers(1, &nFrameBuffer2));
-		}		
+		}
 #endif
 	}
-	
+
 } // Renderer::
 
 #endif // USE_OPENGLES_20

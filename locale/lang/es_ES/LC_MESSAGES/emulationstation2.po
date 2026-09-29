@@ -3130,8 +3130,8 @@ msgstr "LECTOR DE PANTALLA DESACTIVADO"
 msgid "DANGER ZONE!"
 msgstr "¡ZONA DE PELIGRO!"
 
-msgid "You are about to set EmuELEC resolution to"
-msgstr "Estas a punto de cambiar la resolución de EmuELEC a"
+msgid "You are about to set Turborama resolution to"
+msgstr "Estas a punto de cambiar la resolución de Turborama a"
 
 msgid "Emulationstation will restart"
 msgstr "Emulationstation se reiniciara"
@@ -3171,7 +3171,7 @@ msgstr ""
 "\n"
 "¿CREAR COPIA DE SEGURIDAD DE TU CONFIGURACIÓN ACTUAL Y REINICIAR?"
 
-msgid "BACKUP EMUELEC CONFIGS"
+msgid "BACKUP TURBORAMA CONFIGS"
 msgstr "CREAR COPIA DE SEGURIDAD DE AJUSTES"
 
 msgid ""
@@ -3186,7 +3186,7 @@ msgstr ""
 "\n"
 "¿RESTABLECER SCRIPTS Y BINARIOS A PREDETERMINADOS Y REINICIAR?"
 
-msgid "RESET EMUELEC SCRIPTS AND BINARIES TO DEFAULT"
+msgid "RESET TURBORAMA SCRIPTS AND BINARIES TO DEFAULT"
 msgstr "RESTABLECER SCRIPTS Y BINARIOS A POR DEFECTO"
 
 msgid ""
@@ -3208,8 +3208,8 @@ msgstr ""
 msgid "RESET SYSTEM TO DEFAULT CONFIG"
 msgstr "RESTABLECER SISTEMA A CONFIGURACIÓN POR DEFECTO"
 
-msgid "You are about to set EmuELEC Language to:"
-msgstr "Estas a punto de cambiar el lenguaje de EmuELEC a:"
+msgid "You are about to set Turborama Language to:"
+msgstr "Estas a punto de cambiar el lenguaje de Turborama a:"
 
 msgid "RESTART EMULATIONSTATION"
 msgstr "REINICIAR EMULATIONSTATION"

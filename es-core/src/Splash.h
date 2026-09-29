@@ -10,8 +10,8 @@ class TextureResource;
 #if WIN32
 #define DEFAULT_SPLASH_IMAGE ":/splash.svg"
 #define OLD_SPLASH_LAYOUT true
-#elifdef _ENABLEEMUELEC
-#define DEFAULT_SPLASH_IMAGE ":/splash_emuelec.svg"
+#elifdef _ENABLETURBORAMA
+#define DEFAULT_SPLASH_IMAGE ":/splash_turborama.svg"
 #define OLD_SPLASH_LAYOUT true
 #else
 #define DEFAULT_SPLASH_IMAGE ":/logo.png"

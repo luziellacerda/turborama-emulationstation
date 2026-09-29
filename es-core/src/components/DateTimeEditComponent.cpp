@@ -114,7 +114,7 @@ bool DateTimeEditComponent::input(InputConfig* config, Input input)
 		}
 
 		int incDir = 0;
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		if(config->isMappedLike("up", input) || config->isMappedTo("lefttrigger", input))
 			incDir = 1;
 		else if(config->isMappedLike("down", input) || config->isMappedTo("righttrigger", input))

@@ -23,7 +23,7 @@ struct DecorationSetInfo
         std::string imageUrl;
 };
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 struct sScreenDimensions
 {
 	int width;
@@ -47,7 +47,7 @@ public:
 
         bool input(InputConfig* config, Input input) override;
         void onSizeChanged() override;
-        std::vector<HelpPrompt> getHelpPrompts() override;      
+        std::vector<HelpPrompt> getHelpPrompts() override;
         static void openQuitMenu_static(Window *window, bool quickAccessMenu = false, bool animate = true);
 
         static void popSystemConfigurationGui(Window* mWindow, SystemData *systemData);
@@ -62,15 +62,15 @@ private:
         void addEntry(const std::string& name, bool add_arrow, const std::function<void()>& func, const std::string iconName = "");
         void addVersionInfo();
         void openCollectionSystemSettings();
-        void openConfigInput(); 
+        void openConfigInput();
         void openScraperSettings();
-        void openScreensaverOptions();  
+        void openScreensaverOptions();
         void openSoundSettings();
         void openUISettings();
         void openUpdatesSettings();
-        
-#ifdef _ENABLEEMUELEC
-        void openEmuELECSettings(); /* < emuelec */
+
+#ifdef _ENABLETURBORAMA
+        void openTurboramaSettings(); /* < turborama */
         static void openDangerZone(Window* mWindow, std::string configName);
         static void createConfigureSplash(Window* mWindow, int menuIndex = 0);
         static void createGamepadConfig(Window* window, GuiSettings* systemConfiguration);
@@ -79,15 +79,15 @@ private:
 #endif
 
         void openSystemSettings();
-        void openGamesSettings();       
-        void openNetworkSettings(bool selectWifiEnable = false);        
+        void openGamesSettings();
+        void openNetworkSettings(bool selectWifiEnable = false);
         void openQuitMenu();
         void openSystemInformations();
         void openServicesSettings();
         void openMultiScreensSettings();
         void openDmdSettings();
         void openDeveloperSettings();
-        void openNetplaySettings(); 
+        void openNetplaySettings();
         void openRetroachievementsSettings();
         void openMissingBiosSettings();
         void openFormatDriveSettings();
@@ -104,7 +104,7 @@ private:
 
         static std::shared_ptr<OptionListComponent<std::string>> createRatioOptionList(Window *window, std::string configname);
         static std::shared_ptr<OptionListComponent<std::string>> createVideoResolutionModeOptionList(Window *window, std::string configname, std::string configoptname = "videomode", const std::string output = "");
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
         static std::shared_ptr<OptionListComponent<std::string>> createSplashLoadingOptionList(Window *window);
 	static std::shared_ptr<OptionListComponent<std::string>> createSplashExitOptionList(Window *window);
 
@@ -115,7 +115,7 @@ private:
 
         static void createBtnJoyCfgName(Window *window, GuiSettings *systemConfiguration, std::string prefixName);
         static void createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfiguration, std::string prefixName, std::string remapName, int btnIndex = -1);
-  
+
         static void deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration, std::string prefixName);
         static void editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfiguration, std::string prefixName);
         static void removeJoyBtnEntry(int index);
@@ -141,7 +141,7 @@ public:
 
 	virtual bool hitTest(int x, int y, Transform4x4f& parentTransform, std::vector<GuiComponent*>* pResult = nullptr) override;
 	virtual bool onMouseClick(int button, bool pressed, int x, int y);
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
         static std::shared_ptr<OptionListComponent<std::string>> btn_choice;
         static std::shared_ptr<OptionListComponent<std::string>> del_choice;
         static std::shared_ptr<OptionListComponent<std::string>> edit_choice;

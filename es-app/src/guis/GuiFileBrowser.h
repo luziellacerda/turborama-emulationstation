@@ -7,7 +7,7 @@
 template<typename T>
 class OptionListComponent;
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 #include <memory>
 class ImageComponent;
 class TextureResource;
@@ -25,16 +25,16 @@ public:
 		VIDEO = 4,
 		DIRECTORY = 8,
 		FILES = 16,
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 		AUDIO = 32,
-#endif		
+#endif
 
 		ALL = 255
 	};
 
 	GuiFileBrowser(Window* window, const std::string startPath, const std::string selectedFile, FileTypes types = FileTypes::IMAGES, const std::function<void(const std::string&)>& okCallback = nullptr, const std::string& title = "");
 
-#ifdef _ENABLEEMUELEC        
+#ifdef _ENABLETURBORAMA
 		~GuiFileBrowser() override;
 	void update(int deltaTime) override;
 #endif
@@ -46,7 +46,7 @@ private:
 	void navigateTo(const std::string path);
 	void centerWindow();
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
        void generateVideoPreview(const std::string& path);
        void clearVideoPreview();
        std::shared_ptr<ImageComponent> mPreview;
@@ -63,7 +63,7 @@ private:
        int mNoFrameTime;
 #endif
 
-	MenuComponent mMenu;	
+	MenuComponent mMenu;
 
 	std::string mCurrentPath;
 	std::string mSelectedFile;

@@ -8,7 +8,7 @@
 #include <mmdeviceapi.h>
 #endif
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 #include "utils/StringUtil.h"
 #include "SystemConf.h"
 #endif
@@ -219,7 +219,7 @@ static PulseAudioControl PulseAudio;
 #endif
 
 #if defined(__linux__)
-#if defined(_RPI_) || defined(_VERO4K_) || defined(_ENABLEEMUELEC)
+#if defined(_RPI_) || defined(_VERO4K_) || defined(_ENABLETURBORAMA)
 		std::string VolumeControl::mixerName = "PCM";
 #else
 		std::string VolumeControl::mixerName = "Master";
@@ -316,7 +316,7 @@ void VolumeControl::init()
 						{
 							//wohoo. good to go...
 							LOG(LogDebug) << "VolumeControl::init() - Mixer initialized";
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 							applyInitialVolumeFromConfig();
 #endif
 						}
@@ -342,7 +342,7 @@ void VolumeControl::init()
 									{
 										//wohoo. good to go...
 										LOG(LogDebug) << "VolumeControl::init() - Mixer initialized";
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 										applyInitialVolumeFromConfig();
 #endif
 
@@ -585,7 +585,7 @@ int VolumeControl::getVolume() const
 	return volume;
 }
 
-#ifdef _ENABLEEMUELEC
+#ifdef _ENABLETURBORAMA
 void VolumeControl::applyInitialVolumeFromConfig()
 {
 	std::string volumeStr = SystemConf::getInstance()->get("audio.volume");

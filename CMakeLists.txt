@@ -20,9 +20,9 @@ option(USE_SYSTEM_PUGIXML "Set to ON to use system-wide pugixml library" OFF)
 if(WIN32)
 
 	if (NOT CMAKE_GENERATOR_PLATFORM)
-		set(CMAKE_GENERATOR_PLATFORM Win32)	    
+		set(CMAKE_GENERATOR_PLATFORM Win32)
 	endif()
-	
+
 	MESSAGE("-- Destination platform : " ${CMAKE_GENERATOR_PLATFORM})
 
 	if(NOT VLC_VERSION)
@@ -31,13 +31,13 @@ if(WIN32)
 
 	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../batocera-emulationstation-win32-dependencies)
 		set(CUSTOM_LIBDIR ${CMAKE_CURRENT_SOURCE_DIR}/../batocera-emulationstation-win32-dependencies)
-	elseif (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/win32-libs) 
+	elseif (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/win32-libs)
 		set(CUSTOM_LIBDIR ${CMAKE_CURRENT_SOURCE_DIR}/win32-libs)
 	else ()
 		MESSAGE("-- Downloading Windows libraries...")
-		
+
 		include(FetchContent)
-		
+
 		FetchContent_Declare(win32libs
 		  GIT_REPOSITORY "https://github.com/batocera-linux/batocera-emulationstation-win32-dependencies.git"
 		  GIT_TAG "origin/master"
@@ -47,14 +47,14 @@ if(WIN32)
 		FetchContent_MakeAvailable(win32libs)
 		set(CUSTOM_LIBDIR ${CMAKE_CURRENT_SOURCE_DIR}/win32-libs)
 	endif()
-	
-	if(CUSTOM_LIBDIR)		
-		MESSAGE("-- Default libraries path set to : " ${CUSTOM_LIBDIR} )		
+
+	if(CUSTOM_LIBDIR)
+		MESSAGE("-- Default libraries path set to : " ${CUSTOM_LIBDIR} )
 	endif()
 endif()
 
-# emuelec
-option(ENABLE_EMUELEC "Set to ON to enable EmuELEC changes" ${ENABLE_EMUELEC})
+# turborama
+option(ENABLE_TURBORAMA "Set to ON to enable Turborama changes" ${ENABLE_TURBORAMA})
 option(ENABLE_GAMEFORCE "Set to ON to enable Gameforce specific changes" ${ENABLE_GAMEFORCE})
 option(ODROIDGOA "Set to ON to enable Odroid Go Advance specific changes" ${ODROIDGOA})
 
@@ -67,7 +67,7 @@ if(WIN32 AND CUSTOM_LIBDIR)
 	else()
 		set(CUSTOM_PLATFORM "x86")
 	endif()
-	
+
 	set(
 	  CMAKE_PREFIX_PATH
 	  ${CUSTOM_LIBDIR}/rapidjson
@@ -92,9 +92,9 @@ LIST(APPEND CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Packages
 )
 
-# emuelec
-if("${ENABLE_EMUELEC}" STREQUAL "1")
-  add_definitions(-D_ENABLEEMUELEC)
+# turborama
+if("${ENABLE_TURBORAMA}" STREQUAL "1")
+  add_definitions(-D_ENABLETURBORAMA)
 endif()
 
 if("${ENABLE_GAMEFORCE}" STREQUAL "1")
@@ -204,10 +204,10 @@ if(NOT WIN32)
 	else()
 	  MESSAGE("udev not found. guns will be disabled")
 	endif()
-	
+
 	if(ENABLE_TTS)
 	  MESSAGE("tts enabled")
-	#in EmuELEC espeak is called espeak-ng
+	#in Turborama espeak is called espeak-ng
 	  find_library(LIBESPEAK_LIBRARIES NAMES espeak espeak-ng REQUIRED)
 	  if("${LIBESPEAK_LIBRARIES}" STREQUAL "LIBESPEAK_LIBRARIES-NOTFOUND")
 		MESSAGE(FATAL_ERROR "espeak not found")
@@ -309,7 +309,7 @@ set(COMMON_INCLUDE_DIRS
     ${FreeImage_INCLUDE_DIRS}
     # batocera / background musics
     ${SDLMIXER_INCLUDE_DIR}
-    # batocera / customisations    
+    # batocera / customisations
     ${SDL2_INCLUDE_DIR}
     ${CURL_INCLUDE_DIR}
     ${VLC_INCLUDE_DIR}
@@ -392,13 +392,13 @@ set(COMMON_LIBRARIES
     ${SDL2_LIBRARY}
     # batocera / background musics
     ${SDLMIXER_LIBRARY}
-    # batocera / customisations    
+    # batocera / customisations
     ${CURL_LIBRARIES}
     ${VLC_LIBRARIES}
     pugixml
     nanosvg
     id3v2
-	libcheevos	
+	libcheevos
 )
 
 if(UDEV_FOUND)
@@ -505,7 +505,7 @@ endif()
 #-------------------------------------------------------------------------------
 # set up build directories
 
-if(WIN32)		
+if(WIN32)
 	set(dir ${CMAKE_CURRENT_SOURCE_DIR}/bin/${CMAKE_GENERATOR_PLATFORM})
 else()
 	set(dir ${CMAKE_CURRENT_SOURCE_DIR})
