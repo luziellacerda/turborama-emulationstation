@@ -14,7 +14,7 @@
 
 static std::string getMenuNavSoundPath() {
 
-	auto scrollSoundfile = SystemConf::getInstance()->get("ee_menuscrollsound");
+	auto scrollSoundfile = SystemConf::getInstance()->get("turborama_menuscrollsound");
 
     if (scrollSoundfile.empty()) {
         return "/storage/.emulationstation/resources/mscroll.ogg"; // Fallback

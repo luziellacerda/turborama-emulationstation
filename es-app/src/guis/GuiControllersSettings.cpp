@@ -138,19 +138,19 @@ GuiControllersSettings::GuiControllersSettings(Window* wnd, int autoSel) : GuiSe
 #ifdef _ENABLETURBORAMA
 		// Bluetooth Legacy Code
 		auto enable_bt_legacy = std::make_shared<SwitchComponent>(window);
-		bool bt_legacy_Enabled = SystemConf::getInstance()->get("ee_bluetooth_legacy.enabled") == "1";
+		bool bt_legacy_Enabled = SystemConf::getInstance()->get("turborama_bluetooth_legacy.enabled") == "1";
 		enable_bt_legacy->setState(bt_legacy_Enabled);
 		addWithLabel(_("ENABLE BLUETOOTH LEGACY SEARCH"), enable_bt_legacy);
 
 		enable_bt_legacy->setOnChangedCallback([enable_bt_legacy, window] {
 			bool bt_legacy_enabled = enable_bt_legacy->getState();
-			SystemConf::getInstance()->set("ee_bluetooth_legacy.enabled", bt_legacy_enabled ? "1" : "");
+			SystemConf::getInstance()->set("turborama_bluetooth_legacy.enabled", bt_legacy_enabled ? "1" : "");
 			SystemConf::getInstance()->saveSystemConf();
 		});
 
 		addSaveFunc([enable_bt_legacy, window] {
 			bool bt_legacy_enabled = enable_bt_legacy->getState();
-			SystemConf::getInstance()->set("ee_bluetooth_legacy.enabled", bt_legacy_enabled ? "1" : "");
+			SystemConf::getInstance()->set("turborama_bluetooth_legacy.enabled", bt_legacy_enabled ? "1" : "");
 			SystemConf::getInstance()->saveSystemConf();
 		});
 #endif

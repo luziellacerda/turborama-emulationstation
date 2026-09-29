@@ -344,7 +344,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createSplashLoadingOp
 	splashmode.push_back(_("SHOW RANDOM SPLASH")); // 2
 	splashmode.push_back(_("USE SCRAPED MEDIA")); // 3
 
-	std::string str_index = SystemConf::getInstance()->get("ee_splashloading");
+	std::string str_index = SystemConf::getInstance()->get("turborama_splashloading");
 	int index = 0;
 	if (!str_index.empty())
 		index = atoi(str_index.c_str());
@@ -365,7 +365,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createSplashExitOptio
 	splashmode.push_back(_("SHOW DEFAULT SPLASH")); // 0
 	splashmode.push_back(_("PLAY CUSTOM SPLASH")); // 1
 
-	std::string str_index = SystemConf::getInstance()->get("ee_splashexit");
+	std::string str_index = SystemConf::getInstance()->get("turborama_splashexit");
 	int index = 0;
 	if (!str_index.empty())
 		index = atoi(str_index.c_str());
@@ -405,7 +405,7 @@ void GuiMenu::openTurboramaSettings()
         videomode.push_back(a);
 	}
 		for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
-		turborama_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it); }
+		turborama_video_mode->add(*it, *it, SystemConf::getInstance()->get("turborama_videomode") == *it); }
 		s->addWithLabel(_("VIDEO MODE"), turborama_video_mode);
 
 		s->addSaveFunc([this, turborama_video_mode, window] {
@@ -422,7 +422,7 @@ void GuiMenu::openTurboramaSettings()
 			window->pushGui(new GuiMsgBox(window, msg,
 				_("YES"), [selectedVideoMode] {
 					//Utils::Platform::ProcessStartInfo("echo "+selectedVideoMode+" > /sys/class/display/mode").run();
-					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+					SystemConf::getInstance()->set("turborama_videomode", selectedVideoMode);
 					LOG(LogInfo) << "Setting video to " << selectedVideoMode;
 					//Utils::Platform::ProcessStartInfo("/usr/bin/setres.sh").run();
 					SystemConf::getInstance()->saveSystemConf();
@@ -432,25 +432,25 @@ void GuiMenu::openTurboramaSettings()
 				}, _("NO"),nullptr));
 
 		} else {
-			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
-				Utils::Platform::ProcessStartInfo("echo $(cat /storage/.config/EE_VIDEO_MODE) > /sys/class/display/mode").run();
-				LOG(LogInfo) << "Setting custom video mode from /storage/.config/EE_VIDEO_MODE to " << Utils::Platform::ProcessStartInfo("cat /storage/.config/EE_VIDEO_MODE").run();
-				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+			if(Utils::FileSystem::exists("/storage/.config/TURBORAMA_VIDEO_MODE")) {
+				Utils::Platform::ProcessStartInfo("echo $(cat /storage/.config/TURBORAMA_VIDEO_MODE) > /sys/class/display/mode").run();
+				LOG(LogInfo) << "Setting custom video mode from /storage/.config/TURBORAMA_VIDEO_MODE to " << Utils::Platform::ProcessStartInfo("cat /storage/.config/TURBORAMA_VIDEO_MODE").run();
+				SystemConf::getInstance()->set("turborama_videomode", selectedVideoMode);
 				SystemConf::getInstance()->saveSystemConf();
 				//v_need_reboot = true;
 			} else {
-				if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
-				Utils::Platform::ProcessStartInfo("echo $(cat /flash/EE_VIDEO_MODE) > /sys/class/display/mode").run();
-				LOG(LogInfo) << "Setting custom video mode from /flash/EE_VIDEO_MODE to " << Utils::Platform::ProcessStartInfo("cat /flash/EE_VIDEO_MODE").run();
-				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+				if(Utils::FileSystem::exists("/flash/TURBORAMA_VIDEO_MODE")) {
+				Utils::Platform::ProcessStartInfo("echo $(cat /flash/TURBORAMA_VIDEO_MODE) > /sys/class/display/mode").run();
+				LOG(LogInfo) << "Setting custom video mode from /flash/TURBORAMA_VIDEO_MODE to " << Utils::Platform::ProcessStartInfo("cat /flash/TURBORAMA_VIDEO_MODE").run();
+				SystemConf::getInstance()->set("turborama_videomode", selectedVideoMode);
 				SystemConf::getInstance()->saveSystemConf();
 				//v_need_reboot = true;
 					} else {
-					Utils::Platform::ProcessStartInfo("echo " + SystemConf::getInstance()->get("ee_videomode")+ " > /sys/class/display/mode").run();
-					std::string msg = "/storage/.config/EE_VIDEO_MODE or /flash/EE_VIDEO_MODE not found";
+					Utils::Platform::ProcessStartInfo("echo " + SystemConf::getInstance()->get("turborama_videomode")+ " > /sys/class/display/mode").run();
+					std::string msg = "/storage/.config/TURBORAMA_VIDEO_MODE or /flash/TURBORAMA_VIDEO_MODE not found";
 					window->pushGui(new GuiMsgBox(window, msg,
 				"OK", [selectedVideoMode] {
-					LOG(LogInfo) << "EE_VIDEO_MODE was not found! Setting video mode to " + SystemConf::getInstance()->get("ee_videomode");
+					LOG(LogInfo) << "TURBORAMA_VIDEO_MODE was not found! Setting video mode to " + SystemConf::getInstance()->get("turborama_videomode");
 			}));
 					}
 				}
@@ -524,7 +524,7 @@ void GuiMenu::openTurboramaSettings()
 		Audiodevices.push_back("0,2");
 		Audiodevices.push_back("1,2");
 
-		auto AudiodevicesS = SystemConf::getInstance()->get("ee_audio_device");
+		auto AudiodevicesS = SystemConf::getInstance()->get("turborama_audio_device");
 		if (AudiodevicesS.empty())
 		AudiodevicesS = "auto";
 
@@ -534,14 +534,14 @@ void GuiMenu::openTurboramaSettings()
 		s->addWithDescription(_("AUDIO DEVICE"), _("Changes will need an EmulationStation restart."), turborama_audiodev_def);
 
         turborama_audiodev_def->setSelectedChangedCallback([turborama_audiodev_def](std::string name) {
-            if (SystemConf::getInstance()->set("ee_audio_device", name))
+            if (SystemConf::getInstance()->set("turborama_audio_device", name))
                 SystemConf::getInstance()->saveSystemConf();
                 std::string selectedaudio = turborama_audiodev_def->getSelected();
                 Utils::Platform::ProcessStartInfo("/usr/bin/turborama-utils setauddev " +selectedaudio).run();
             });
 #endif
         auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
+		bool btbaseEnabled = SystemConf::getInstance()->get("turborama_bluetooth.enabled") == "1";
 		bluetoothd_enabled->setState(btbaseEnabled);
 		s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
 		s->addSaveFunc([bluetoothd_enabled] {
@@ -555,13 +555,13 @@ void GuiMenu::openTurboramaSettings()
 				Utils::Platform::ProcessStartInfo("systemctl start bluetooth").run();
 			}
                 bool bluetoothenabled = bluetoothd_enabled->getState();
-                SystemConf::getInstance()->set("ee_bluetooth.enabled", bluetoothenabled ? "1" : "0");
+                SystemConf::getInstance()->set("turborama_bluetooth.enabled", bluetoothenabled ? "1" : "0");
 				SystemConf::getInstance()->saveSystemConf();
 			}
 		});
 
   	auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
+		bool baseEnabled = SystemConf::getInstance()->get("turborama_ssh.enabled") == "1";
 		sshd_enabled->setState(baseEnabled);
 		s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
 		s->addSaveFunc([sshd_enabled] {
@@ -575,7 +575,7 @@ void GuiMenu::openTurboramaSettings()
 				Utils::Platform::ProcessStartInfo("systemctl start sshd").run();
 			}
                 bool sshenabled = sshd_enabled->getState();
-                SystemConf::getInstance()->set("ee_ssh.enabled", sshenabled ? "1" : "0");
+                SystemConf::getInstance()->set("turborama_ssh.enabled", sshenabled ? "1" : "0");
 				SystemConf::getInstance()->saveSystemConf();
 			}
 		});
@@ -585,12 +585,12 @@ void GuiMenu::openTurboramaSettings()
 		devices.push_back("Emulationstation");
 		devices.push_back("Retroarch");
 		for (auto it = devices.cbegin(); it != devices.cend(); it++)
-		turborama_boot_def->add(*it, *it, SystemConf::getInstance()->get("ee_boot") == *it);
+		turborama_boot_def->add(*it, *it, SystemConf::getInstance()->get("turborama_boot") == *it);
 		s->addWithLabel(_("START AT BOOT"), turborama_boot_def);
 		s->addSaveFunc([turborama_boot_def] {
 			if (turborama_boot_def->changed()) {
 				std::string selectedBootMode = turborama_boot_def->getSelected();
-				SystemConf::getInstance()->set("ee_boot", selectedBootMode);
+				SystemConf::getInstance()->set("turborama_boot", selectedBootMode);
 				SystemConf::getInstance()->saveSystemConf();
 			}
 		});
@@ -628,36 +628,36 @@ void GuiMenu::openTurboramaSettings()
 			});
 */
        auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool splashEnabled = SystemConf::getInstance()->get("ee_splash.enabled") == "1";
+		bool splashEnabled = SystemConf::getInstance()->get("turborama_splash.enabled") == "1";
 		splash_enabled->setState(splashEnabled);
 		s->addWithLabel(_("ENABLE RA SPLASH"), splash_enabled);
 		s->addSaveFunc([splash_enabled] {
                 bool splashenabled = splash_enabled->getState();
-                SystemConf::getInstance()->set("ee_splash.enabled", splashenabled ? "1" : "0");
+                SystemConf::getInstance()->set("turborama_splash.enabled", splashenabled ? "1" : "0");
 				SystemConf::getInstance()->saveSystemConf();
 			});
 
 	auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
-	bool bootEnabled = SystemConf::getInstance()->get("ee_bootvideo.enabled") == "1";
+	bool bootEnabled = SystemConf::getInstance()->get("turborama_bootvideo.enabled") == "1";
 	enable_bootvideo->setState(bootEnabled);
 	s->addWithLabel(_("ALWAYS SHOW BOOT VIDEO"), enable_bootvideo);
 
 	s->addSaveFunc([enable_bootvideo, window] {
 		bool bootvideoenabled = enable_bootvideo->getState();
-		SystemConf::getInstance()->set("ee_bootvideo.enabled", bootvideoenabled ? "1" : "0");
+		SystemConf::getInstance()->set("turborama_bootvideo.enabled", bootvideoenabled ? "1" : "0");
 		SystemConf::getInstance()->saveSystemConf();
 	});
 
 	auto enable_randombootvideo = std::make_shared<SwitchComponent>(mWindow);
-	bool randombootEnabled = SystemConf::getInstance()->get("ee_randombootvideo.enabled") == "1";
+	bool randombootEnabled = SystemConf::getInstance()->get("turborama_randombootvideo.enabled") == "1";
 	enable_randombootvideo->setState(randombootEnabled);
 	s->addWithLabel(_("RANDOMIZE BOOT VIDEO"), enable_randombootvideo);
 
 	s->addSaveFunc([enable_randombootvideo, window] {
 		bool randombootvideoenabled = enable_randombootvideo->getState();
-		SystemConf::getInstance()->set("ee_randombootvideo.enabled", randombootvideoenabled ? "1" : "0");
+		SystemConf::getInstance()->set("turborama_randombootvideo.enabled", randombootvideoenabled ? "1" : "0");
         if (randombootvideoenabled)
-        SystemConf::getInstance()->set("ee_bootvideo.enabled", "1");
+        SystemConf::getInstance()->set("turborama_bootvideo.enabled", "1");
 		SystemConf::getInstance()->saveSystemConf();
 	});
 
@@ -726,22 +726,22 @@ void GuiMenu::createConfigureSplash(Window* mWindow, int menuIndex)
 	auto splashLoadingOptionList = createSplashLoadingOptionList(mWindow);
 	s->addWithLabel(_("SPLASH LOADING OPTION"), splashLoadingOptionList);
 	splashLoadingOptionList->setSelectedChangedCallback([=](std::string name) {
-		SystemConf::getInstance()->set("ee_splashloading", name);
+		SystemConf::getInstance()->set("turborama_splashloading", name);
 		delete s;
 		createConfigureSplash(mWindow);
 	});
 
-	if (SystemConf::getInstance()->get("ee_splashloading") == "1") {
+	if (SystemConf::getInstance()->get("turborama_splashloading") == "1") {
 		// File picker for custom splash image
-		s->addFileBrowser(_("SET CUSTOM SPLASH LOADING MEDIA FILE"), "ee_customsplash", (GuiFileBrowser::FileTypes) (GuiFileBrowser::FileTypes::IMAGES | GuiFileBrowser::FileTypes::VIDEO));
+		s->addFileBrowser(_("SET CUSTOM SPLASH LOADING MEDIA FILE"), "turborama_customsplash", (GuiFileBrowser::FileTypes) (GuiFileBrowser::FileTypes::IMAGES | GuiFileBrowser::FileTypes::VIDEO));
 	}
 
-	if (SystemConf::getInstance()->get("ee_splashloading") == "2") {
+	if (SystemConf::getInstance()->get("turborama_splashloading") == "2") {
 		// File picker for random splash media
-		s->addFileBrowser(_("SET RANDOM SPLASH LOADING MEDIA FOLDER"), "ee_randomsplashpath", (GuiFileBrowser::FileTypes) (GuiFileBrowser::FileTypes::DIRECTORY));
+		s->addFileBrowser(_("SET RANDOM SPLASH LOADING MEDIA FOLDER"), "turborama_randomsplashpath", (GuiFileBrowser::FileTypes) (GuiFileBrowser::FileTypes::DIRECTORY));
 	}
 
-	if (SystemConf::getInstance()->get("ee_splashloading") == "3") {
+	if (SystemConf::getInstance()->get("turborama_splashloading") == "3") {
 		// options for gamelist.xml xml path scrape media
 		auto turborama_scrapepath_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "SCRAPE XML PATH", false);
 		std::vector<std::string> devices;
@@ -753,24 +753,24 @@ void GuiMenu::createConfigureSplash(Window* mWindow, int menuIndex)
 		devices.push_back("thumbnail");
 		devices.push_back("random");
 		for (auto it = devices.cbegin(); it != devices.cend(); it++)
-		turborama_scrapepath_def->add(*it, *it, SystemConf::getInstance()->get("ee_scrapedsplashpath") == *it);
+		turborama_scrapepath_def->add(*it, *it, SystemConf::getInstance()->get("turborama_scrapedsplashpath") == *it);
 		s->addWithLabel(_("SCRAPE XML PATH"), turborama_scrapepath_def);
 		s->addSaveFunc([turborama_scrapepath_def] {
 			if (turborama_scrapepath_def->changed()) {
 				std::string selectedScrapePath = turborama_scrapepath_def->getSelected();
-				SystemConf::getInstance()->set("ee_scrapedsplashpath", selectedScrapePath);
+				SystemConf::getInstance()->set("turborama_scrapedsplashpath", selectedScrapePath);
 				SystemConf::getInstance()->saveSystemConf();
 			}
 		});
 	}
 
 	auto splashLoadingPlatformRoms = std::make_shared<SwitchComponent>(mWindow);
-	splashLoadingPlatformRoms->setState(SystemConf::getInstance()->get("ee_splash_loading_platform_roms") != "0");
+	splashLoadingPlatformRoms->setState(SystemConf::getInstance()->get("turborama_splash_loading_platform_roms") != "0");
 	s->addWithLabel(_("SPLASH LOAD PLATFORMS AND ROMS"), splashLoadingPlatformRoms);
 
 	auto splashLoadingTime = std::make_shared<SliderComponent>(mWindow, 0.f, 100.f, 1.f, "seconds");
 
-	auto splashDuration = SystemConf::getInstance()->get("ee_splash_loading_duration");
+	auto splashDuration = SystemConf::getInstance()->get("turborama_splash_loading_duration");
 	float fDuration = 0.f;
 	if (!splashDuration.empty())
 		fDuration = (float) atof(splashDuration.c_str());
@@ -778,27 +778,27 @@ void GuiMenu::createConfigureSplash(Window* mWindow, int menuIndex)
 
 	splashLoadingTime->setOnValueChanged([](const float &newVal) {
 		auto val = std::to_string((int)Math::round(newVal));
-		SystemConf::getInstance()->set("ee_splash_loading_duration", val);
+		SystemConf::getInstance()->set("turborama_splash_loading_duration", val);
 	});
 	s->addWithLabel(_("SPLASH LOADING DURATION"), splashLoadingTime);
 
 	auto splashExitOptionList = createSplashExitOptionList(mWindow);
 	s->addWithLabel(_("SPLASH EXIT OPTION"), splashExitOptionList);
 	splashExitOptionList->setSelectedChangedCallback([=](std::string name) {
-		SystemConf::getInstance()->set("ee_splashexit", name);
+		SystemConf::getInstance()->set("turborama_splashexit", name);
 		int index = s->getMenu().getList()->getCursorIndex();
 		delete s;
 		createConfigureSplash(mWindow, index);
 	});
 
-	if (SystemConf::getInstance()->get("ee_splashexit") == "1") {
+	if (SystemConf::getInstance()->get("turborama_splashexit") == "1") {
 		// File picker for custom splash image/video
-		s->addFileBrowser(_("SET CUSTOM SPLASH EXIT MEDIA FILE"), "ee_customexitsplash", (GuiFileBrowser::FileTypes) (GuiFileBrowser::FileTypes::IMAGES | GuiFileBrowser::FileTypes::VIDEO));
+		s->addFileBrowser(_("SET CUSTOM SPLASH EXIT MEDIA FILE"), "turborama_customexitsplash", (GuiFileBrowser::FileTypes) (GuiFileBrowser::FileTypes::IMAGES | GuiFileBrowser::FileTypes::VIDEO));
 	}
 
 	auto splashExitTime = std::make_shared<SliderComponent>(mWindow, 0.f, 100.f, 1.f, "seconds");
 
-	splashDuration = SystemConf::getInstance()->get("ee_splash_exit_duration");
+	splashDuration = SystemConf::getInstance()->get("turborama_splash_exit_duration");
 	fDuration = 0.f;
 	if (!splashDuration.empty())
 		fDuration = (float) atof(splashDuration.c_str());
@@ -806,7 +806,7 @@ void GuiMenu::createConfigureSplash(Window* mWindow, int menuIndex)
 
 	splashExitTime->setOnValueChanged([](const float &newVal) {
 		auto val = std::to_string((int)Math::round(newVal));
-		SystemConf::getInstance()->set("ee_splash_exit_duration", val);
+		SystemConf::getInstance()->set("turborama_splash_exit_duration", val);
 	});
 	s->addWithLabel(_("SPLASH EXIT DURATION"), splashExitTime);
 
@@ -814,8 +814,8 @@ void GuiMenu::createConfigureSplash(Window* mWindow, int menuIndex)
 		if (splashLoadingOptionList->getSelected() == "2") {
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("PUT RANDOM MEDIA IN '/storage/roms/splash/random'."));
 		}
-		SystemConf::getInstance()->set("ee_splashloading", splashLoadingOptionList->getSelected());
-		SystemConf::getInstance()->set("ee_splashexit", splashExitOptionList->getSelected());
+		SystemConf::getInstance()->set("turborama_splashloading", splashLoadingOptionList->getSelected());
+		SystemConf::getInstance()->set("turborama_splashexit", splashExitOptionList->getSelected());
 
 		if (splashLoadingTime->getValue() == 0.f || splashExitTime->getValue() == 0.f) {
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("SETTING DURATION 0 WILL MAKE VIDEOS DEFAULT TO PLAY 3 SECONDS."));
@@ -824,10 +824,10 @@ void GuiMenu::createConfigureSplash(Window* mWindow, int menuIndex)
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("SETTING DURATIONS GREATER THAN 0 WILL ADD TO LOADING/EXIT SPLASH TIMES."));
 		}
 
-		SystemConf::getInstance()->set("ee_splash_loading_duration", std::to_string((int)round(splashLoadingTime->getValue())));
-		SystemConf::getInstance()->set("ee_splash_exit_duration", std::to_string((int)round(splashExitTime->getValue())));
+		SystemConf::getInstance()->set("turborama_splash_loading_duration", std::to_string((int)round(splashLoadingTime->getValue())));
+		SystemConf::getInstance()->set("turborama_splash_exit_duration", std::to_string((int)round(splashExitTime->getValue())));
 
-		SystemConf::getInstance()->set("ee_splash_loading_platform_roms", splashLoadingPlatformRoms->getState() ? "1" : "0");
+		SystemConf::getInstance()->set("turborama_splash_loading_platform_roms", splashLoadingPlatformRoms->getState() ? "1" : "0");
 
 		SystemConf::getInstance()->saveSystemConf();
 	});
@@ -980,7 +980,7 @@ void GuiMenu::createGamepadConfig(Window* window, GuiSettings* systemConfigurati
 	rumble_options.push_back(std::make_pair("75%",75));
 	rumble_options.push_back(std::make_pair("100%",100));
 
-	auto rumble_optionsS = SystemConf::getInstance()->get("ee_rumble_strength");
+	auto rumble_optionsS = SystemConf::getInstance()->get("turborama_rumble_strength");
 	if (rumble_optionsS.empty())
 	rumble_optionsS = "0";
 	int ros = (int) atoi(rumble_optionsS.c_str());
@@ -991,7 +991,7 @@ void GuiMenu::createGamepadConfig(Window* window, GuiSettings* systemConfigurati
 	gamepadConfiguration->addWithLabel(_("RUMBLE STRENGTH"), turborama_rumble_def);
 	gamepadConfiguration->addSaveFunc([turborama_rumble_def] {
 		if (turborama_rumble_def->changed()) {
-			SystemConf::getInstance()->set("ee_rumble_strength", turborama_rumble_def->getSelected());
+			SystemConf::getInstance()->set("turborama_rumble_strength", turborama_rumble_def->getSelected());
 			SystemConf::getInstance()->saveSystemConf();
 		}
 	});
@@ -1037,18 +1037,18 @@ void GuiMenu::openExternalMounts(Window* mWindow, std::string configName)
         });
 
 		auto turborama_external_device_retry = std::make_shared< OptionListComponent<std::string> >(mWindow, _("RETRY TIMES"), false);
-		turborama_external_device_retry->addRange({ { _("AUTO"), "" },{ "1", "1" },{ "2", "2" },{ "3", "3" },{ "4", "4" },{ "5", "5" },{ "6", "6" },{ "7", "7" },{ "8", "8" },{ "9", "9" },{ "10", "10" },{ "11", "11" },{ "12", "12" },{ "13", "13" },{ "14", "14" },{ "15", "15" },{ "16", "16" },{ "17", "17" },{ "18", "18" },{ "19", "19" },{ "20", "20" },{ "21", "21" },{ "22", "22" },{ "23", "23" },{ "24", "24" },{ "25", "25" },{ "26", "26" },{ "27", "27" },{ "28", "28" },{ "29", "29" },{ "30", "30" } }, SystemConf::getInstance()->get("ee_mount.retry"));
+		turborama_external_device_retry->addRange({ { _("AUTO"), "" },{ "1", "1" },{ "2", "2" },{ "3", "3" },{ "4", "4" },{ "5", "5" },{ "6", "6" },{ "7", "7" },{ "8", "8" },{ "9", "9" },{ "10", "10" },{ "11", "11" },{ "12", "12" },{ "13", "13" },{ "14", "14" },{ "15", "15" },{ "16", "16" },{ "17", "17" },{ "18", "18" },{ "19", "19" },{ "20", "20" },{ "21", "21" },{ "22", "22" },{ "23", "23" },{ "24", "24" },{ "25", "25" },{ "26", "26" },{ "27", "27" },{ "28", "28" },{ "29", "29" },{ "30", "30" } }, SystemConf::getInstance()->get("turborama_mount.retry"));
         externalMounts->addWithDescription(_("RETRY TIMES"), _("How many times to retry the mount on boot."), turborama_external_device_retry);
 		turborama_external_device_retry->setSelectedChangedCallback([turborama_external_device_retry](std::string name) {
-            if (SystemConf::getInstance()->set("ee_mount.retry", name))
+            if (SystemConf::getInstance()->set("turborama_mount.retry", name))
                 SystemConf::getInstance()->saveSystemConf();
             });
 
 		auto turborama_external_device_retry_delay = std::make_shared< OptionListComponent<std::string> >(mWindow, _("DELAY BETWEEN TRIES"), false);
-		turborama_external_device_retry_delay->addRange({ { _("AUTO"), "" },{ "1", "1" },{ "2", "2" },{ "3", "3" },{ "4", "4" },{ "5", "5" },{ "6", "6" },{ "7", "7" },{ "8", "8" },{ "9", "9" },{ "10", "10" },{ "11", "11" },{ "12", "12" },{ "13", "13" },{ "14", "14" },{ "15", "15" },{ "16", "16" },{ "17", "17" },{ "18", "18" },{ "19", "19" },{ "20", "20" },{ "21", "21" },{ "22", "22" },{ "23", "23" },{ "24", "24" },{ "25", "25" },{ "26", "26" },{ "27", "27" },{ "28", "28" },{ "29", "29" },{ "30", "30" } }, SystemConf::getInstance()->get("ee_load.delay"));
+		turborama_external_device_retry_delay->addRange({ { _("AUTO"), "" },{ "1", "1" },{ "2", "2" },{ "3", "3" },{ "4", "4" },{ "5", "5" },{ "6", "6" },{ "7", "7" },{ "8", "8" },{ "9", "9" },{ "10", "10" },{ "11", "11" },{ "12", "12" },{ "13", "13" },{ "14", "14" },{ "15", "15" },{ "16", "16" },{ "17", "17" },{ "18", "18" },{ "19", "19" },{ "20", "20" },{ "21", "21" },{ "22", "22" },{ "23", "23" },{ "24", "24" },{ "25", "25" },{ "26", "26" },{ "27", "27" },{ "28", "28" },{ "29", "29" },{ "30", "30" } }, SystemConf::getInstance()->get("turborama_load.delay"));
         externalMounts->addWithDescription(_("DELAY BETWEEN TRIES"), _("How much delay in seconds between each retry."), turborama_external_device_retry_delay);
 		turborama_external_device_retry_delay->setSelectedChangedCallback([turborama_external_device_retry_delay](std::string name) {
-            if (SystemConf::getInstance()->set("ee_load.delay", name))
+            if (SystemConf::getInstance()->set("turborama_load.delay", name))
                 SystemConf::getInstance()->saveSystemConf();
             });
 
@@ -1058,7 +1058,7 @@ void GuiMenu::openExternalMounts(Window* mWindow, std::string configName)
 				[selectedExternalDrive] {
 				SystemConf::getInstance()->saveSystemConf();
 
-                auto mountH = SystemConf::getInstance()->get("ee_mount.handler");
+                auto mountH = SystemConf::getInstance()->get("turborama_mount.handler");
                 if (mountH == "eemount" || mountH.empty()) {
                    Utils::Platform::ProcessStartInfo("eemount --esrestart " + selectedExternalDrive).run();
                 } else if (mountH == "mount_romfs.sh") {
@@ -1080,31 +1080,31 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		configName += ".";
 
 	auto getVideoMode = [configName, platform] (){
-		std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
+		std::string turborama_videomode = SystemConf::getInstance()->get("turborama_videomode");
 
-		if (Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE"))
-			ee_videomode = Utils::Platform::getShOutput(R"(cat /storage/.config/EE_VIDEO_MODE)");
+		if (Utils::FileSystem::exists("/storage/.config/TURBORAMA_VIDEO_MODE"))
+			turborama_videomode = Utils::Platform::getShOutput(R"(cat /storage/.config/TURBORAMA_VIDEO_MODE)");
 
-		if (configName != "ee_es.") {
-			ee_videomode = SystemConf::getInstance()->get(configName+"nativevideo");
+		if (configName != "turborama_es.") {
+			turborama_videomode = SystemConf::getInstance()->get(configName+"nativevideo");
 		}
 
-		if (!platform.empty() && (ee_videomode.empty() || ee_videomode == "auto")) {
-			ee_videomode = SystemConf::getInstance()->get(platform+".nativevideo");
+		if (!platform.empty() && (turborama_videomode.empty() || turborama_videomode == "auto")) {
+			turborama_videomode = SystemConf::getInstance()->get(platform+".nativevideo");
 		}
 
-		if (ee_videomode.empty() || ee_videomode == "auto") {
-			ee_videomode = Utils::Platform::getShOutput(R"(cat /sys/class/display/mode)");
+		if (turborama_videomode.empty() || turborama_videomode == "auto") {
+			turborama_videomode = Utils::Platform::getShOutput(R"(cat /sys/class/display/mode)");
 		}
 
-		return ee_videomode;
+		return turborama_videomode;
 	};
 
-	std::string ee_videomode = getVideoMode();
+	std::string turborama_videomode = getVideoMode();
 
-	std::string ee_framebuffer = SystemConf::getInstance()->get(configName+"framebuffer");
-	if (ee_framebuffer.empty()) {
-		ee_framebuffer = "auto";
+	std::string turborama_framebuffer = SystemConf::getInstance()->get(configName+"framebuffer");
+	if (turborama_framebuffer.empty()) {
+		turborama_framebuffer = "auto";
 	}
 
 	std::vector<std::string> reslist;
@@ -1120,19 +1120,19 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 	    return (std::tie(ll, lhs) > std::tie(rl, rhs));
 	});
 
-	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
+	int* turborama_dimensions = getVideoModeDimensions(turborama_videomode, reslist);
 
-	int fbWidth = ee_dimensions[0];
-	int fbHeight = ee_dimensions[1];
+	int fbWidth = turborama_dimensions[0];
+	int fbHeight = turborama_dimensions[1];
 
 	auto turborama_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
-	turborama_frame_buffer->add("auto", "auto", ee_framebuffer == "auto");
+	turborama_frame_buffer->add("auto", "auto", turborama_framebuffer == "auto");
 
 	for (auto it = reslist.cbegin(); it != reslist.cend(); it++) {
 		std::string lbl = *it;
 		lbl = lbl.replace(lbl.find(" "),1,"x");
-		turborama_frame_buffer->add(lbl, *it, ee_framebuffer == *it);
+		turborama_frame_buffer->add(lbl, *it, turborama_framebuffer == *it);
 	}
 	guiSettings->addWithLabel(header+_("INTERNAL RESOLUTION DIMENSIONS"), turborama_frame_buffer);
 
@@ -1143,7 +1143,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		SystemConf::getInstance()->set(configName+"framebuffer", selectedFB);
 		SystemConf::getInstance()->saveSystemConf();
 
-		if (configName == "ee_es.") {
+		if (configName == "turborama_es.") {
 			Scripting::fireEvent("quit", "restart");
 			Utils::Platform::quitES(Utils::Platform::QuitMode::QUIT);
 		}
@@ -1152,7 +1152,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 
 	turborama_frame_buffer->setSelectedChangedCallback([mWindow, configName, turborama_frame_buffer, fbSave, fbWidth, fbHeight, getVideoMode](std::string name)
 	{
-		if (configName == "ee_es.") {
+		if (configName == "turborama_es.") {
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM WILL OCCUR TO APPLY THE NEW CONFIGURATION"));
 		}
 	});
@@ -1163,26 +1163,26 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 			fbSave(turborama_frame_buffer->getSelected());
 	});
 
-	guiSettings->addEntry(header+_("ADJUST INTERNAL RESOLUTION BORDERS"), true, [mWindow, configName, ee_framebuffer, fbWidth, fbHeight] {
-		sScreenBorders ee_borders;
-		ee_borders.left = 0.0f;
-		ee_borders.right = 0.0f;
-		ee_borders.top = 0.0f;
-		ee_borders.bottom = 0.0f;
+	guiSettings->addEntry(header+_("ADJUST INTERNAL RESOLUTION BORDERS"), true, [mWindow, configName, turborama_framebuffer, fbWidth, fbHeight] {
+		sScreenBorders turborama_borders;
+		turborama_borders.left = 0.0f;
+		turborama_borders.right = 0.0f;
+		turborama_borders.top = 0.0f;
+		turborama_borders.bottom = 0.0f;
 
 		std::string str_ee_offsets = SystemConf::getInstance()->get(configName+"framebuffer_border");
 		if (!str_ee_offsets.empty()) {
 			std::vector<int> savedBorders = int_explode(str_ee_offsets, ' ');
 			if (savedBorders.size() == 4) {
-				ee_borders.left = (float) savedBorders[0];
-				ee_borders.top = (float) savedBorders[1];
-				ee_borders.right = (float) savedBorders[2];
-				ee_borders.bottom = (float) savedBorders[3];
+				turborama_borders.left = (float) savedBorders[0];
+				turborama_borders.top = (float) savedBorders[1];
+				turborama_borders.right = (float) savedBorders[2];
+				turborama_borders.bottom = (float) savedBorders[3];
 			}
 		}
 
 		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("RESOLUTION BORDERS"));
-		if (ee_framebuffer.empty())
+		if (turborama_framebuffer.empty())
 			return;
 
 		float width = (float)fbWidth;
@@ -1197,10 +1197,10 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 			std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px")
 		};
 
-		fb_borders[0]->setValue(ee_borders.left);
-		fb_borders[1]->setValue(ee_borders.top);
-		fb_borders[2]->setValue(ee_borders.right);
-		fb_borders[3]->setValue(ee_borders.bottom);
+		fb_borders[0]->setValue(turborama_borders.left);
+		fb_borders[1]->setValue(turborama_borders.top);
+		fb_borders[2]->setValue(turborama_borders.right);
+		fb_borders[3]->setValue(turborama_borders.bottom);
 
 		fb_borders[0]->setOnValueChanged([fb_borders] (float val) {
 			fb_borders[2]->setValue(val);
@@ -1253,7 +1253,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 #if defined(_ENABLEGAMEFORCE) || defined(ODROIDGOA)
 	// OG OC
 	auto turborama_oga_overclock = std::make_shared<OptionListComponent<std::string>>(mWindow, _("OVERCLOCK"));
-    turborama_oga_overclock->addRange({ { _("Off"), "Off" }, { _("1.4ghz"), "1.4ghz" }, { "1.5ghz", "1.5ghz" } }, SystemConf::getInstance()->get("ee_oga_oc"));
+    turborama_oga_overclock->addRange({ { _("Off"), "Off" }, { _("1.4ghz"), "1.4ghz" }, { "1.5ghz", "1.5ghz" } }, SystemConf::getInstance()->get("turborama_oga_oc"));
     dangerZone->addWithLabel(_("OVERCLOCK"), turborama_oga_overclock);
     dangerZone->addSaveFunc([configName, turborama_oga_overclock, mWindow] {
 
@@ -1261,7 +1261,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
         {
             LOG(LogInfo) << "Setting OGA_OC to " + value;
             Utils::Platform::ProcessStartInfo("/usr/bin/odroidgoa_utils.sh oga_oc " + value).run();
-            SystemConf::getInstance()->set("ee_oga_oc", value);
+            SystemConf::getInstance()->set("turborama_oga_oc", value);
             SystemConf::getInstance()->saveSystemConf();
         };
 
@@ -1287,7 +1287,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 		dangerZone->addEntry(_("INTERNAL VIDEO OPTIONS"), true, [=] {
 			GuiSettings* videoOptions = new GuiSettings(mWindow, _("INTERNAL VIDEO OPTIONS").c_str());
-			addFrameBufferOptions(mWindow, videoOptions, "ee_es", "ES ", "");
+			addFrameBufferOptions(mWindow, videoOptions, "turborama_es", "ES ", "");
 			addFrameBufferOptions(mWindow, videoOptions, "", "EMU ", "");
 			mWindow->pushGui(videoOptions);
 		});
@@ -1296,14 +1296,14 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
     dangerZone->addEntry(_("CLOUD BACKUP SETTINGS AND GAME SAVES"), true, [mWindow] {
     mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nThis will backup your game saves, savestates and turborama configs to the cloud service configured on rclone.conf\n\nBACKUP TO CLOUD AND RESTART?"), _("YES"),
 				[] {
-				Utils::Platform::ProcessStartInfo("systemd-run /usr/bin/turborama-utils ee_cloud_backup backup").run();
+				Utils::Platform::ProcessStartInfo("systemd-run /usr/bin/turborama-utils turborama_cloud_backup backup").run();
 				}, _("NO"), nullptr));
      });
 
     dangerZone->addEntry(_("CLOUD RESTORE SETTINGS AND GAME SAVES"), true, [mWindow] {
     mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nThis will restore your game saves, savestates and turborama configs from the cloud service configured on rclone.conf, it will overwrite any existing file!!\n\nRESTORE FROM CLOUD AND RESTART?"), _("YES"),
 				[] {
-				Utils::Platform::ProcessStartInfo("systemd-run /usr/bin/turborama-utils ee_cloud_backup restore").run();
+				Utils::Platform::ProcessStartInfo("systemd-run /usr/bin/turborama-utils turborama_cloud_backup restore").run();
 				}, _("NO"), nullptr));
      });
 
@@ -1345,9 +1345,9 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	dangerZone->addGroup("CONFIG RELATED");
     dangerZone->addEntry(_("LOCAL BACKUP TURBORAMA CONFIGS"), true, [mWindow] {
-    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/ee_backup_config.tar.gz TO SOME PLACE!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
+    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/turborama_backup_config.tar.gz TO SOME PLACE!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
 				[] {
-				Utils::Platform::ProcessStartInfo("systemd-run /usr/bin/turborama-utils ee_backup backup").run();
+				Utils::Platform::ProcessStartInfo("systemd-run /usr/bin/turborama-utils turborama_backup backup").run();
 				}, _("NO"), nullptr));
      });
 
@@ -5284,7 +5284,7 @@ void GuiMenu::openSoundSettings()
 	s->addGroup(_("SOUNDS"));
 
 #ifdef _ENABLETURBORAMA
-	s->addFileBrowser(_("CUSTOM MENU SCROLL SOUND"), "ee_menuscrollsound", GuiFileBrowser::AUDIO);
+	s->addFileBrowser(_("CUSTOM MENU SCROLL SOUND"), "turborama_menuscrollsound", GuiFileBrowser::AUDIO);
 #endif
 	s->addSwitch(_("ENABLE NAVIGATION SOUNDS"), "EnableSounds", true, []
 	{
@@ -5602,7 +5602,7 @@ if (SystemConf::getInstance()->getBool("extra_quit_menu.enabled", true)) {
 
 	int timeout = 0;
 	try {
-		timeout = std::stoi(SystemConf::getInstance()->get("ee_auto_shutdown_timeout"));
+		timeout = std::stoi(SystemConf::getInstance()->get("turborama_auto_shutdown_timeout"));
 	} catch (...) {
 		timeout = 0;
 	}
@@ -5611,16 +5611,16 @@ if (SystemConf::getInstance()->getBool("extra_quit_menu.enabled", true)) {
 	s->addSaveFunc([shutdownSlider] {
 		int value = (int)shutdownSlider->getValue();
 		if (value > 0) {
-			system("killall ee_asd > /dev/null 2>&1"); // avoid double instance
-			system(("ee_asd -t " + std::to_string((int)value)).c_str());
+			system("killall turborama_asd > /dev/null 2>&1"); // avoid double instance
+			system(("turborama_asd -t " + std::to_string((int)value)).c_str());
 		} else {
-			system("killall ee_asd  > /dev/null 2>&1");
+			system("killall turborama_asd  > /dev/null 2>&1");
 		}
-		SystemConf::getInstance()->set("ee_auto_shutdown_timeout", std::to_string(value));
+		SystemConf::getInstance()->set("turborama_auto_shutdown_timeout", std::to_string(value));
 		SystemConf::getInstance()->saveSystemConf();
 	});
 
-	s->addSwitch(_("Persistent Autoshutdown"), "ee_auto_shutdown_persistent", false);
+	s->addSwitch(_("Persistent Autoshutdown"), "turborama_auto_shutdown_persistent", false);
 #endif
 
 	if (quickAccessMenu)

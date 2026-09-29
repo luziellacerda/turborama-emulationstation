@@ -85,7 +85,7 @@ Paths::Paths()
 	mUserMusicPath = "/storage/.config/turborama/BGM";
 	mDecorationsPath = "/storage/roms/bezels";
 	mUserDecorationsPath = "/tmp/overlays/bezels";
-	mVersionInfoPath = "/usr/config/EE_VERSION";
+	mVersionInfoPath = "/usr/config/TURBORAMA_VERSION";
 	mSystemConfFilePath = "/storage/.config/turborama/configs/turborama.conf";
 #endif
 */
@@ -102,7 +102,7 @@ Paths::Paths()
 	mUserMusicPath = "/turborama/BGM";
 	mDecorationsPath = "/storage/roms/bezels";
 	mUserDecorationsPath = "/tmp/overlays/bezels";
-	mVersionInfoPath = "/usr/config/EE_VERSION";
+	mVersionInfoPath = "/usr/config/TURBORAMA_VERSION";
 	mSystemConfFilePath = "/turborama/configs/turborama.conf";
 	mScreenShotsPath = "/storage/roms/screenshots";
 	mSaveStatesPath = "/storage/roms/savestates";

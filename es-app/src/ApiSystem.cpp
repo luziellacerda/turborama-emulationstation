@@ -171,7 +171,7 @@ std::string ApiSystem::getVersion(bool extra)
 {
 	LOG(LogDebug) << "ApiSystem::getVersion";
 #ifdef _ENABLETURBORAMA
-	std::ifstream ifs("/usr/config/EE_VERSION");
+	std::ifstream ifs("/usr/config/TURBORAMA_VERSION");
 #else
 	std::ifstream ifs("/usr/share/batocera/batocera.version");
 #endif
