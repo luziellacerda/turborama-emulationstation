@@ -1059,8 +1059,8 @@ void GuiMenu::openExternalMounts(Window* mWindow, std::string configName)
 				SystemConf::getInstance()->saveSystemConf();
 
                 auto mountH = SystemConf::getInstance()->get("turborama_mount.handler");
-                if (mountH == "eemount" || mountH.empty()) {
-                   Utils::Platform::ProcessStartInfo("eemount --esrestart " + selectedExternalDrive).run();
+                if (mountH == "turborama-mount" || mountH.empty()) {
+                   Utils::Platform::ProcessStartInfo("turborama-mount --esrestart " + selectedExternalDrive).run();
                 } else if (mountH == "mount_romfs.sh") {
                    Utils::Platform::ProcessStartInfo("mount_romfs.sh yes " + selectedExternalDrive).run();
                 } else {
