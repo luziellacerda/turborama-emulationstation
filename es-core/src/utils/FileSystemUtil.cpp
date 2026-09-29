@@ -1470,7 +1470,7 @@ namespace Utils
 
 					hex = Utils::String::toHexString(file_crc32);
 
-					delete buffer;
+					delete[] buffer;
 				}
 
 				fclose(file);
@@ -1504,7 +1504,7 @@ namespace Utils
 					md5.finalize();
 					hex = md5.hexdigest();
 
-					delete buffer;
+					delete[] buffer;
 				}
 
 				fclose(file);
@@ -1616,6 +1616,5 @@ namespace Utils
 	} // FileSystem::
 
 } // Utils::
-
 
 
