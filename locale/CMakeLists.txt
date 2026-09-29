@@ -13,7 +13,7 @@ foreach (es_PO_INPUT ${es_PO_FILES})
 	# update the po from the pot
 	add_custom_command (TARGET i18n COMMAND ${MSGMERGE_EXECUTABLE} -U --no-fuzzy-matching ${es_PO_INPUT}/LC_MESSAGES/emulationstation2.po ${es_POT})
 	# compile the po to mo
-        add_custom_command (TARGET i18n COMMAND basename ${es_PO_INPUT} && ${MSGFMT_EXECUTABLE} -o ${es_MO_OUTPUT} ${es_PO_INPUT}/LC_MESSAGES/emulationstation2.po)
+        add_custom_command (TARGET i18n COMMAND basename ${es_PO_INPUT} && ${MSGFMT_EXECUTABLE} --check-format -o ${es_MO_OUTPUT} ${es_PO_INPUT}/LC_MESSAGES/emulationstation2.po)
         install (FILES ${es_MO_OUTPUT} DESTINATION share/locale/${es_PO_LANG}/LC_MESSAGES RENAME emulationstation2.mo)
 endforeach (es_PO_INPUT ${es_PO_FILES})
 

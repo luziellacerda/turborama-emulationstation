@@ -366,7 +366,7 @@ msgstr "EGUNERATU"
 
 #, c-format
 msgid "'%s' ADDED TO DOWNLOAD QUEUE"
-msgstr "'%S' GEHITUTA DESKARGA LERROAN"
+msgstr "'%s' GEHITUTA DESKARGA LERROAN"
 
 msgid "REMOVE"
 msgstr "KENDU"
@@ -718,7 +718,7 @@ msgstr "AUKERATU INSTALATU/KENDU NAHI DITUZUN BEZEL-AL"
 
 #, c-format
 msgid "UPDATING %s"
-msgstr "%S EGUNERATZEN"
+msgstr "%s EGUNERATZEN"
 
 msgid "UPDATE IS READY"
 msgstr "EGUNERAKETA PREST DAGO"
